@@ -4,6 +4,7 @@ ob_start();
 session_start();
 error_reporting(E_ALL);
 
+include 'classes/Query.php';
 include 'database/connect.php';
 include 'functions/language.php';
 include 'functions/general.php';
@@ -18,6 +19,7 @@ include 'classes/PHPMailer/PHPMailerAutoload.php';
 $errors 	= array();
 $settings 	= settings_data();
 $token 		= new CsrfProtection();
+$query 		= new StdClass;
 
 /* Set the default timezone if its not set in the ini file */
 if (!date_default_timezone_get('date.timezone')) 

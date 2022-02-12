@@ -418,4 +418,87 @@ function output_notice($messages) {
 		';
 	}
 }
+
+function server_update($server) {
+	global $database;
+	global $settings;
+	global $language;
+	global $query;
+	if($server->cachetime > time() - $settings->cache_reset_time) {
+
+		$query->status = $server->status;
+
+		/* Decode the details content into an array */
+		$server->details = json_decode($server->details, true);
+
+		$info = array(
+					'general' => array(
+						'online_players' => array(
+							'name' => $language['server']['general_online_players'],
+							'icon' => 'user',
+							'value' => $server->online_players
+						),
+
+						'maximum_online_players' => array(
+							'name' => $language['server']['general_maximum_online_players'],
+							'icon' => 'user',
+							'value' => $server->maximum_online_players
+						),
+
+						'motd' => array(
+							'name' => $language['server']['motd'],
+							'icon' => 'tasks',
+							'value' => $server->motd
+						),
+
+						'server_version' => array(
+							'name' => $language['server']['server_version'],
+							'icon' => 'wrench',
+							'value' => $server->server_version
+						)
+					),
+
+					'players' => $server->details['players'],
+				);
+
+		$information = $info;
+		return $info;
+
+	} else {
+		
+		/* Query the server with a specific protocol */
+		$query = new Query($server->address, $server->query_port);
+		$information  = $query->query();
+
+		if(!$information) {
+			$info = $query->return_false();
+		} else {
+			$info = $information;
+		}
+
+
+		/* JSON Encode the Players & Details so they can be inserted into the database */
+		$details = array(
+			'players' => $info['players'],
+		);
+		$details = json_encode($details);
+
+		/* Update the cache depending on the  status */
+		if($query->status){
+			$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `motd` = ?, `server_version` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->server_id}");
+			$stmt->bind_param('ssssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $info['general']['motd']['value'], $info['general']['server_version']['value'], $details);
+		} else {
+			$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->server_id}");
+			$stmt->bind_param('ssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $details);
+		}
+		$stmt->execute();
+
+		/* Decode the MOTD */
+		$info['general']['motd']['value'] = minecraft::decodeMotd($info['general']['motd']['value']);
+		return $info;
+	}	
+		
+		
+	}
+
 ?>

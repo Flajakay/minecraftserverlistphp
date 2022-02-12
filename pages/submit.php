@@ -1,7 +1,6 @@
 <?php
 User::check_permission(0);
 include 'core/functions/recaptchalib.php';
-include 'core/classes/Query.php';
 
 $address =  $name = $country_code = $youtube_link = $website = $description = null;
 $connection_port = $query_port = 25565;
@@ -221,7 +220,7 @@ initiate_html_columns();
 
 	<div class="form-group">
 		<label><?php echo $language['forms']['server_description']; ?></label>
-		<textarea id="editorincluded" name="description" class="form-control" rows="6"><?php echo $description; ?></textarea>
+		<textarea id="editorincluded" name="description" class="form-control" rows="6"></textarea>
 	</div>
 
 
@@ -233,6 +232,5 @@ initiate_html_columns();
 <script type="text/javascript">
 	$('#editorincluded').each(function () {
 		var editor = new Jodit(this, {"buttons": "bold,italic,underline,strikethrough,eraser,ul,ol,indent,outdent,left,font,fontsize,paragraph,brush,superscript,subscript,image,video"});
-		editor.value = '<?php echo $server->data->description; ?>';
-	});
+	}); 
 </script>

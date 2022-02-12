@@ -1,5 +1,4 @@
 <?php
-
 class Servers {
 	private $order_by;
 	private $additional_join = null;
@@ -111,30 +110,30 @@ class Servers {
 		global $database;
 		global $language;
 		global $account_user_id;
-
+		global $settings; 
 		/* Quickly verify the remaining of highlighted days remaining */
 		$database->query("UPDATE `servers` JOIN `payments` ON `servers`.`server_id` = `payments`.`server_id` SET `servers`.`highlight` = '0' WHERE `payments`.`date` + INTERVAL `payments`.`highlighted_days` DAY < CURDATE()");
 
 		/* Retrieve servers information */
 		$result = $database->query("SELECT * FROM `servers` {$this->additional_join} {$this->where} {$this->order_by} {$this->pagination->limit}");
-
 		/* Check if there is any result */
 		$this->server_results = $result->num_rows;
 		if($this->server_results < 1) $_SESSION['info'][] = $this->no_servers;
-
+		
 		/* Display the servers */
 		while($server = $result->fetch_object()) {
+			server_update($server);
 
-		/* Get category information for the servers */
-		$category_result = $database->query("SELECT `name`, `url` FROM `categories` WHERE `category_id` = {$server->category_id}");
-		$category = $category_result->fetch_object();
+			/* Get category information for the servers */
+			$category_result = $database->query("SELECT `name`, `url` FROM `categories` WHERE `category_id` = {$server->category_id}");
+			$category = $category_result->fetch_object();
 
-		/* Store the status into a variable */
-		$server->status_text = ($server->status) ? $language['server']['status_online'] : $language['server']['status_offline'];
+			/* Store the status into a variable */
+			$server->status_text = ($server->status) ? $language['server']['status_online'] : $language['server']['status_offline'];
 
-		/* Check if there is any image uploaded, if not, display default */
-		$server->image = (empty($server->image)) ? 'default.jpg' : $server->image;
-		
+			/* Check if there is any image uploaded, if not, display default */
+			$server->image = (empty($server->image)) ? 'default.jpg' : $server->image;
+			
 		?>
 
 		<div class="panel panel-default">

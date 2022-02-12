@@ -1,5 +1,4 @@
 <?php
-include 'core/classes/Query.php';
 include 'core/functions/recaptchalib.php';
 include 'template/includes/modals/comment.php';
 include 'template/includes/modals/blog.php';
@@ -35,80 +34,7 @@ if($server->data->private) echo output_notice($language['server']['private']);
 $result = $database->query("SELECT `id` FROM `points` WHERE `type` = 0 AND `server_id` = {$server->data->server_id} AND `ip` = '{$_SERVER['REMOTE_ADDR']}' AND `timestamp` > UNIX_TIMESTAMP(NOW() - INTERVAL 1 DAY)");
 if(!$result->num_rows) $database->query("INSERT INTO `points` (`type`, `server_id`, `ip`, `timestamp`) VALUES (0, {$server->data->server_id}, '{$_SERVER['REMOTE_ADDR']}', UNIX_TIMESTAMP())");
 
-/* Check the cache timer, so we don't query the server
-everytime we load the page */
-if($server->data->cachetime > time() - $settings->cache_reset_time) {
-
-	$query = new StdClass;
-	$query->status = $server->data->status;
-
-	/* Decode the details content into an array */
-	$server->data->details = json_decode($server->data->details, true);
-
-	$info = array(
-				'general' => array(
-					'online_players' => array(
-						'name' => $language['server']['general_online_players'],
-						'icon' => 'user',
-						'value' => $server->data->online_players
-					),
-
-					'maximum_online_players' => array(
-						'name' => $language['server']['general_maximum_online_players'],
-						'icon' => 'user',
-						'value' => $server->data->maximum_online_players
-					),
-
-					'motd' => array(
-						'name' => $language['server']['motd'],
-						'icon' => 'tasks',
-						'value' => $server->data->motd
-					),
-
-					'server_version' => array(
-						'name' => $language['server']['server_version'],
-						'icon' => 'wrench',
-						'value' => $server->data->server_version
-					)
-				),
-
-				'players' => $server->data->details['players'],
-			);
-
-	$information = $info;
-
-} else {
-
-	/* Query the server with a specific protocol */
-	$query = new Query($server->data->address, $server->data->query_port);
-	$information  = $query->query();
-
-	if(!$information) {
-		$info = $query->return_false();
-	} else {
-		$info = $information;
-	}
-
-
-	/* JSON Encode the Players & Details so they can be inserted into the database */
-	$details = array(
-		'players' => $info['players'],
-	);
-	$details = json_encode($details);
-
-	/* Update the cache depending on the  status */
-	if($query->status){
-		$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `motd` = ?, `server_version` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->data->server_id}");
-		$stmt->bind_param('ssssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $info['general']['motd']['value'], $info['general']['server_version']['value'], $details);
-	} else {
-		$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->data->server_id}");
-		$stmt->bind_param('ssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $details);
-	}
-	$stmt->execute();
-
-	/* Decode the MOTD */
-	$info['general']['motd']['value'] = minecraft::decodeMotd($info['general']['motd']['value']);
-}
+$info = server_update($server->data);
 
 initiate_html_columns();
 
@@ -121,7 +47,7 @@ initiate_html_columns();
 		<h3 class="no-margin">
 			<?php echo $server->data->address . ":" . $server->data->connection_port; ?>
 			<span class="pull-right">
-				<?php if($query->status && @$information) 
+				<?php if($server->data->status) 
 					echo '<span class="glyphicon glyphicon-ok green" style="font-size: 20px;"></span>' . $language['server']['status_online'];
 				else 
 					echo '<span class="glyphicon glyphicon-remove red" style="font-size: 20px;"></span>' . $language['server']['status_offline'];
@@ -158,7 +84,7 @@ initiate_html_columns();
 							<td style="width: 40%;"><span class="glyphicon glyphicon-time"></span> <strong><?php echo $language['server']['general_status']; ?></strong></td>
 							<td>
 								<?php 
-								if($query->status && @$information) 
+								if($server->data->status) 
 									echo '<span class="label label-success"><span class="glyphicon glyphicon-ok glyphicon glyphicon-white"></span></span> ' . $language['server']['status_online'];
 								else
 									echo '<span class="label label-danger"><span class="glyphicon glyphicon-remove glyphicon glyphicon-white"></span></span> ' . $language['server']['status_offline'];

@@ -56,7 +56,7 @@ if(!empty($_POST)) {
 	$youtube_id = youtube_url_to_id(filter_var($_POST['youtube_id'], FILTER_SANITIZE_STRING));
 	$website = filter_var($_POST['website'], FILTER_VALIDATE_URL);
 	$description = $_POST['description'];
-
+	
 	$votifier_public_key = filter_var($_POST['votifier_public_key'], FILTER_SANITIZE_STRING);
 	$votifier_ip = filter_var($_POST['votifier_ip'], FILTER_SANITIZE_STRING);
 	$votifier_port = (int) $_POST['votifier_port'];
@@ -191,10 +191,11 @@ initiate_html_columns();
 	</div>
 
 	<h3><?php echo $language['headers']['edit_server_details']; ?></h3>
-
+	
 	<div class="form-group">
 		<label><?php echo $language['forms']['server_banner']; ?></label><br />
 		<p class="help-block"><?php echo $language['forms']['server_banner_help']; ?></p>
+		<?php $server->data->image = (empty($server->data->image)) ? 'default.jpg' : $server->data->image; ?>
 		<img src="user_data/server_banners/<?php echo $server->data->image; ?>" style="max-width: 468px;" class="img-rounded" alt="Banner" />
 		<input type="file" name="image" class="form-control" />
 	</div>
@@ -224,7 +225,7 @@ initiate_html_columns();
 
 	<div class="form-group">
 		<label><?php echo $language['forms']['server_description']; ?></label>
-		<textarea id="editorincluded" name="description" class="form-control" rows="6"><?php echo $server->data->description; ?></textarea>
+		<textarea id="editorincluded" name="description" class="form-control" rows="6"></textarea>
 	</div>
 
 	<div class="form-group">

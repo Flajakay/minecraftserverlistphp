@@ -14,11 +14,9 @@
 	<link href="template/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="template/css/custom.css" rel="stylesheet" media="screen">
 	<link href="template/css/font-awesome.min.css" rel="stylesheet" media="screen">
-	<link
-		rel="stylesheet"
-		href="https://cdnjs.cloudflare.com/ajax/libs/jodit/3.11.2/jodit.es2018.min.css"
-	/>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jodit/3.11.2/jodit.es2018.min.js"></script>
+	<link href="template/css/jodit.css" rel="stylesheet" media="screen">
+	
+	<script src="template/js/jodit.js"></script>
 	<script src="template/js/jquery.js"></script>
 	<script src="template/js/bootstrap.min.js"></script>
 	<script src="template/js/timeago.js"></script>
