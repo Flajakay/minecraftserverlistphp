@@ -1,6 +1,5 @@
 <?php
 User::logged_in_redirect();
-include 'core/functions/recaptchalib.php';
 
 if(!empty($_POST)) {
 	/* Clean some posted variables */
@@ -9,8 +8,7 @@ if(!empty($_POST)) {
 	$_POST['email']		= filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
 	/* Define some variables */
-	//$captcha = recaptcha_check_answer ($settings->private_key, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-	$fields = array('username', 'name', 'email' ,'password', 'repeat_password', 'recaptcha_response_field');
+	$fields = array('username', 'name', 'email' ,'password', 'repeat_password');
 
 	/* Check for any errors */
 	foreach($_POST as $key=>$value) {
@@ -19,9 +17,6 @@ if(!empty($_POST)) {
 			break 1;
 		}
 	}
-/* 	if(!$captcha->is_valid) {
-		$_SESSION['error'][] = $language['errors']['captcha_not_valid'];
-	} */
 	if(strlen($_POST['username']) > 32 || strlen($_POST['username']) < 3) {
 		$_SESSION['error'][] = $language['errors']['username_length'];
 	}

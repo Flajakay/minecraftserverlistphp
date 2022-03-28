@@ -38,7 +38,7 @@ if(!empty($_POST)) {
 	$_POST['url']						= generateSlug(filter_var($_POST['url'], FILTER_SANITIZE_STRING));
 	$_POST['parent_id']					= (int)$_POST['parent_id'];
 	$image = (!empty($_FILES['image']['name'])) ? true : false;
-	$allowed_extensions = array('jpg', 'jpeg');
+	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$required_fields = array('name', 'url');
 
 	/* Check for any errors on the cover image */

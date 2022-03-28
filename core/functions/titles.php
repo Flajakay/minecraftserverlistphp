@@ -1,5 +1,5 @@
 <?php
-$page_title = 'Главная';
+$page_title = 'Home';
 
 if(isset($_GET['page'])) {
 	switch($_GET['page']) {

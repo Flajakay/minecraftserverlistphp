@@ -1,14 +1,11 @@
 <?php
 include '../core/init.php';
-include '../core/functions/recaptchalib.php';
 
 /* Process variables */
 $_POST['message']		= filter_var($_POST['message'], FILTER_SANITIZE_STRING);
 $_POST['type']			= (int) $_POST['type'];
 $_POST['reported_id']	= (int) $_POST['reported_id'];
 
-/* Define the captcha variable */
-//$captcha = recaptcha_check_answer ($settings->private_key, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
 
 /* Check for errors */
 $stmt = $database->prepare("SELECT `id` FROM `reports` WHERE `type` = ? AND `reported_id` = ?");
@@ -22,12 +19,6 @@ $stmt->close();
 if($num_rows) {
 	$errors[] = $language['errors']['already_reported'];
 }
-/* if(!$captcha->is_valid) {
-	$errors[] = $language['errors']['captcha_not_valid'];
-} */
-/* if(!$token->is_valid()) {
-	$errors[] = $language['errors']['invalid_token'];
-} */
 if(strlen($_POST['message']) > 512) {
 	$errors[] = $language['errors']['message_too_long'];
 }

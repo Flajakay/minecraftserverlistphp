@@ -239,7 +239,24 @@ function category_admin_buttons($category_id,  $hash) {
 
 }
 
+function gifResize($file_origin,$file_dest,$size_w,$size_h){
+   $crop_w = 0;
+   $crop_h = 0;
+   $crop_x = 0;
+   $crop_y = 0;
+   $image = new Imagick($file_origin);
+   $image = $image->coalesceImages();
 
+   foreach ($image as $frame) {
+       $frame->cropImage($crop_w, $crop_h, $crop_x, $crop_y);
+       $frame->thumbnailImage($size_h, $size_w);
+       $frame->setImagePage($size_h, $size_w, 0, 0);
+   }
+   $imageContent = $image->getImagesBlob();
+   $fp = fopen($file_dest,'w');
+   fwrite($fp,$imageContent);
+   fclose($fp);
+}
 
 function resize($file_name, $path, $width, $height, $center = false) {
 	/* Get original image x y*/

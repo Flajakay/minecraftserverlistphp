@@ -1,5 +1,4 @@
 <?php
-include 'core/functions/recaptchalib.php';
 include 'template/includes/modals/comment.php';
 include 'template/includes/modals/blog.php';
 include 'template/includes/modals/report.php';
@@ -328,7 +327,6 @@ initiate_html_columns();
 	</div>
 </div>
 
-<!-- Recaptcha base -->
 
 <script>
 $(document).ready(function() {

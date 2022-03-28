@@ -1,6 +1,5 @@
 <?php
 User::check_permission(0);
-include 'core/functions/recaptchalib.php';
 
 $address =  $name = $country_code = $youtube_link = $website = $description = null;
 $connection_port = $query_port = 25565;
@@ -23,8 +22,7 @@ if(!empty($_POST)) {
 	$website = filter_var($_POST['website'], FILTER_VALIDATE_URL);
 	$description = $_POST['description'];
 	
-	//$captcha = recaptcha_check_answer ($settings->private_key, $_SERVER["REMOTE_ADDR"], $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-	$allowed_extensions = array('jpg', 'jpeg', 'gif');
+	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$required_fields = array('address', 'connection_port', 'query_port', 'category_id');
 
 	/* Get category data */
@@ -89,9 +87,6 @@ if(!empty($_POST)) {
 	}
 
 	/* More checks */
-/* 	if(!$captcha->is_valid) {
-		$_SESSION['error'][] = $language['errors']['captcha_not_valid'];
-	} */
 	if(strlen($name) > 64 || strlen($name) < 3) {
 		$_SESSION['error'][] = $language['errors']['server_name_length'];
 	}

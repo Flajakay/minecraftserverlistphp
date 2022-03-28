@@ -26,9 +26,6 @@
 						<textarea name="comment" class="form-control" rows="4" style="resize:none;"></textarea>
 					</div>
 
-					<div class="form-group" id="comment_recaptcha">
-						
-					</div>
 
 				</div>
 
@@ -44,15 +41,6 @@
 
 <script>
 $(document).ready(function() {
-	/*Get the recaptcha code */
-	$('#comment').on('show.bs.modal',  function () {
-		$('#recaptcha').appendTo('#comment_recaptcha').show();
-	});
-	/* Transfer the recaptcha code */
-	$('#comment').on('hide.bs.modal', function () {
-		$('#recaptcha').appendTo('#recaptcha_base').hide();
-	});
-
 	/* Initialize the success message variable */
 	var SuccessMessage = $('#response').html();
 	
@@ -68,11 +56,7 @@ $(document).ready(function() {
 		/* Get the values from elements on the specific form */
 		var Data = $form.serializeArray();
 		
-		/* Insert the captcha code into the posting data */
-		var recaptcha_response_field = $('[name="recaptcha_response_field"]').val();
-		var recaptcha_challenge_field = $('[name="recaptcha_challenge_field"]').val();
-		Data.push({name: 'recaptcha_response_field', value: recaptcha_response_field}, {name: 'recaptcha_challenge_field', value: recaptcha_challenge_field});
-		
+	
 		/* Post and get response */
 		$.post('processing/process_comments.php', Data, function(data) {
 			$('html, body').animate({scrollTop:0},'slow');
@@ -97,8 +81,6 @@ $(document).ready(function() {
 			/* Clear the textarea */
 			$('textarea').val('');
 
-			/* Reload recaptcha */
-			Recaptcha.reload();
 		});
 
 		event.preventDefault();

@@ -3,7 +3,7 @@ User::check_permission(0);
 
 if(!empty($_POST)) {
 	/* Define some variables */
-	$allowed_extensions = array('jpg', 'jpeg');
+	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$avatar = (empty($_FILES['avatar']['name']) == false) ? true : false;
 	$cover = (empty($_FILES['cover']['name']) == false) ? true : false;
 
@@ -60,7 +60,11 @@ if(!empty($_POST)) {
 			$avatar_new_name = md5(time().rand()) . '.' . $avatar_file_extension;
 
 			/* Make a thumbnail and upload the original */
-			resize($avatar_file_temp, 'user_data/avatars/thumb/'.$avatar_new_name, '100', '100');
+			if ($avatar_file_extension != 'gif') {
+				resize($avatar_file_temp, 'user_data/avatars/thumb/'.$avatar_new_name, '100', '100');
+			} else {
+				gifResize($avatar_file_temp, 'user_data/avatars/thumb/'.$avatar_new_name, '100', '100');
+			}
 			move_uploaded_file($avatar_file_temp, "user_data/avatars/".$avatar_new_name);
 
 			/* Execute query */
@@ -76,10 +80,13 @@ if(!empty($_POST)) {
 
 			/* Generate new name for cover */
 			$cover_new_name = md5(time().rand()) . "." . $cover_file_extension;
-
+			
 			/* Resize */
-			resize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '1200', '180', true);
-
+			if ($cover_file_extension != 'gif') {
+				resize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '180', '1200');
+			} else {
+				gifResize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '180', '1200');
+			}
 			/* Execute query */
 			$database->query("UPDATE `users` SET `cover` = '{$cover_new_name}' WHERE `user_id` = {$account_user_id}");
 		}

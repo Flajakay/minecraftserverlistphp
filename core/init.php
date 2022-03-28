@@ -22,7 +22,7 @@ $token 		= new CsrfProtection();
 $query 		= new StdClass;
 
 /* Set the default timezone if its not set in the ini file */
-if (!date_default_timezone_get('date.timezone')) 
+if (!date_default_timezone_get()) 
 	date_default_timezone_set('America/New_York');
 
 /* If user is logged in get his data */

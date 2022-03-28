@@ -50,7 +50,7 @@ if(!empty($_POST)) {
 	$connection_port = (int) $_POST['connection_port'];
 	$query_port = (int) $_POST['query_port'];
 	$category_id = (int) $_POST['category_id'];
-	$allowed_extensions = array('jpg', 'jpeg', 'gif');
+	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$image = (empty($_FILES['image']['name']) == false) ? true : false;
 	$country_code = (country_check(0, $_POST['country_code'])) ? $_POST['country_code'] : 'US';
 	$youtube_id = youtube_url_to_id(filter_var($_POST['youtube_id'], FILTER_SANITIZE_STRING));

@@ -38,6 +38,9 @@ $errors = array();
 						if(filter_var($_POST['settings_url'], FILTER_VALIDATE_URL) == false) {
 							$errors[] = 'Wrong link!';
 						}
+/* 						if(version_compare(phpversion(), '7.1', '=')) {
+							$errors[] = 'PHP Version != 7.1!';
+						} */
 
 						if(empty($errors)) {
 							/* add "/" if the user didnt added it */
@@ -244,7 +247,7 @@ PHP;
 								echo '<div class="alert alert-warning">' . $error . '</div>';
 							}
 
-							echo '<a href="install.php"><button class="btn btn-primary">Назад</button></a>';
+							echo '<a href="install.php"><button class="btn btn-primary">Back</button></a>';
 						}
 					} else {
 					?>

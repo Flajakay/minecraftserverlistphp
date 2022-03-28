@@ -16,7 +16,7 @@ if(!empty($_POST)) {
 	$_POST['parent_id']					= (int)$_POST['parent_id'];
 	$_GET['category_id']				= (int)$_GET['category_id'];
 	$image = (!empty($_FILES['image']['name'])) ? true : false;
-	$allowed_extensions = array('jpg', 'jpeg');
+	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$required_fields = array('name', 'url');
 
 	/* Check for any errors on the cover image */
