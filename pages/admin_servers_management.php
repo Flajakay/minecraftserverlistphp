@@ -12,7 +12,6 @@ initiate_html_columns();
 				<th><? echo $language['forms']['server_status'] ?></th>
 				<th><? echo $language['forms']['server_address'] ?></th>
 				<th><? echo $language['forms']['server_connection_port'] ?></th>
-				<th><? echo $language['forms']['server_query_port'] ?></th>
 				<th><? echo $language['forms']['server_category'] ?></th>
 				<th><? echo $language['forms']['server_date_added'] ?></th>
 				<th><? echo $language['forms']['server_edit'] ?></th>

@@ -1,6 +1,5 @@
 <?php
 User::logged_in_redirect();
-
 if(!empty($_POST)) {
 	/* Clean some posted variables */
 	$_POST['username']	= filter_var($_POST['username'], FILTER_SANITIZE_STRING);
@@ -45,7 +44,7 @@ if(!empty($_POST)) {
 		/* Define some needed variables */ 
 	    $password 	= User::encrypt_password($_POST['username'], $_POST['password']);
 	    $active 	= ($settings->email_confirmation == 0) ? "1" : "0";
-	    $email_code = md5($_POST['email']);
+	    $email_code = md5($_POST['email'] . microtime());
 		$date = new DateTime();
 		$date = $date->format('Y-m-d H:i:s');
 		$param1 = $_POST['username'];

@@ -83,9 +83,9 @@ if(!empty($_POST)) {
 			
 			/* Resize */
 			if ($cover_file_extension != 'gif') {
-				resize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '180', '1200');
+				resize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '1200', '180');
 			} else {
-				gifResize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '180', '1200');
+				gifResize($cover_file_temp, 'user_data/covers/'.$cover_new_name, '1200', '180');
 			}
 			/* Execute query */
 			$database->query("UPDATE `users` SET `cover` = '{$cover_new_name}' WHERE `user_id` = {$account_user_id}");

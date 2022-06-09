@@ -4,7 +4,6 @@ ob_start();
 session_start();
 error_reporting(E_ALL);
 
-include 'classes/Query.php';
 include 'database/connect.php';
 include 'functions/language.php';
 include 'functions/general.php';
@@ -13,7 +12,6 @@ include 'classes/Pagination.php';
 include 'classes/Server.php';
 include 'classes/Servers.php';
 include 'classes/Csrf.php';
-include 'classes/PHPMailer/PHPMailerAutoload.php';
 
 /* Initialize variables */
 $errors 	= array();

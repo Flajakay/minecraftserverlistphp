@@ -1,5 +1,8 @@
 <?php
 
+use xPaw\MinecraftPing;
+use xPaw\MinecraftPingException;
+
 function send_mail($to, $from, $title, $message) {
 
 	$headers = "From: " . strip_tags($from) . "\r\n";
@@ -11,27 +14,27 @@ function send_mail($to, $from, $title, $message) {
 
 function sendmail($to, $from, $title, $message) {
 	global $settings;
-
-	if(!empty($settings->smtp_host) && !empty($settings->smtp_port) && !empty($settings->smtp_user) && !empty($settings->smtp_pass)) {
-
-		$mail = new PHPMailer;
+	require 'PHPMailer_new/PHPMailer.php';
+	require 'PHPMailer_new/SMTP.php';
+	require 'PHPMailer_new/Exception.php';
+	if(!empty($settings->smtphost) && !empty($settings->smtpport) && !empty($settings->smtpuser) && !empty($settings->smtppass)) {
+		$mail = new PHPMailer\PHPMailer\PHPMailer();
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
-		$mail->SMTPSecure = 'tls';
+		$mail->SMTPSecure = $settings->smtpsecure;
 		$mail->SMTPAuth = true;
 		$mail->isHTML(true);
 
-		$mail->Host = gethostbyname($settings->smtp_host);
-		$mail->Port = $settings->smtp_port;
-		$mail->Username = $settings->smtp_user;
-		$mail->Password = $settings->smtp_pass;
-
+		$mail->Host = $settings->smtphost;
+		$mail->Port = $settings->smtpport;
+		$mail->Username = $settings->smtpuser;
+		$mail->Password = $settings->smtppass;
+		
 		$mail->setFrom($settings->contact_email, $settings->title);
 		$mail->addReplyTo($settings->contact_email, $settings->title);
 		$mail->addAddress($to);
 		$mail->Subject = $title;
 		$mail->Body = $message;
-
 		if (!$mail->send()) {
 			send_mail($to, $settings->contact_email, $title, $message);
 		}
@@ -436,86 +439,66 @@ function output_notice($messages) {
 	}
 }
 
+
+function server_status($address, $port) {
+	global $database;
+	
+	require_once('core/classes/MinecraftPing.php');
+	require_once('core/classes/MinecraftPingException.php');
+	
+	$status = new MinecraftPing($address, $port);
+	$response = $status->Query( );
+	
+	if ($response !== false) {
+		$server_status = true;
+		
+	} else {
+		$server_status = false;
+	}
+	
+	return $server_status;
+	
+}
 function server_update($server) {
 	global $database;
-	global $settings;
-	global $language;
-	global $query;
-	if($server->cachetime > time() - $settings->cache_reset_time) {
-
-		$query->status = $server->status;
-
-		/* Decode the details content into an array */
-		$server->details = json_decode($server->details, true);
-
-		$info = array(
-					'general' => array(
-						'online_players' => array(
-							'name' => $language['server']['general_online_players'],
-							'icon' => 'user',
-							'value' => $server->online_players
-						),
-
-						'maximum_online_players' => array(
-							'name' => $language['server']['general_maximum_online_players'],
-							'icon' => 'user',
-							'value' => $server->maximum_online_players
-						),
-
-						'motd' => array(
-							'name' => $language['server']['motd'],
-							'icon' => 'tasks',
-							'value' => $server->motd
-						),
-
-						'server_version' => array(
-							'name' => $language['server']['server_version'],
-							'icon' => 'wrench',
-							'value' => $server->server_version
-						)
-					),
-
-					'players' => $server->details['players'],
-				);
-
-		$information = $info;
-		return $info;
-
+	
+	require_once('core/classes/MinecraftPing.php');
+	require_once('core/classes/MinecraftPingException.php');
+	
+	$status = new MinecraftPing($server->address, $server->connection_port);
+	$response = $status->Query( );
+	
+	if ($response !== false) {
+		foreach( $response as $InfoKey => $InfoValue ) {
+			if($InfoKey == 'version') {
+				$must_be_replaced = array("Waterfall", "BotFilter", "Requires MC");
+				$server_version = str_replace($must_be_replaced, "", $InfoValue['name']);
+				
+			}
+			else if($InfoKey == 'players') {
+				$players_max = $InfoValue['max'];
+				$players_online = $InfoValue['online'];
+			}
+		
+		}
+		$server_status = 1;
+	
 	} else {
-		
-		/* Query the server with a specific protocol */
-		$query = new Query($server->address, $server->query_port);
-		$information  = $query->query();
-
-		if(!$information) {
-			$info = $query->return_false();
-		} else {
-			$info = $information;
-		}
-
-
-		/* JSON Encode the Players & Details so they can be inserted into the database */
-		$details = array(
-			'players' => $info['players'],
-		);
-		$details = json_encode($details);
-
-		/* Update the cache depending on the  status */
-		if($query->status){
-			$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `motd` = ?, `server_version` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->server_id}");
-			$stmt->bind_param('ssssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $info['general']['motd']['value'], $info['general']['server_version']['value'], $details);
-		} else {
-			$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `details` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->server_id}");
-			$stmt->bind_param('ssss', $query->status, $info['general']['online_players']['value'], $info['general']['maximum_online_players']['value'], $details);
-		}
-		$stmt->execute();
-
-		/* Decode the MOTD */
-		$info['general']['motd']['value'] = minecraft::decodeMotd($info['general']['motd']['value']);
-		return $info;
-	}	
-		
+		$server_status = 0;
+		$players_online = 0;
+		$players_max = 0;
+		$server_version = "offline";
 		
 	}
+	$server->status = $server_status;
+	$server->online_players = $players_online;
+	$server->maximum_online_players = $players_max;
+	$server->server_version = $server_version;	
+		
+	$stmt = $database->prepare("UPDATE `servers` SET `status` = ?, `online_players` = ?, `maximum_online_players` = ?, `server_version` = ?, `cachetime` = unix_timestamp() WHERE `server_id` = {$server->server_id}");
+	$stmt->bind_param('ssss', $server_status, $players_online, $players_max, $server_version);
+	$stmt->execute();
+	
+}
 
 ?>

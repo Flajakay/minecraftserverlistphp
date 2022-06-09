@@ -4,7 +4,7 @@ include '../core/init.php';
 $_POST['limit'] = (int) $_POST['limit'];
 $results_limit = 25;
 
-$result = $database->query("SELECT `server_id`, `category_id`, `address`, `connection_port`, `query_port`, `date_added`, `private`, `active`, `highlight` FROM `servers` ORDER BY `server_id` DESC LIMIT {$_POST['limit']}, {$results_limit}");
+$result = $database->query("SELECT `server_id`, `category_id`, `address`, `connection_port`, `date_added`, `private`, `active`, `highlight` FROM `servers` ORDER BY `server_id` DESC LIMIT {$_POST['limit']}, {$results_limit}");
 while($servers_data = $result->fetch_object()) {	
 ?>
 <tr>
@@ -20,7 +20,6 @@ while($servers_data = $result->fetch_object()) {
 	</td>
 	<td><?php echo $servers_data->address; ?></td>
 	<td><?php echo $servers_data->connection_port; ?></td>
-	<td><?php echo $servers_data->query_port; ?></td>
 	<td><?php echo Server::get_category($servers_data->category_id); ?></td>
 	<td><?php echo $servers_data->date_added; ?></td>
 	<td><a href="admin/edit-server/<?php echo $servers_data->server_id; ?>">Edit</a></td>

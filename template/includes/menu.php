@@ -12,7 +12,9 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="servers"><?php echo $language['menu']['home']; ?></a></li>
+				<?php if($settings->premium) { ?>
 				<li><a href="purchase-highlight"><?php echo $language['menu']['purchase_highlight']; ?></a></li>
+				<?php } ?>
 				<?php if(User::logged_in() == false) { ?>
 				<li><a href="login"><?php echo $language['menu']['login']; ?></a></li>
 				<li><a href="register"><?php echo $language['menu']['register']; ?></a></li>
@@ -36,7 +38,7 @@
 						<li><a href="settings/password"><?php echo $language['menu']['change_password']; ?></a></li>
 					</ul>
 				</li>
-
+				
 				<?php if(User::is_admin($account_user_id)) { ?>
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $language['menu']['admin']; ?> <span class="caret"></span>
@@ -77,5 +79,3 @@
 		</div>
 	</div>
 </div>
-
-

@@ -130,7 +130,6 @@ PHP;
 								  `category_id` int(11) NOT NULL,
 								  `address` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
 								  `connection_port` int(11) NOT NULL,
-								  `query_port` int(11) NOT NULL,
 								  `private` int(11) NOT NULL,
 								  `active` int(11) NOT NULL,
 								  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -146,11 +145,10 @@ PHP;
 								  `status` int(11) NOT NULL,
 								  `online_players` int(11) NOT NULL,
 								  `maximum_online_players` int(11) NOT NULL,
-								  `motd` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
  								  `server_version` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
 								  `details` mediumtext COLLATE utf8_unicode_ci NOT NULL,
 								  `custom` varchar(5120) COLLATE utf8_unicode_ci NOT NULL,
-								  `cachetime` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+								  `cachetime` varchar(16) COLLATE utf8_unicode_ci NOT NULL,						
 								  PRIMARY KEY (`server_id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
@@ -159,6 +157,7 @@ PHP;
 								  `id` int(11) NOT NULL,
 								  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
 								  `url` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+								  `premium` int(11) NOT NULL DEFAULT '1',
 								  `meta_description` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
 								  `banned_words` varchar(2560) COLLATE utf8_unicode_ci NOT NULL,
 								  `analytics_code` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -188,6 +187,7 @@ PHP;
 								  `smtpport` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
 								  `smtpuser` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
 								  `smtppass` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+								  `smtpsecure` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 							");
@@ -234,8 +234,8 @@ PHP;
 								(1, 'admin', '365a4a0e748d76932d03cd46e62e4c3b4ca426c00c87bdf6ca9e692a0dc797224d151c3c9156a57c624e5bef533f0af9b8059726987c7929281a6b7acf7af8d4', 'admin@admin.com', '', '0', 'Admin', '', 'http://', '', '', '', 'test', 'test', 'test', 2, 1, 1, '-hax-', '-hax-', '')
 							");
 							$database->query("
-								INSERT INTO `settings` (`id`, `title`, `url`, `meta_description`, `banned_words`, `analytics_code`, `email_confirmation`, `servers_pagination`, `avatar_max_size`, `cover_max_size`, `contact_email`, `cache_reset_time`, `display_offline_servers`, `new_servers_visibility`, `top_ads`, `bottom_ads`, `side_ads`, `public_key`, `private_key`, `paypal_email`, `payment_currency`, `maximum_slots`, `per_day_cost`, `minimum_days`, `maximum_days`, `facebook`, `twitter`, `googleplus`, `smtphost`, `smtpport`, `smtpuser`, `smtppass`) VALUES
-								(1, '" . $_POST['settings_title'] . "', '" . $_POST['settings_url'] . "', '', '', '', 1, 15, 1000000, 1000000, 'no-reply@domain.com', 600, 1, 0, '', '', '', '6Le43tISAAAAADni-XsMzvEaStTluh6vSFmbhpfC', '6Le43tISAAAAANP9dDZb-ConEQRFxdyTpNFo09Q3', '', '', 0, '', 0, 0, '', '', '', '', '', '', '');
+								INSERT INTO `settings` (`id`, `title`, `url`, `premium`, `meta_description`, `banned_words`, `analytics_code`, `email_confirmation`, `servers_pagination`, `avatar_max_size`, `cover_max_size`, `contact_email`, `cache_reset_time`, `display_offline_servers`, `new_servers_visibility`, `top_ads`, `bottom_ads`, `side_ads`, `public_key`, `private_key`, `paypal_email`, `payment_currency`, `maximum_slots`, `per_day_cost`, `minimum_days`, `maximum_days`, `facebook`, `twitter`, `googleplus`, `smtphost`, `smtpport`, `smtpuser`, `smtppass`, `smtpsecure`) VALUES
+								(1, '" . $_POST['settings_title'] . "', '" . $_POST['settings_url'] . "', 1, '', '', '', 1, 15, 1000000, 1000000, 'no-reply@domain.com', 600, 1, 0, '', '', '', '6Le43tISAAAAADni-XsMzvEaStTluh6vSFmbhpfC', '6Le43tISAAAAANP9dDZb-ConEQRFxdyTpNFo09Q3', '', '', 0, '', 0, 0, '', '', '', '', '', '', '', '');
 							");
 
 							/* Display a success message */

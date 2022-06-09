@@ -83,6 +83,8 @@ include 'template/includes/modals/purchase_highlight.php';
 
 			/* Store some variables */
 			var server_id = $('[name=server_id]').val();
+			console.log(server_id);
+
 			var highlighted_days = $('[name=highlighted_days]').val();
 			var per_day_cost = <?php echo $settings->per_day_cost; ?>;
 			var final_cost = (per_day_cost * highlighted_days).toFixed(2);

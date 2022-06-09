@@ -30,10 +30,11 @@ if(!empty($_POST)) {
 	$_POST['smtp_port']					= filter_var($_POST['smtp_port'], FILTER_SANITIZE_STRING);
 	$_POST['smtp_user']					= filter_var($_POST['smtp_user'], FILTER_SANITIZE_STRING);
 	$_POST['smtp_pass']					= filter_var($_POST['smtp_pass'], FILTER_SANITIZE_STRING);
+
 	/* Prepare the statement and execute query */
 	
-	$stmt = $database->prepare("UPDATE `settings` SET `title` = ?, `meta_description` = ?, `analytics_code` = ?, `banned_words` = ?, `email_confirmation` = ?, `servers_pagination` = ?, `avatar_max_size` = ?, `cover_max_size` = ?, `contact_email` = ?, `cache_reset_time` = ?, `display_offline_servers` = ?, `new_servers_visibility` = ?, `top_ads` = ?, `bottom_ads` = ?, `side_ads` = ?, `public_key` = ?, `private_key` = ?, `paypal_email` = ?, `payment_currency` = ?, `maximum_slots` = ?, `per_day_cost` = ?, `minimum_days` = ?, `maximum_days` = ?, `facebook` = ?, `twitter` = ?, `googleplus` = ?, `smtphost` = ?, `smtpport` = ?, `smtpuser` = ?, `smtppass` = ? WHERE `id` = 1");
-	$stmt->bind_param('ssssssssssssssssssssssssssssss', $_POST['title'], $_POST['meta_description'], $_POST['analytics_code'], $_POST['banned_words'], $_POST['email_confirmation'], $_POST['servers_pagination'], $_POST['avatar_max_size'], $_POST['cover_max_size'], $_POST['contact_email'], $_POST['cache_reset_time'], $_POST['display_offline_servers'], $_POST['new_servers_visibility'], $_POST['top_ads'], $_POST['bottom_ads'], $_POST['side_ads'], $_POST['public_key'], $_POST['private_key'], $_POST['paypal_email'], $_POST['payment_currency'], $_POST['maximum_slots'], $_POST['per_day_cost'], $_POST['minimum_days'], $_POST['maximum_days'], $_POST['facebook'], $_POST['twitter'], $_POST['googleplus'], $_POST['smtp_host'], $_POST['smtp_port'], $_POST['smtp_user'], $_POST['smtp_pass']);
+	$stmt = $database->prepare("UPDATE `settings` SET `title` = ?, `meta_description` = ?, `analytics_code` = ?, `banned_words` = ?, `email_confirmation` = ?, `servers_pagination` = ?, `avatar_max_size` = ?, `cover_max_size` = ?, `contact_email` = ?, `cache_reset_time` = ?, `display_offline_servers` = ?, `new_servers_visibility` = ?, `top_ads` = ?, `bottom_ads` = ?, `side_ads` = ?, `public_key` = ?, `private_key` = ?, `paypal_email` = ?, `payment_currency` = ?, `maximum_slots` = ?, `per_day_cost` = ?, `minimum_days` = ?, `maximum_days` = ?, `facebook` = ?, `twitter` = ?, `googleplus` = ?, `smtphost` = ?, `smtpport` = ?, `smtpuser` = ?, `smtppass` = ?,`smtpsecure` = ?  WHERE `id` = 1");
+	$stmt->bind_param('sssssssssssssssssssssssssssssss', $_POST['title'], $_POST['meta_description'], $_POST['analytics_code'], $_POST['banned_words'], $_POST['email_confirmation'], $_POST['servers_pagination'], $_POST['avatar_max_size'], $_POST['cover_max_size'], $_POST['contact_email'], $_POST['cache_reset_time'], $_POST['display_offline_servers'], $_POST['new_servers_visibility'], $_POST['top_ads'], $_POST['bottom_ads'], $_POST['side_ads'], $_POST['public_key'], $_POST['private_key'], $_POST['paypal_email'], $_POST['payment_currency'], $_POST['maximum_slots'], $_POST['per_day_cost'], $_POST['minimum_days'], $_POST['maximum_days'], $_POST['facebook'], $_POST['twitter'], $_POST['googleplus'], $_POST['smtp_host'], $_POST['smtp_port'], $_POST['smtp_user'], $_POST['smtp_pass'], $_POST['smtp_secure']);
 	$stmt->execute();  
 	$stmt->close();
 
@@ -119,7 +120,8 @@ initiate_html_columns();
 				<p class="help-block"><?php echo $language['forms']['settings_servers_pagination_help']; ?></p>
 				<input type="text" name="servers_pagination" class="form-control" value="<?php echo $settings->servers_pagination; ?>" />
 			</div>
-
+			
+			
 			<div class="checkbox">
 				<label>
 					<?php echo $language['forms']['settings_new_servers_visibility']; ?><input type="checkbox" name="new_servers_visibility" <?php if($settings->new_servers_visibility) echo 'checked'; ?>>
@@ -229,7 +231,11 @@ initiate_html_columns();
 				<label><?php echo $language['forms']['settings_smtp_pass']; ?></label>
 				<input type="text" name="smtp_pass" class="form-control" value="<?php echo $settings->smtppass; ?>" />
 			</div>
-
+			
+			<div class="form-group">
+				<label><?php echo $language['forms']['settings_smtp_secure']; ?></label>
+				<input type="text" name="smtp_secure" class="form-control" value="<?php echo $settings->smtpsecure; ?>" />
+			</div>
 		</div>
 
 		<div class="form-group">

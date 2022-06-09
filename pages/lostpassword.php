@@ -16,7 +16,7 @@ if(!empty($_POST)) {
 	if(empty($_SESSION['error'])) {
 		/* Define some variables */
 		$user_id 			= User::x_to_y('email', 'user_id', $_POST['email']);
-		$lost_password_code = md5($_POST['email'] + microtime());
+		$lost_password_code = md5($_POST['email'] . microtime());
 
 		/* Update the current activation email */
 		$database->query("UPDATE `users` SET `lost_password_code` = '{$lost_password_code}' WHERE `user_id` = {$user_id}");

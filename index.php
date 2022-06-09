@@ -13,7 +13,13 @@ if(isset($_GET['page'])) {
 		include 'pages/notfound.php';
 	}
 } else {
-	include 'pages/home.php';
+	if ($settings->premium){
+		include 'pages/home.php';
+	} else {
+		include 'pages/servers.php';
+
+	}
+	
 }
 
 include 'template/overall_footer.php';

@@ -11,6 +11,7 @@ class Servers {
 	public $version_options;
 	public $no_servers;
 
+
 	public function __construct($category_id = false) {
 		global $database;
 		global $settings;
@@ -121,6 +122,8 @@ class Servers {
 		if($this->server_results < 1) $_SESSION['info'][] = $this->no_servers;
 		
 		/* Display the servers */
+		
+		
 		while($server = $result->fetch_object()) {
 			server_update($server);
 
@@ -130,12 +133,12 @@ class Servers {
 
 			/* Store the status into a variable */
 			$server->status_text = ($server->status) ? $language['server']['status_online'] : $language['server']['status_offline'];
-
-			/* Check if there is any image uploaded, if not, display default */
-			$server->image = (empty($server->image)) ? 'default.jpg' : $server->image;
 			
-		?>
+			/* Check if there is any image uploaded, if not, display default */
+			$server->image = (empty($server->image)) ? 'default.jpg' : $server->image;		
 
+		?>
+			
 		<div class="panel panel-default">
 			<div class="panel-body<?php if($server->highlight) echo ' vip-shadow'; ?>" style="padding: 10px;">
 
@@ -166,13 +169,14 @@ class Servers {
 
 								if($server->private)
 									echo $language['server']['private'];
-
-								echo '<div class="input-group input-group-sm" style="width: 100%;">';
-										echo '<span class="input-group-addon input-label-' . strtolower($server->status_text) . '">' . $server->status_text . '</span>';
-										echo '<input type="text" class="form-control" value="' . $server->address . ":" . $server->connection_port . '">';
-								echo '</div>';
 								
 							}
+								echo '<div class="input-group input-group-sm" style="width: 100%;">';
+								echo '<span class="input-group-addon input-label-' . strtolower($server->status_text) . '">' . $server->status_text . '</span>';
+								if ($server->connection_port != '25565' || preg_match('/^[0-9.]+$/', $server->address)) {
+									echo '<input type="text" class="form-control" value="' . $server->address . ":" . $server->connection_port . '">';
+								} else echo '<input type="text" class="form-control" value="' . $server->address . '">';
+								echo '</div>';
 							?>
 						</td>
 					</tr>
@@ -240,13 +244,17 @@ class Servers {
 					</ul>
 				</li>
 
+				<?php 
+				global $settings;
+				if($settings->premium) { ?>
 				<li class="dropdown active">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $language['misc']['filter_highlight']; ?><b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="<?php echo $this->pagination->link . $filter_highlight . '&filter_highlight=1' ?>"><?php echo $language['misc']['filter_yes']; ?></a></li>
 						<li><a href="<?php echo $this->pagination->link . $filter_highlight . '&filter_highlight=0' ?>"><?php echo $language['misc']['filter_no']; ?></a></li>
 					</ul>
-				</li>
+				</li>	
+				<?php } ?>
 
 				<li class="dropdown active">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $language['misc']['filter_status']; ?><b class="caret"></b></a>

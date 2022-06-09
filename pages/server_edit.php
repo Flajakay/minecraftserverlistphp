@@ -47,8 +47,9 @@ if(!empty($_POST)) {
 	/* Define some variables */
 	$name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
 	$address = filter_var($_POST['address'], FILTER_SANITIZE_STRING);
+	$address_splited = explode(":", $address);
+	$address = $address_splited[0];
 	$connection_port = (int) $_POST['connection_port'];
-	$query_port = (int) $_POST['query_port'];
 	$category_id = (int) $_POST['category_id'];
 	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$image = (empty($_FILES['image']['name']) == false) ? true : false;
@@ -119,8 +120,8 @@ if(!empty($_POST)) {
 
 		} 
 
-		$stmt = $database->prepare("UPDATE `servers` SET `name` = ?, `address` = ?, `connection_port` = ?, `query_port` = ?, `category_id` = ?, `country_code` = ?, `youtube_id` = ?, `website` = ?, `description` = ?, `custom` = ? WHERE `server_id` = {$server->data->server_id}");
-		$stmt->bind_param('ssssssssss', $name, $address, $connection_port, $query_port, $category_id, $country_code, $youtube_id, $website, $description, $custom);
+		$stmt = $database->prepare("UPDATE `servers` SET `name` = ?, `address` = ?, `connection_port` = ?, `category_id` = ?, `country_code` = ?, `youtube_id` = ?, `website` = ?, `description` = ?, `custom` = ? WHERE `server_id` = {$server->data->server_id}");
+		$stmt->bind_param('sssssssss', $name, $address, $connection_port, $category_id, $country_code, $youtube_id, $website, $description, $custom);
 		$stmt->execute();
 
 		/* Set a success message */
@@ -164,11 +165,6 @@ initiate_html_columns();
 	<div class="form-group">
 		<label><?php echo $language['forms']['server_connection_port']; ?></label>
 		<input type="text" name="connection_port" class="form-control" value="<?php echo $server->data->connection_port; ?>" />
-	</div>
-
-	<div class="form-group">
-		<label><?php echo $language['forms']['server_query_port']; ?></label>
-		<input type="text" name="query_port" class="form-control" value="<?php echo $server->data->query_port; ?>" />
 	</div>
 
 	<div class="form-group">

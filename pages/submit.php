@@ -2,14 +2,15 @@
 User::check_permission(0);
 
 $address =  $name = $country_code = $youtube_link = $website = $description = null;
-$connection_port = $query_port = 25565;
+$connection_port = 25565;
 
 if(!empty($_POST)) {
 
 	/* Define some variables */
 	$address = filter_var($_POST['address'], FILTER_SANITIZE_STRING);
+	$address_splited = explode(":", $address);
+	$address = $address_splited[0];
 	$connection_port = (int) $_POST['connection_port'];
-	$query_port = (int) $_POST['query_port'];
 	$date = new DateTime();
 	$date = $date->format('Y-m-d H:i:s');
 	$active = $status = '1';
@@ -23,7 +24,7 @@ if(!empty($_POST)) {
 	$description = $_POST['description'];
 	
 	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
-	$required_fields = array('address', 'connection_port', 'query_port', 'category_id');
+	$required_fields = array('address', 'connection_port', 'category_id');
 
 	/* Get category data */
 	$category = new StdClass;
@@ -42,25 +43,22 @@ if(!empty($_POST)) {
 		$category = new StdClass;
 		$category->exists = false;
 	}
-
+	
 	/* If the category doesn't exist, set an error message.If it exists, continue with the checks */
 	if(!$category->exists) {
 		$_SESSION['error'][] = $language['errors']['category_not_found'];
 	} else {
 
 		/* Query the server with a specific protocol */
-		$query = new Query($address, $query_port);
-		$info  = $query->query();
+		
+		$info  = server_status($address, $connection_port);
 
-		if(!$info && $query->status) {
-			$_SESSION['error'][] = $language['errors']['server_no_data'];
-		} else 
-		if(!$info && !$query->status) {
+		if(!$info) {
 			$_SESSION['error'][] = $language['errors']['server_offline'];
 		}
 
-	}
-
+	  }
+	
 	/* Check for the required fields */
 	foreach($_POST as $key=>$value) {
 		if(empty($value) && in_array($key, $required_fields) == true) {
@@ -120,11 +118,9 @@ if(!empty($_POST)) {
 		$image_name = ($image == true) ? $image_new_name : '';
 
 		/* Add the server to the database as private */
-		//$stmt = $database->prepare("INSERT INTO `servers` (`user_id`, `category_id`, `address`, `connection_port`, `query_port`, `private`, `active`, `status`, `date_added`, `image`, `name`, `country_code`, `youtube_id`, `website`, `description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
-		$stmt = $database->prepare("INSERT INTO `servers` (`server_id`, `user_id`, `category_id`, `address`, `connection_port`, `query_port`, `private`, `active`, `name`, `description`, `image`, `website`, `country_code`, `youtube_id`, `date_added`, `highlight`, `votes`, `favorites`, `status`, `online_players`, `maximum_online_players`, `motd`, `server_version`, `details`, `custom`, `cachetime`)
-		VALUES (NULL, $account_user_id, $category->category_id, '$address', $connection_port, $query_port, '1', $active, '$name', '$description', '$image_name', '$website', '$country_code', '$youtube_id', '$date', '0', '0', '0', '1', '0', '0', $status, '', '', '', '')");
-		//$stmt->bind_param('sssssssssssssss',  $account_user_id, $category->category_id, $address, $connection_port, $query_port, $private, $active, $status, $date, $image_name, $name, $country_code, $youtube_id, $website, $description);
+		$stmt = $database->prepare("INSERT INTO `servers` (`server_id`, `user_id`, `category_id`, `address`, `connection_port`, `private`, `active`, `name`, `description`, `image`, `website`, `country_code`, `youtube_id`, `date_added`, `highlight`, `votes`, `favorites`, `status`, `online_players`, `maximum_online_players`, `server_version`, `details`, `custom`, `cachetime`)
+		VALUES (NULL, $account_user_id, $category->category_id, '$address', $connection_port, '1', $active, '$name', '$description', '$image_name', '$website', '$country_code', '$youtube_id', '$date', '0', '0', '0', '1', '0', '0', $status, '', '', '')");
 		$test = $stmt->execute();
 		$stmt->close();
 		
@@ -143,6 +139,7 @@ initiate_html_columns();
 ?>
 
 
+
 <h3><?php echo $language['headers']['submit']; ?></h3>
 
 <form action="" method="post" role="form" enctype="multipart/form-data">
@@ -155,12 +152,6 @@ initiate_html_columns();
 		<label><?php echo $language['forms']['server_connection_port']; ?> *</label>
 		<p class="help-block"><?php echo $language['forms']['server_connection_port_help']; ?></p>
 		<input type="text" name="connection_port" class="form-control" value="<?php echo $connection_port; ?>" />
-	</div>
-
-	<div class="form-group">
-		<label><?php echo $language['forms']['server_query_port']; ?> *</label>
-		<p class="help-block"><?php echo $language['forms']['server_query_port_help']; ?></p>
-		<input type="text" name="query_port" class="form-control" value="<?php echo $query_port; ?>" />
 	</div>
 
 	<div class="form-group">

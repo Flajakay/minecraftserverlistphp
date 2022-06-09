@@ -33,7 +33,7 @@ if($server->data->private) echo output_notice($language['server']['private']);
 $result = $database->query("SELECT `id` FROM `points` WHERE `type` = 0 AND `server_id` = {$server->data->server_id} AND `ip` = '{$_SERVER['REMOTE_ADDR']}' AND `timestamp` > UNIX_TIMESTAMP(NOW() - INTERVAL 1 DAY)");
 if(!$result->num_rows) $database->query("INSERT INTO `points` (`type`, `server_id`, `ip`, `timestamp`) VALUES (0, {$server->data->server_id}, '{$_SERVER['REMOTE_ADDR']}', UNIX_TIMESTAMP())");
 
-$info = server_update($server->data);
+server_update($server->data);
 
 initiate_html_columns();
 
@@ -63,11 +63,6 @@ initiate_html_columns();
 
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#general" data-toggle="tab"><?php echo $language['server']['tab_general']; ?></a></li>
-			<?php if($info['players'] !== 'false' && !empty($info['players'][0])) { ?>
-			<li>
-				<a href="#players" data-toggle="tab"><?php echo $language['server']['tab_players']; ?></a>
-			</li>
-			<?php } ?>
 			<li><a href="#statistics" data-toggle="tab"><?php echo $language['server']['tab_statistics']; ?></a></li>
 			<li><a href="#blog_section" data-toggle="tab"><?php echo $language['server']['tab_blog']; ?></a></li>
 			<li><a href="#banners" data-toggle="tab"><?php echo $language['server']['tab_banners']; ?></a></li>
@@ -103,10 +98,6 @@ initiate_html_columns();
 							<td class="timeago" title="<?php if($server->data->cachetime > time() - $settings->cache_reset_time) echo @date("c", $server->data->cachetime); else echo date("c", time()); ?>"><?php if($server->data->cachetime > time() - $settings->cache_reset_time) echo @date("c", $server->data->cachetime); else echo date("c", time()); ?></td>
 						</tr>
 						<tr>
-							<td><span class="glyphicon glyphicon-bell"></span> <strong><?php echo $language['server']['general_previous_check']; ?></strong></td>
-							<td class="timeago" title="<?php echo @date('c', $server->data->cachetime); ?>"><?php echo @date("c", $server->data->cachetime); ?></td>
-						</tr>
-						<tr>
 							<td><span class="glyphicon glyphicon-cog"></span> <strong><?php echo $language['server']['general_category']; ?></strong></td>
 							<td><?php echo '<a href="category/' . $server->category->url . '">' . $server->category->name . '</a>'; ?></td>
 						</tr>
@@ -136,60 +127,24 @@ initiate_html_columns();
 							<td><a href="<?php echo $server->data->website; ?>"><?php echo $server->data->website; ?></a></td>
 						</tr>
 						<?php } ?>
-
-						<?php
-						/* Dynamic data for each server */
-						foreach($info['general'] as $key => $array) {
-							if($array['value'] !== 'false')
-								echo '
-								<tr>
-									<td>
-										<span class="glyphicon glyphicon-' . $array['icon'] . '"></span>
-										<strong>' . $array['name'] . '</strong>
-									</td>
-									<td>' . $array['value'] . '</td>
-								</tr>
-								';
-						}
-						?>
+						<tr>
+							<td><span class="glyphicon glyphicon-user"></span> <strong><?php echo $language['server']['general_online_players']; ?></strong></td>
+							<td><?php echo $server->data->online_players; ?></td>
+						</tr>
+						<tr>
+							<td><span class="glyphicon glyphicon-user"></span> <strong><?php echo $language['server']['general_maximum_online_players']; ?></strong></td>
+							<td><?php echo $server->data->maximum_online_players; ?></td>
+						</tr>
+						<tr>
+							<td><span class="glyphicon glyphicon-wrench"></span> <strong><?php echo $language['server']['server_version']; ?></strong></td>
+							<td><?php echo $server->data->server_version; ?></td>
+						</tr>
 					</tbody>
 				</table>
 
 
 			</div>
 
-			<?php if($info['players'] !== 'false' && !empty($info['players'][0])) { ?>
-			<div class="tab-pane fade" id="players">
-				<table class="table table-bordered">
-				<thead>
-					<tr>
-						<?php
-						/* Get the available fields */
-						$fields = array_keys($info['players'][0]);
-
-						/* Display the fields */
-						foreach($fields as $field) {
-							echo '<td><strong>' . $field . '</strong></td>';
-						}
-						?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					/* Display the players based on the fields */
-					foreach($info['players'] as $key => $value) {
-						echo '<tr>';
-						foreach($fields as $field) {
-							echo '<td>' . $value[$field] . '</td>';
-						}
-						echo '</tr>';
-					}
-					?>
-				</tbody>
-				</table>
-			</div>
-
-			<?php } ?>
 
 			<!-- Statistics -->
 			<div class="tab-pane fade" id="statistics">
@@ -326,7 +281,6 @@ initiate_html_columns();
 
 	</div>
 </div>
-
 
 <script>
 $(document).ready(function() {
