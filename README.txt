@@ -1,5 +1,3 @@
-
-
 LOGIN: admin
 PASSWORD: admin
 
