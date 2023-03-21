@@ -92,6 +92,6 @@ $(document).ready(function() {
 <script type="text/javascript">
 	$('#editorincluded').each(function () {
 		var editor = new Jodit(this, {"buttons": "bold,italic,underline,strikethrough,eraser,ul,ol,indent,outdent,left,font,fontsize,paragraph,brush,superscript,subscript,image,video"});
-		editor.value = '<?php echo $server->data->description; ?>';
+		editor.value = '';
 	});
 </script>

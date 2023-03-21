@@ -19,6 +19,7 @@ $language['headers']['edit_server_details']				= "Edit server details";
 $language['headers']['edit_category']					= "Edit category";
 $language['headers']['submit']							= "Submit";
 $language['headers']['purchase_highlight']				= "Purchase highlight";
+$language['headers']['contact']							= "Contact";
 
 $language['errors']['username_length']					= "Username must be not shorter than 3 but not longer than 32!";
 $language['errors']['user_exists']	   	 				= "Username <strong>%s</strong> exists!";
@@ -222,6 +223,11 @@ $language['misc']['contact'] = "Contact";
 $language['misc']['privacy-policy'] = "Privacy policy";
 $language['misc']['terms-of-service'] = "Terms of service";
 
+
+$language['forms']['name'] = "Name";
+$language['forms']['email'] = "Email";
+$language['forms']['subject'] = "Subject";
+$language['forms']['message'] = "Message";
 $language['forms']['income'] = "Income";
 $language['forms']['type'] = "Type";
 $language['forms']['date'] = "Date";

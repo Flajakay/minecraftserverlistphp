@@ -51,10 +51,9 @@ if(!empty($_POST)) {
 		$param2 = $_POST['email'];
 		$param3 = $_POST['name'];
 		/* Add the user to the database */
-
 //		$stmt = $database->prepare("INSERT INTO `users` (`username`, `password`, `email`, `email_activation_code`, `name`, `active`, `ip`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 		$stmt = $database->prepare("INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `email_activation_code`, `lost_password_code`, `name`, `about`, `website`, `location`, `avatar`, `cover`, `facebook`, `twitter`, `googleplus`, `type`, `active`, `private`, `ip`, `date`, `last_activity`) 
-		VALUES (NULL, '$param1', '$password', '$param2', '$email_code', '', '$param3', '', '', '', '', '', '', '', '', '0', '0', '0', '', '$date', '')");
+		VALUES (NULL, '$param1', '$password', '$param2', '$email_code', '', '$param3', '', '', '', '', '', '', '', '', '0', '$active', '0', '', '$date', '')");
 		
 //		$stmt->bind_param('ssssssss', $_POST['username'], $password, $_POST['email'], $email_code, $_POST['name'], $active, $_SERVER['REMOTE_ADDR'], $date);
 		$stmt->execute();

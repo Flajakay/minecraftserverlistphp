@@ -1,116 +1,63 @@
 ﻿<?php
+
+
+if(!empty($_POST)) {
+	$name = $_POST['name'];
+	$subject = $_POST['subject'];
+	$email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+	$message = $_POST['message'];
+
+	$required_fields = array('name', 'subject', 'email', 'message');
+	
+	foreach($_POST as $key=>$value) {
+		if(empty($value) && in_array($key, $required_fields) == true) {
+			$_SESSION['error'][] = $language['errors']['marked_fields_empty'];
+			break 1;
+		}
+	}
+	if(empty($_SESSION['error'])) {
+		sendmail($settings->contact_email, $email, $subject, $message);
+		
+		$_SESSION['success'][] = $language['messages']['contact'];
+	}
+	
+display_notifications();
+
+}
+
 initiate_html_columns();
 
-
-
-require_once './vendor/autoload.php';
-
-$helperLoader = new SplClassLoader('Helpers', './vendor');
-$mailLoader   = new SplClassLoader('SimpleMail', './vendor');
-
-$helperLoader->register();
-$mailLoader->register();
-
-use Helpers\Config;
-use SimpleMail\SimpleMail;
-
-$config = new Config;
-$config->load('./config/config.php');
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name    = stripslashes(trim($_POST['form-name']));
-    $email   = stripslashes(trim($_POST['form-email']));
-    $subject = stripslashes(trim($_POST['form-subject']));
-    $message = stripslashes(trim($_POST['form-message']));
-    $pattern = '/[\r\n]|Content-Type:|Bcc:|Cc:/i';
-
-    if (preg_match($pattern, $name) || preg_match($pattern, $email) || preg_match($pattern, $subject)) {
-        die("Header injection detected");
-    }
-
-    $emailIsValid = filter_var($email, FILTER_VALIDATE_EMAIL);
-
-    if ($name && $email && $emailIsValid && $subject && $message) {
-        $mail = new SimpleMail();
-
-        $mail->setTo($config->get('emails.to'));
-        $mail->setFrom($config->get('emails.from'));
-        $mail->setSender($name);
-        $mail->setSenderEmail($email);
-        $mail->setSubject($config->get('subject.prefix') . ' ' . $subject);
-
-        $body = "
-        <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
-        <html>
-            <head>
-                <meta charset=\"utf-8\">
-            </head>
-            <body>
-                <h1>{$subject}</h1>
-                <p><strong>{$config->get('fields.name')}:</strong> {$name}</p>
-                <p><strong>{$config->get('fields.email')}:</strong> {$email}</p>
-                <p><strong>{$config->get('fields.message')}:</strong> {$message}</p>
-            </body>
-        </html>";
-
-        $mail->setHtml($body);
-        $mail->send();
-
-        $emailSent = true;
-    } else {
-        $hasError = true;
-    }
-}
 ?>
-<body>
-    <?php if(!empty($emailSent)): ?>
-        <div class="col-md-6 col-md-offset-3">
-            <div class="alert alert-success text-center"><?php echo $config->get('messages.success'); ?></div>
-        </div>
-    <?php else: ?>
-        <?php if(!empty($hasError)): ?>
-        <div class="col-md-5 col-md-offset-4">
-            <div class="alert alert-danger text-center"><?php echo $config->get('messages.error'); ?></div>
-        </div>
-        <?php endif; ?>
-    <div class="col-md-7 col-md-offset-2">
 
-        <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" enctype="application/x-www-form-urlencoded" id="contact-form" class="form-horizontal" method="post">
-            <div class="form-group">
-                <label for="form-name" class="col-lg-2 control-label"><?php echo $config->get('fields.name'); ?></label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="form-name" name="form-name" placeholder="<?php echo $config->get('fields.name'); ?>" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="form-email" class="col-lg-2 control-label"><?php echo $config->get('fields.email'); ?></label>
-                <div class="col-lg-10">
-                    <input type="email" class="form-control" id="form-email" name="form-email" placeholder="<?php echo $config->get('fields.email'); ?>" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="form-subject" class="col-lg-2 control-label"><?php echo $config->get('fields.subject'); ?></label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="form-subject" name="form-subject" placeholder="<?php echo $config->get('fields.subject'); ?>" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="form-message" class="col-lg-2 control-label"><?php echo $config->get('fields.message'); ?></label>
-                <div class="col-lg-10">
-                    <textarea class="form-control" rows="3" id="form-message" name="form-message" placeholder="<?php echo $config->get('fields.message'); ?>" required></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10">
-                    <button type="submit" class="btn btn-default"><?php echo $config->get('fields.btn-send'); ?></button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <?php endif; ?>
 
-    <script type="text/javascript" src="public/js/contact-form.js"></script>
-    <script type="text/javascript">
-        new ContactForm('#contact-form');
-    </script>
-</body>
+
+<h3><?php echo $language['headers']['contact']; ?></h3>
+<form action="" method="post" role="form" enctype="multipart/form-data">
+
+	<div class="form-group">
+		<label><?php echo $language['forms']['name']; ?> *</label>
+		<input type="text" name="name" class="form-control" value="" />
+	</div>
+
+
+	<div class="form-group">
+		<label><?php echo $language['forms']['email']; ?> *</label>
+		<input type="text" name="email" class="form-control" value="" />
+	</div>
+
+	<div class="form-group">
+		<label><?php echo $language['forms']['subject']; ?> *</label>
+		<input type="text" name="subject" class="form-control" value="" />
+	</div>
+	
+
+	<div class="form-group">
+		<label><?php echo $language['forms']['message']; ?> *</label>
+		<textarea name="message" class="form-control" rows="6"></textarea>
+	</div>
+	
+	<div class="form-group">
+		<button type="submit" name="submit" class="btn btn-default col-lg-4"><?php echo $language['forms']['submit']; ?></button><br /><br />
+	</div>
+
+</form>

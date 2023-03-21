@@ -273,7 +273,7 @@ PHP;
 
 						<div class="form-group">
 							<label> URL </label>
-							<p class="help-block">e.g: http://domain.com/directory/</p>
+							<p class="help-block">e.g: http://domain.com/directory/ ; If you are using HTTPS on you domain -> https://domain.com/directory/</p>
 							<input type="text" class="form-control" name="settings_url" />
 						</div>
 						<div class="form-group">
@@ -289,7 +289,7 @@ PHP;
 				</div>
 
 				<div class="panel-footer">
-					<span>Developed by: <a href="dev.mine-craft.net">Flajakay</a></span>
+					<span>Developed by: Flajakay</span>
 				</div>
 
 			</div>

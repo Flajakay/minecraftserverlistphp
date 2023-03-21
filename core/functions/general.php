@@ -294,6 +294,12 @@ function resize($file_name, $path, $width, $height, $center = false) {
 	imagedestroy($tmp);
 }
 
+function get_description($data)
+{
+	$answer = strip_tags($data);
+	return (strlen($answer) > 150) ? substr($answer, 0, 150) . '...' : $answer;
+}
+
 function formatBytes($bytes, $precision = 2) {  
     $kilobyte = 1024;
     $megabyte = $kilobyte * 1024;
@@ -449,14 +455,8 @@ function server_status($address, $port) {
 	$status = new MinecraftPing($address, $port);
 	$response = $status->Query( );
 	
-	if ($response !== false) {
-		$server_status = true;
-		
-	} else {
-		$server_status = false;
-	}
-	
-	return $server_status;
+	return ($response !== false) ? true : false;
+
 	
 }
 function server_update($server) {

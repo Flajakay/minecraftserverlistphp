@@ -26,6 +26,17 @@ if(!empty($_POST)) {
 	$allowed_extensions = array('jpg', 'jpeg', 'png', 'gif');
 	$required_fields = array('address', 'connection_port', 'category_id');
 
+	$votifier_public_key = filter_var($_POST['votifier_public_key'], FILTER_SANITIZE_STRING);
+	$votifier_ip = filter_var($_POST['votifier_ip'], FILTER_SANITIZE_STRING);
+	$votifier_port = (int) $_POST['votifier_port'];
+	$custom = json_encode(
+		array(
+			'votifier_public_key' => $votifier_public_key,
+			'votifier_ip' => $votifier_ip,
+			'votifier_port' => $votifier_port
+			)
+		);
+		
 	/* Get category data */
 	$category = new StdClass;
 
@@ -120,7 +131,7 @@ if(!empty($_POST)) {
 		/* Add the server to the database as private */
 		
 		$stmt = $database->prepare("INSERT INTO `servers` (`server_id`, `user_id`, `category_id`, `address`, `connection_port`, `private`, `active`, `name`, `description`, `image`, `website`, `country_code`, `youtube_id`, `date_added`, `highlight`, `votes`, `favorites`, `status`, `online_players`, `maximum_online_players`, `server_version`, `details`, `custom`, `cachetime`)
-		VALUES (NULL, $account_user_id, $category->category_id, '$address', $connection_port, '1', $active, '$name', '$description', '$image_name', '$website', '$country_code', '$youtube_id', '$date', '0', '0', '0', '1', '0', '0', $status, '', '', '')");
+		VALUES (NULL, $account_user_id, $category->category_id, '$address', $connection_port, '1', $active, '$name', '$description', '$image_name', '$website', '$country_code', '$youtube_id', '$date', '0', '0', '0', '1', '0', '0', '$status', '', '$custom', '')");
 		$test = $stmt->execute();
 		$stmt->close();
 		
@@ -208,7 +219,23 @@ initiate_html_columns();
 		<label><?php echo $language['forms']['server_description']; ?></label>
 		<textarea id="editorincluded" name="description" class="form-control" rows="6"></textarea>
 	</div>
+	
+	<div class="form-group">
+		<label><?php echo $language['forms']['server_votifier_public_key']; ?></label>
+		<p class="help-block"><?php echo $language['forms']['server_votifier_public_key_help']; ?></p>
+		<textarea name="votifier_public_key" class="form-control" rows="6"></textarea>
+	</div>
 
+	<div class="form-group">
+		<label><?php echo $language['forms']['server_votifier_ip']; ?></label>
+		<p class="help-block"><?php echo $language['forms']['server_votifier_ip_help']; ?></p>
+		<input type="text" name="votifier_ip" class="form-control" value="" />
+	</div>
+
+	<div class="form-group">
+		<label><?php echo $language['forms']['server_votifier_port']; ?></label>
+		<input type="text" name="votifier_port" class="form-control" value="" />
+	</div>
 
 	<div class="form-group">
 		<button type="submit" name="submit" class="btn btn-default col-lg-4"><?php echo $language['forms']['submit']; ?></button><br /><br />

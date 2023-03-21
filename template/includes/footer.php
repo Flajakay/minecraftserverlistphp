@@ -13,4 +13,4 @@ foreach($languages as $language_name) {
 
 <br />
 
-<?php echo 'Copyright &copy; ' . date("Y") . ' ' . $settings->title . '. All rights reserved. Powered by <a href="http://dev.mine-craft.net">Flajakay</a>'; ?>
+<?php echo 'Copyright &copy; ' . date("Y") . ' ' . $settings->title . '. All rights reserved. Powered by Flajakay'; ?>

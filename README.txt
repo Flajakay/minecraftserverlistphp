@@ -1,8 +1,3 @@
-This is old code. Go to releases and download the latest versions.
-
-
-open config/config.php to setup the contact form
-
 LOGIN: admin
 PASSWORD: admin
 
@@ -18,7 +13,7 @@ initiate_html_columns();
 
 <Here goes your code>
 
-Then open .htaccess file and add new rule.
+Then open .htaccess and add new rule.
 
 RewriteRule ^test$ index.php?page=test
 

@@ -24,8 +24,8 @@ if(empty($profile_account->avatar)) {
 initiate_html_columns();
 
 ?>
-<div class="panel panel-default" <?php if(!empty($profile_account->cover)) echo 'style="max-height:180px;background: url(\'user_data/covers/' . $profile_account->cover . '\');"'; ?>>
- 	<div class="panel-body" style="position:relative;">
+<div class="panel panel-default">
+ 	<div class="panel-body" style="position:relative; <?php if(!empty($profile_account->cover)) echo 'max-height:180px;background: url(\'/user_data/covers/' . $profile_account->cover . '\');"'; ?>>
 
  		<table class="table-fixed-full" cellpadding="5">
  			<tr>
@@ -33,7 +33,7 @@ initiate_html_columns();
  					<img data-toggle="modal" data-target="#avatar" src="<?php echo $avatarThumb; ?>"  alt="Avatar" class="clickable img-circle" />
  				</td>
  				<td>
- 					<h1 class="shadow inline"><?php echo $profile_account->name; ?></h1>
+ 					<h1 class="shadow white"><?php echo $profile_account->name; ?></h1>
  					
 				 	<div class="navbar-social pull-right">
 			 			<?php 
