@@ -212,25 +212,25 @@ initiate_html_columns();
 					<textarea name="html_code" class="form-control" rows="3" cols="40"><a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_orange.png"></a></textarea>
 				</div>
 				<p> </p>
-				<a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_blue.png"></a>
+				<a target="_blank" href="<?php echo $linki ?>"><img src="<?php echo $settings->url?>/template/images/votebuttons/vote_blue.png"></a>
 				<p> </p>
 				<div class="form-group">
 					<textarea name="html_code" class="form-control" rows="3" cols="40"><a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_blue.png"></a></textarea>
 				</div>
 				<p> </p>
-				<a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_for_server_blue.png"></a>
+				<a target="_blank" href="<?php echo $linki ?>"><img src="<?php echo $settings->url?>/template/images/votebuttons/vote_for_server_blue.png"></a>
 				<p> </p>
 				<div class="form-group">
 					<textarea name="html_code" class="form-control" rows="3" cols="40"><a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_for_server_blue.png"></a></textarea>
 				</div>
 				<p> </p>
-				<a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_for_server_orange.png"></a>
+				<a target="_blank" href="<?php echo $linki ?>"><img src="<?php echo $settings->url?>/template/images/votebuttons/vote_for_server_orange.png"></a>
 				<p> </p>
 				<div class="form-group">
 					<textarea name="html_code" class="form-control" rows="3" cols="40"><a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote_for_server_orange.png"></a></textarea>
 				</div>
 				<p> </p>
-				<a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote.png"></a>
+				<a target="_blank" href="<?php echo $linki ?>"><img src="<?php echo $settings->url?>/template/images/votebuttons/vote.png"></a>
 				<p> </p>
 				<div class="form-group">
 					<textarea name="html_code" class="form-control" rows="3" cols="40"><a target="_blank" href="<?php echo $linki ?>"><img src="<?echo $settings->url?>/template/images/votebuttons/vote.png"></a></textarea>
