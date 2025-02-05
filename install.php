@@ -25,11 +25,12 @@ $errors = array();
 						$database_password  = $_POST['database_password'];
 						$database_name		= $_POST['database_name'];
 
-						$database = new mysqli($database_server, $database_user, $database_password, $database_name);
+						$database = mysqli_init();
+						mysqli_real_connect($database, $database_server, $database_user, $database_password, $database_name);
 						$connect_file = "core/database/connect.php";
 
 						/* Check for any errors */
-						if($database->connect_error) {
+						if(mysqli_connect_errno()) {
 							$errors[] = 'Failed to connect to database!';
 						}
 						if(!is_readable($connect_file) || !is_writable($connect_file)) {
@@ -38,9 +39,6 @@ $errors = array();
 						if(filter_var($_POST['settings_url'], FILTER_VALIDATE_URL) == false) {
 							$errors[] = 'Wrong link!';
 						}
-/* 						if(version_compare(phpversion(), '7.1', '=')) {
-							$errors[] = 'PHP Version != 7.1!';
-						} */
 
 						if(empty($errors)) {
 							/* add "/" if the user didnt added it */
@@ -58,17 +56,18 @@ $errors = array();
 \$DatabaseName   = "$database_name";
 
 // Connecting to the database
-\$database = new mysqli(\$DatabaseServer, \$DatabaseUser, \$DatabasePass, \$DatabaseName);
+\$database = mysqli_init();
+mysqli_real_connect(\$database, \$DatabaseServer, \$DatabaseUser, \$DatabasePass, \$DatabaseName);
 
 ?>
 PHP;
 							/* open, write and close */
-							$command = fopen($connect_file, w);
+							$command = fopen($connect_file, 'w');
 							fwrite($command, $connect_content);
 							fclose($command);
 
 							/* Add the tables to the database */
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `categories` (
 								  `category_id` int(11) NOT NULL AUTO_INCREMENT,
 								  `parent_id` int(11) NOT NULL,
@@ -81,7 +80,7 @@ PHP;
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
 
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `comments` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `server_id` int(11) NOT NULL,
@@ -93,7 +92,7 @@ PHP;
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
 
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `favorites` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) NOT NULL,
@@ -102,7 +101,7 @@ PHP;
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
 
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `points` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `type` int(11) NOT NULL,
@@ -112,7 +111,7 @@ PHP;
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 							");
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `reports` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) NOT NULL,
@@ -123,7 +122,7 @@ PHP;
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `servers` (
 								  `server_id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) NOT NULL,
@@ -152,7 +151,7 @@ PHP;
 								  PRIMARY KEY (`server_id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `settings` (
 								  `id` int(11) NOT NULL,
 								  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
@@ -191,7 +190,7 @@ PHP;
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 							");
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `users` (
 								  `user_id` int(11) NOT NULL AUTO_INCREMENT,
 								  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -217,7 +216,7 @@ PHP;
 								  PRIMARY KEY (`user_id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 							");
-							$database->query("
+							mysqli_query($database, "
 								CREATE TABLE IF NOT EXISTS `payments` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) NOT NULL,
@@ -229,11 +228,11 @@ PHP;
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 							");
-							$database->query("
+							mysqli_query($database, "
 								INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `email_activation_code`, `lost_password_code`, `name`, `about`, `website`, `location`, `avatar`, `cover`, `facebook`, `twitter`, `googleplus`, `type`, `active`, `private`, `ip`, `date`, `last_activity`) VALUES
 								(1, 'admin', '365a4a0e748d76932d03cd46e62e4c3b4ca426c00c87bdf6ca9e692a0dc797224d151c3c9156a57c624e5bef533f0af9b8059726987c7929281a6b7acf7af8d4', 'admin@admin.com', '', '0', 'Admin', '', 'http://', '', '', '', 'test', 'test', 'test', 2, 1, 1, '-hax-', '-hax-', '')
 							");
-							$database->query("
+							mysqli_query($database, "
 								INSERT INTO `settings` (`id`, `title`, `url`, `premium`, `meta_description`, `banned_words`, `analytics_code`, `email_confirmation`, `servers_pagination`, `avatar_max_size`, `cover_max_size`, `contact_email`, `cache_reset_time`, `display_offline_servers`, `new_servers_visibility`, `top_ads`, `bottom_ads`, `side_ads`, `public_key`, `private_key`, `paypal_email`, `payment_currency`, `maximum_slots`, `per_day_cost`, `minimum_days`, `maximum_days`, `facebook`, `twitter`, `googleplus`, `smtphost`, `smtpport`, `smtpuser`, `smtppass`, `smtpsecure`) VALUES
 								(1, '" . $_POST['settings_title'] . "', '" . $_POST['settings_url'] . "', 1, '', '', '', 1, 15, 1000000, 1000000, 'no-reply@domain.com', 600, 1, 0, '', '', '', '6Le43tISAAAAADni-XsMzvEaStTluh6vSFmbhpfC', '6Le43tISAAAAANP9dDZb-ConEQRFxdyTpNFo09Q3', '', '', 0, '', 0, 0, '', '', '', '', '', '', '', '');
 							");
