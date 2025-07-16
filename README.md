@@ -1,13 +1,5 @@
 ## Important Notice
-This project is currently undergoing a complete rewrite and modernization. The current PHP-based version will be replaced with a new, more efficient implementation.
-
-### What's Coming
-The new version will feature:
-- Node.js backend with Express
-- Bootstrap 5 frontend
-- PostgreSQL database for better data integrity and performance
-- Modern API architecture
-- Better scalability for handling thousands of servers
+This project is currently undergoing a complete rewrite and modernization. New version will be released by the end of July 2025. Current version is NOT recommended to use in production.
 
 ## OLD README:
 
