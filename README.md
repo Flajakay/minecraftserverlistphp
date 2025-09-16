@@ -1,5 +1,5 @@
 ## Important Notice
-This project is currently undergoing a complete rewrite and modernization. New version will be released by the end of July 2025. Current version is NOT recommended to use in production.
+This project is currently undergoing a complete rewrite and modernization in development branch. 
 
 ## OLD README:
 
