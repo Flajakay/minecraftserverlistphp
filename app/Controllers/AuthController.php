@@ -1,0 +1,227 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models\User;
+use App\Core\Auth;
+use App\Core\Database;
+use App\Core\Mail;
+use App\Models\Setting;
+use App\Core\SEO;
+use Exception;
+
+class AuthController
+{
+    public function showLogin()
+    {
+        if (isLoggedIn()) {
+            redirect('/');
+        }
+                
+        view('auth.login');
+    }
+
+    public function login()
+    {
+        $username = sanitize($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $remember = isset($_POST['remember']);
+
+        if (empty($username) || empty($password)) {
+            flash('error', 'Please fill all fields');
+            redirect('/login');
+        }
+
+        if (!User::isActive($username)) {
+            flash('error', 'Account is not active or blocked');
+            redirect('/login');
+        }
+
+        $user = Auth::attempt($username, $password);
+        if ($user) {
+            Auth::login($user, $remember);
+            flash('success', 'Welcome back!');
+            redirect('/');
+        }
+
+        flash('error', 'Invalid username or password');
+        redirect('/login');
+    }
+
+    public function showRegister()
+    {
+        if (isLoggedIn()) {
+            redirect('/');
+        }
+                
+        view('auth.register');
+    }
+
+    public function register()
+    {
+        $username = sanitize($_POST['username'] ?? '');
+        $email = sanitize($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $name = sanitize($_POST['name'] ?? '');
+
+        $errors = [];
+
+        if (strlen($username) < 3 || strlen($username) > 32) {
+            $errors[] = 'Username must be between 3 and 32 characters';
+        }
+
+        if (User::findByUsername($username)) {
+            $errors[] = 'Username already exists';
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Invalid email address';
+        }
+
+        if (User::findByEmail($email)) {
+            $errors[] = 'Email already registered';
+        }
+
+        if (strlen($password) < 6) {
+            $errors[] = 'Password must be at least 6 characters';
+        }
+
+        if (strlen($name) < 2 || strlen($name) > 32) {
+            $errors[] = 'Name must be between 2 and 32 characters';
+        }
+
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                flash('error', $error);
+            }
+            redirect('/register');
+        }
+
+        $activationCode = bin2hex(random_bytes(16));
+        
+        $userId = User::create([
+            'username' => $username,
+            'email' => $email,
+            'password' => $password,
+            'name' => $name,
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'email_activation_code' => $activationCode
+        ]);
+
+        if (setting('email_confirmation', 0)) {
+            try {
+                $activationUrl = url('/activate/' . urlencode($email) . '/' . $activationCode);
+                
+                Mail::create()
+                    ->to($email, $name)
+                    ->template('activation', [
+                        'name' => $name,
+                        'activationUrl' => $activationUrl
+                    ])
+                    ->send();
+                    
+                flash('success', lang('registered_successfuly'));
+            } catch (Exception $e) {
+                flash('error', lang('email_send_failed', 'Registration successful but activation email could not be sent.'));
+            }
+        } else {
+            Database::update('users', ['active' => 1], 'id = ?', [$userId]);
+            flash('success', lang('registration_complete', 'Registration successful! You can now login.'));
+        }
+        
+        redirect('/login');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        flash('success', 'You have been logged out');
+        redirect('/');
+    }
+
+    public function activate($email, $code)
+    {
+        if (User::activate($email, $code)) {
+            flash('success', 'Account activated successfully!');
+        } else {
+            flash('error', 'Invalid activation link');
+        }
+        
+        redirect('/login');
+    }
+
+    public function showLostPassword()
+    {
+        view('auth.lost-password');
+    }
+
+    public function sendResetLink()
+    {
+        $email = sanitize($_POST['email'] ?? '');
+        
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('error', lang('invalid_email'));
+            redirect('/lost-password');
+        }
+
+        $user = User::findByEmail($email);
+        if (!$user) {
+            flash('error', lang('email_doesnt_exist'));
+            redirect('/lost-password');
+        }
+
+        $code = bin2hex(random_bytes(16));
+        Database::update('users', ['lost_password_code' => $code], 'id = ?', [$user->id]);
+
+        try {
+            $resetUrl = url('/reset-password/' . urlencode($email) . '/' . $code);
+            
+            Mail::create()
+                ->to($email, $user->name)
+                ->template('reset-password', [
+                    'name' => $user->name,
+                    'resetUrl' => $resetUrl
+                ])
+                ->send();
+                
+            flash('success', lang('lostpassword'));
+        } catch (Exception $e) {
+            flash('error', lang('email_send_failed', 'Failed to send reset email. Please try again later.'));
+        }
+        
+        redirect('/lost-password');
+    }
+
+    public function resetPassword($email, $code)
+    {
+        $user = Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+        
+        if (!$user) {
+            flash('error', lang('invalid_reset_link'));
+            redirect('/login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            if (strlen($password) < 6) {
+                flash('error', lang('password_too_short'));
+                redirect("/reset-password/{$email}/{$code}");
+            }
+
+            if ($password !== $confirmPassword) {
+                flash('error', lang('passwords_doesnt_match'));
+                redirect("/reset-password/{$email}/{$code}");
+            }
+
+            User::updatePassword($user->id, $password);
+            Database::update('users', ['lost_password_code' => ''], 'id = ?', [$user->id]);
+
+            flash('success', lang('password_updated'));
+            redirect('/login');
+        }
+
+        view('auth.reset-password', ['email' => $email, 'code' => $code]);
+    }
+}
