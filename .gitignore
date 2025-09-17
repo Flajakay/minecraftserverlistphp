@@ -25,6 +25,6 @@ Thumbs.db
 /tmp/
 
 # User uploads
-/uploads/
+/public/uploads/
 
 /.osp/

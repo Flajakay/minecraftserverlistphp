@@ -9,5 +9,5 @@ Locations icons
 Last Check field
 Privacy policy
 terms-of-service
-
+Votifier
 

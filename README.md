@@ -5,7 +5,7 @@ A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and 
 
 
 
-**MANY FEATURES ARE YET TO BE IMPLEMENTED**
+**MANY FEATURES FROM THE LIST BELOW ARE YET TO BE IMPLEMENTED**
 
 
 
