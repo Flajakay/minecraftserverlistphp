@@ -1,8 +1,6 @@
-Filtering
 Payments
 Banners
-Mobile design is broken in some places
-Home page design improvements
+Design improvements
 Email system
 Profiles
 Privacy policy

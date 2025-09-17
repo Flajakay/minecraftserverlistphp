@@ -731,5 +731,8 @@ $language['titles']['blog_posts_management'] = "Blog Posts Management";
 $language['titles']['edit_blog_post'] = "Edit Blog Post";
 $language['titles']['contact'] = "Contact Us";
 
+$language['no_servers_in_category'] = "No servers found in %s category";
+$language['no_servers_in_category_suggestion'] = "Be the first to add a server in this category or browse other categories.";
+$language['browse_all_servers'] = "Browse All Servers";
 
 $language['_jodit_code'] = 'en';

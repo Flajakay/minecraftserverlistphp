@@ -8,6 +8,12 @@ function updateFilter(key, value) {
     window.location.href = url.toString();
 }
 
+function removeFilter(key) {
+    const url = new URL(window.location);
+    url.searchParams.delete(key);
+    window.location.href = url.toString();
+}
+
 function clearFilters() {
     const url = new URL(window.location);
     url.search = '';

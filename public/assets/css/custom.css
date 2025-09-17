@@ -448,3 +448,28 @@ footer a:hover {
 .gap-4 {
     gap: 1.5rem !important;
 }
+
+/* Filter Modal Responsive */
+@media (max-width: 576px) {
+    #filterModal .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    #filterModal .modal-lg {
+        max-width: none;
+    }
+    
+    #filterModal .row {
+        --bs-gutter-x: 1rem;
+    }
+}
+
+/* Active Filter Badges */
+.badge .btn-close {
+    padding: 0.1em 0.2em;
+    font-size: inherit;
+}
+
+.badge .btn-close:hover {
+    opacity: 1;
+}

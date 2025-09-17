@@ -87,5 +87,8 @@ $router->post('/lost-password', 'AuthController@sendResetLink');
 $router->get('/contact', 'ContactController@show');
 $router->post('/contact', 'ContactController@send');
 
+$router->get('/terms-of-service', 'StaticController@termsOfService');
+$router->get('/privacy-policy', 'StaticController@privacyPolicy');
+
 $router->get('/sitemap.xml', 'SitemapController@xml');
 $router->get('/robots.txt', 'RobotsController@txt');

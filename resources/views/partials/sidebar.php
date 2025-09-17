@@ -1,6 +1,6 @@
 <div class="sidebar bg-light p-3">
     <h5><?= lang('categories') ?></h5>
-    <?php $categories = \App\Models$1::getWithServerCount(); ?>
+    <?php $categories = \App\Models\Category::getWithServerCount(); ?>
     <ul class="list-unstyled">
         <?php foreach ($categories as $category): ?>
             <li class="mb-2">
@@ -44,7 +44,7 @@
         </select>
     </div>
 
-    <?php if (\App\Models$1::getValue('premium')): ?>
+    <?php if (\App\Models\Setting::getValue('premium')): ?>
         <div class="mb-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="premiumFilter" onchange="updateFilter('highlight', this.checked ? 1 : '')">
