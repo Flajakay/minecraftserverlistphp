@@ -37,6 +37,16 @@
                             <i class="bi bi-star-fill text-warning ms-1" title="<?= lang('premium_server') ?>"></i>
                         <?php endif; ?>
                     </h5>
+                    <div class="d-flex gap-3 d-md-none">
+                        <span class="text-success">
+                            <i class="bi bi-arrow-up me-1"></i>
+                            <span class="fw-semibold"><?= number_format($server->votes) ?></span>
+                        </span>
+                        <span class="text-danger">
+                            <i class="bi bi-heart me-1"></i>
+                            <span class="fw-semibold" id="favorite-count-mobile-<?= $server->id ?>"><?= number_format($server->favorites) ?></span>
+                        </span>
+                    </div>
                 </div>
                 
                 <!-- Server Address -->
@@ -81,7 +91,7 @@
         <div class="col-md-3 col-lg-3">
             <div class="text-center text-md-end">
                 <!-- Stats -->
-                <div class="server-stats mb-3">
+                <div class="server-stats mb-3 d-none d-md-block">
                     <div class="d-flex justify-content-center justify-content-md-end gap-3 mb-2">
                         <span class="text-success">
                             <i class="bi bi-arrow-up me-1"></i>
@@ -97,7 +107,7 @@
                 </div>
                 
                 <!-- Actions -->
-                <div class="server-actions">
+                <div class="server-actions d-none d-md-block">
                     <?php if (isset($show_management_actions) && $show_management_actions): ?>
                         <!-- Management Actions for My Servers -->
                         <div class="d-flex flex-column gap-2">
