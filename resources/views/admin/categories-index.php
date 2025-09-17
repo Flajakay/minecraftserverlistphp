@@ -97,8 +97,8 @@
                                                             </div>
                                                             <?php if ($category->description): ?>
                                                                 <small class="text-muted">
-                                                                    <?= htmlspecialchars(substr($category->description, 0, 50)) ?>
-                                                                    <?php if (strlen($category->description) > 50): ?>...<?php endif; ?>
+                                                                    <?= htmlspecialchars(substr($category->description, 0, 20)) ?>
+                                                                    <?php if (strlen($category->description) > 20): ?>...<?php endif; ?>
                                                                 </small>
                                                             <?php endif; ?>
                                                         </div>
