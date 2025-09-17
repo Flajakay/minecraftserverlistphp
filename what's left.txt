@@ -1,9 +1,7 @@
 Payments
-Banners
-Design improvements
+Fix / improve custom banner generator
+Overall design improvements
 Email system
 Profiles
-Privacy policy
-terms-of-service
 Votifier
 
