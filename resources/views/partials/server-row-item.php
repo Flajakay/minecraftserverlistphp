@@ -129,12 +129,12 @@
                             </a>
                             <?php if (isLoggedIn()): ?>
                                 <?php $isFavorite = isset($user_favorites) && in_array((int)$server->id, $user_favorites); ?>
-                                <button class="btn btn-<?= $isFavorite ? 'danger' : 'outline-danger' ?> btn-sm" 
+                               <!--  <button class="btn btn-<?= $isFavorite ? 'danger' : 'outline-danger' ?> btn-sm" 
                                         onclick="toggleFavorite(<?= $server->id ?>)"
                                         id="favorite-btn-<?= $server->id ?>">
                                     <i class="bi bi-heart<?= $isFavorite ? '-fill' : '' ?> me-1"></i>
                                     <?= $isFavorite ? lang('remove_from_favorites') : lang('add_to_favorites') ?>
-                                </button>
+                                </button>-->
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>

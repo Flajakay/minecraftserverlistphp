@@ -270,4 +270,16 @@ class Server
     {
         return Database::query('UPDATE servers SET votes = 0');
     }
+
+    public static function getCountriesWithServerCount()
+    {
+        return Database::fetchAll(
+            'SELECT country, COUNT(*) as server_count 
+             FROM servers 
+             WHERE active = 1 AND private = 0 AND country IS NOT NULL AND country != ""
+             GROUP BY country 
+             HAVING server_count > 0
+             ORDER BY server_count DESC, country ASC'
+        );
+    }
 }
