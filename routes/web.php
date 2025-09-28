@@ -5,9 +5,6 @@ $router->get('/servers', 'ServerController@index');
 $router->get('/servers/{page}', 'ServerController@index');
 $router->get('/server/{address}:{port}', 'ServerController@show');
 
-$router->get('/category/{url}', 'CategoryController@show');
-$router->get('/category/{url}/{page}', 'CategoryController@show');
-
 $router->get('/login', 'AuthController@showLogin');
 $router->post('/login', 'AuthController@login');
 $router->get('/register', 'AuthController@showRegister');

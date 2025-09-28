@@ -193,6 +193,20 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `name`, `type`, `act
 INSERT INTO `settings` (`id`, `title`, `url`, `contact_email`) VALUES
 (1, 'Minecraft Server List', 'http://localhost/new_server_list/public/', 'admin@admin.com');
 
+CREATE TABLE IF NOT EXISTS `server_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `is_primary` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_server_category` (`server_id`, `category_id`),
+  KEY `idx_server_id` (`server_id`),
+  KEY `idx_category_id` (`category_id`),
+  FOREIGN KEY (`server_id`) REFERENCES `servers`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 INSERT INTO `categories` (`id`, `name`, `url`, `description`) VALUES
 (1, 'Survival', 'survival', 'Survival servers'),
 (2, 'Creative', 'creative', 'Creative servers'),

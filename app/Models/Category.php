@@ -47,9 +47,10 @@ class Category
     public static function getWithServerCount()
     {
         return Database::fetchAll(
-            'SELECT c.*, COUNT(s.id) as server_count 
+            'SELECT c.*, COUNT(DISTINCT sc.server_id) as server_count 
              FROM categories c 
-             LEFT JOIN servers s ON c.id = s.category_id AND s.active = 1 AND s.private = 0
+             LEFT JOIN server_categories sc ON c.id = sc.category_id
+             LEFT JOIN servers s ON sc.server_id = s.id AND s.active = 1 AND s.private = 0
              WHERE c.parent_id = 0
              GROUP BY c.id 
              ORDER BY c.name ASC'
@@ -99,5 +100,48 @@ class Category
     public static function getAllForSelect()
     {
         return Database::fetchAll('SELECT id, name, parent_id FROM categories ORDER BY parent_id, name ASC');
+    }
+
+    public static function getAllWithHierarchy()
+    {
+        return Database::fetchAll('SELECT * FROM categories ORDER BY parent_id, name ASC');
+    }
+
+    public static function getDescendants($categoryId)
+    {
+        $descendants = [];
+        $subcategories = self::getSubcategories($categoryId);
+        
+        foreach ($subcategories as $subcategory) {
+            $descendants[] = $subcategory;
+            $subDescendants = self::getDescendants($subcategory->id);
+            $descendants = array_merge($descendants, $subDescendants);
+        }
+        
+        return $descendants;
+    }
+
+    public static function getServerCountByCategory($categoryId, $includeSubcategories = false)
+    {
+        $categoryIds = [$categoryId];
+        
+        if ($includeSubcategories) {
+            $descendants = self::getDescendants($categoryId);
+            foreach ($descendants as $desc) {
+                $categoryIds[] = $desc->id;
+            }
+        }
+        
+        $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
+        $result = Database::fetch(
+            "SELECT COUNT(DISTINCT sc.server_id) as count 
+             FROM server_categories sc 
+             JOIN servers s ON sc.server_id = s.id 
+             WHERE sc.category_id IN ($placeholders) 
+             AND s.active = 1 AND s.private = 0",
+            $categoryIds
+        );
+        
+        return $result ? $result->count : 0;
     }
 }

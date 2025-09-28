@@ -26,6 +26,12 @@ class ServerController
 
         $limit = 20;
         $servers = Server::getAllPaginated($page, $limit, $search, $filters);
+        
+        foreach ($servers as $server) {
+            $server->categories = Server::getCategories($server->id);
+            $server->primary_category = Server::getPrimaryCategory($server->id);
+        }
+        
         $totalServers = Server::countAllAdmin($search, $filters);
         $totalPages = ceil($totalServers / $limit);
         $categories = Category::getAll();
@@ -60,11 +66,13 @@ class ServerController
 
         $categories = Category::getAllForSelect();
         $countries = getCountries();
+        $serverCategories = Server::getCategories($id);
 
         view('admin.servers-edit', [
             'server' => $server,
             'categories' => $categories,
-            'countries' => $countries
+            'countries' => $countries,
+            'server_categories' => $serverCategories
         ]);
     }
 
@@ -81,11 +89,24 @@ class ServerController
             redirect('/admin/servers');
         }
 
+        $categoryIds = $_POST['category_ids'] ?? [];
+        
+        if (empty($categoryIds) || !is_array($categoryIds)) {
+            flash('error', 'At least one category must be selected');
+            redirect("/admin/servers/edit/{$id}");
+        }
+        
+        $categoryIds = array_filter(array_map('intval', $categoryIds));
+        if (empty($categoryIds)) {
+            flash('error', 'Invalid categories selected');
+            redirect("/admin/servers/edit/{$id}");
+        }
+
         $data = [
             'name' => sanitize($_POST['name'] ?? ''),
             'address' => sanitize($_POST['address'] ?? ''),
             'port' => (int)($_POST['port'] ?? 25565),
-            'category_id' => (int)($_POST['category_id'] ?? 1),
+            'category_id' => $categoryIds[0],
             'description' => sanitize($_POST['description'] ?? ''),
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? 'US'),
@@ -95,7 +116,25 @@ class ServerController
             'highlight' => isset($_POST['highlight']) ? 1 : 0
         ];
 
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $image = uploadFile($_FILES['image'], 'banners');
+            if ($image) {
+                $data['image'] = $image;
+            }
+        }
+
+        $customData = [];
+        if (!empty($_POST['votifier_public_key'])) {
+            $customData['votifier_public_key'] = $_POST['votifier_public_key'];
+            $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $server->address;
+            $customData['votifier_port'] = (int)($_POST['votifier_port'] ?? 8192);
+        }
+        if (!empty($customData)) {
+            $data['custom_data'] = json_encode($customData);
+        }
+
         if (Server::update($id, $data)) {
+            Server::setCategories($id, $categoryIds, $categoryIds[0]);
             $currentUser = auth();
             AuditLog::log('update', 'servers', $id, $currentUser->id, 'Updated server: ' . $server->name);
             flash('success', lang('server_updated'));
@@ -103,7 +142,7 @@ class ServerController
             flash('error', 'Failed to update server');
         }
 
-        redirect('/admin/servers');
+        redirect("/admin/servers/edit/{$id}");
     }
 
     public function delete($id)
@@ -182,12 +221,14 @@ class ServerController
                 if (Server::delete($id)) {
                     AuditLog::log('delete', 'servers', $id, $currentUser->id, 'Deleted server: ' . $server->name);
                     flash('success', lang('server_deleted'));
+                    redirect('/admin/servers');
+                    return;
                 }
                 break;
             default:
                 flash('error', 'Invalid action');
         }
 
-        redirect('/admin/servers');
+        redirect("/admin/servers/edit/{$id}");
     }
 }

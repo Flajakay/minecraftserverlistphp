@@ -153,3 +153,5 @@ function toggleFavorite(serverId) {
         }
     });
 }
+
+

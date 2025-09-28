@@ -79,41 +79,11 @@
                             </div>
                             
                             <div class="row g-3 mt-2">
-                                <div class="col-md-6">
-                                    <label for="category_id" class="form-label fw-semibold"><?= lang('server_category') ?> *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="bi bi-tags text-muted"></i>
-                                        </span>
-                                        <select class="form-select border-start-0" id="category_id" name="category_id" required>
-                                            <option value=""><?= lang('select_category') ?></option>
-                                            <?php foreach ($categories as $category): ?>
-                                                <option value="<?= $category->id ?>" <?= old('category_id') == $category->id ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($category->name) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
+                                <?php include __DIR__ . '/../partials/category-selection.php'; ?>
                                 
-                                <div class="col-md-6">
-                                    <label for="country" class="form-label fw-semibold"><?= lang('server_country') ?></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="bi bi-geo-alt text-muted"></i>
-                                        </span>
-                                        <select class="form-select border-start-0" id="country" name="country">
-                                            <?php foreach ($countries as $code => $name): ?>
-                                                <option value="<?= $code ?>" <?= old('country', 'US') == $code ? 'selected' : '' ?>>
-                                                    <?= htmlspecialchars($name) ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                                <?php include __DIR__ . '/../partials/country-selector.php'; ?>
                         </div>
-
+					</div>
                         <!-- Description Section -->
                         <div class="mb-4">
                             <h5 class="fw-semibold text-dark mb-3">
@@ -251,6 +221,7 @@
         </div>
     </div>
 </div>
+
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.submit') . ' - ' . setting('title'); ?>

@@ -39,16 +39,42 @@ class Server
 
     public static function getAll($filters = [])
     {
-        $sql = 'SELECT s.*, c.name as category_name, u.username as owner_username 
+        $sql = 'SELECT s.*, u.username as owner_username 
                 FROM servers s 
-                LEFT JOIN categories c ON s.category_id = c.id 
                 LEFT JOIN users u ON s.user_id = u.id 
                 WHERE s.active = 1 AND s.private = 0';
         
         $params = [];
         
+        if (!empty($filters['categories'])) {
+            $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
+            
+            if (!empty($filters['include_subcategories'])) {
+                $allCategoryIds = $categoryIds;
+                foreach ($categoryIds as $categoryId) {
+                    $subcategories = \App\Models\Category::getSubcategories($categoryId);
+                    foreach ($subcategories as $sub) {
+                        $allCategoryIds[] = $sub->id;
+                    }
+                }
+                $categoryIds = array_unique($allCategoryIds);
+            }
+            
+            $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
+            $sql .= " AND s.id IN (
+                SELECT DISTINCT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id IN ($placeholders)
+            )";
+            $params = array_merge($params, $categoryIds);
+        }
+        
         if (!empty($filters['category_id'])) {
-            $sql .= ' AND s.category_id = ?';
+            $sql .= " AND s.id IN (
+                SELECT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id = ?
+            )";
             $params[] = $filters['category_id'];
         }
         
@@ -95,9 +121,8 @@ class Server
     public static function getUserServers($userId)
     {
         return Database::fetchAll(
-            'SELECT s.*, c.name as category_name 
+            'SELECT s.* 
              FROM servers s 
-             LEFT JOIN categories c ON s.category_id = c.id 
              WHERE s.user_id = ? 
              ORDER BY s.created_at DESC', 
             [$userId]
@@ -162,16 +187,43 @@ class Server
 
     public static function count($filters = [])
     {
-        $sql = 'SELECT COUNT(*) as count FROM servers WHERE active = 1 AND private = 0';
+        $sql = 'SELECT COUNT(DISTINCT s.id) as count FROM servers s WHERE s.active = 1 AND s.private = 0';
         $params = [];
         
+        if (!empty($filters['categories'])) {
+            $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
+            
+            if (!empty($filters['include_subcategories'])) {
+                $allCategoryIds = $categoryIds;
+                foreach ($categoryIds as $categoryId) {
+                    $subcategories = \App\Models\Category::getSubcategories($categoryId);
+                    foreach ($subcategories as $sub) {
+                        $allCategoryIds[] = $sub->id;
+                    }
+                }
+                $categoryIds = array_unique($allCategoryIds);
+            }
+            
+            $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
+            $sql .= " AND s.id IN (
+                SELECT DISTINCT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id IN ($placeholders)
+            )";
+            $params = array_merge($params, $categoryIds);
+        }
+        
         if (!empty($filters['category_id'])) {
-            $sql .= ' AND category_id = ?';
+            $sql .= " AND s.id IN (
+                SELECT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id = ?
+            )";
             $params[] = $filters['category_id'];
         }
         
         if (isset($filters['status'])) {
-            $sql .= ' AND status = ?';
+            $sql .= ' AND s.status = ?';
             $params[] = $filters['status'];
         }
         
@@ -182,9 +234,8 @@ class Server
     public static function getAllPaginated($page = 1, $limit = 20, $search = '', $filters = [])
     {
         $offset = ($page - 1) * $limit;
-        $sql = 'SELECT s.*, c.name as category_name, u.username as owner_username 
+        $sql = 'SELECT DISTINCT s.*, u.username as owner_username 
                 FROM servers s 
-                LEFT JOIN categories c ON s.category_id = c.id 
                 LEFT JOIN users u ON s.user_id = u.id 
                 WHERE 1=1';
         $params = [];
@@ -197,8 +248,23 @@ class Server
             $params[] = $searchParam;
         }
 
+        if (!empty($filters['categories'])) {
+            $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
+            $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
+            $sql .= " AND s.id IN (
+                SELECT DISTINCT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id IN ($placeholders)
+            )";
+            $params = array_merge($params, $categoryIds);
+        }
+
         if (isset($filters['category_id']) && $filters['category_id'] !== '') {
-            $sql .= ' AND s.category_id = ?';
+            $sql .= " AND s.id IN (
+                SELECT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id = ?
+            )";
             $params[] = $filters['category_id'];
         }
 
@@ -224,7 +290,7 @@ class Server
 
     public static function countAllAdmin($search = '', $filters = [])
     {
-        $sql = 'SELECT COUNT(*) as count FROM servers s 
+        $sql = 'SELECT COUNT(DISTINCT s.id) as count FROM servers s 
                 LEFT JOIN users u ON s.user_id = u.id 
                 WHERE 1=1';
         $params = [];
@@ -237,8 +303,23 @@ class Server
             $params[] = $searchParam;
         }
 
+        if (!empty($filters['categories'])) {
+            $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
+            $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
+            $sql .= " AND s.id IN (
+                SELECT DISTINCT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id IN ($placeholders)
+            )";
+            $params = array_merge($params, $categoryIds);
+        }
+
         if (isset($filters['category_id']) && $filters['category_id'] !== '') {
-            $sql .= ' AND s.category_id = ?';
+            $sql .= " AND s.id IN (
+                SELECT sc.server_id 
+                FROM server_categories sc 
+                WHERE sc.category_id = ?
+            )";
             $params[] = $filters['category_id'];
         }
 
@@ -281,5 +362,20 @@ class Server
              HAVING server_count > 0
              ORDER BY server_count DESC, country ASC'
         );
+    }
+
+    public static function getCategories($serverId)
+    {
+        return \App\Models\ServerCategory::getServerCategories($serverId);
+    }
+
+    public static function setCategories($serverId, $categoryIds, $primaryCategoryId = null)
+    {
+        return \App\Models\ServerCategory::setServerCategories($serverId, $categoryIds, $primaryCategoryId);
+    }
+
+    public static function getPrimaryCategory($serverId)
+    {
+        return \App\Models\ServerCategory::getPrimaryCategory($serverId);
     }
 }

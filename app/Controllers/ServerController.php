@@ -30,6 +30,18 @@ class ServerController
             'offset' => $offset
         ];
 
+        if (isset($_GET['categories']) && !empty($_GET['categories'])) {
+            $categoryIds = explode(',', $_GET['categories']);
+            $categoryIds = array_filter(array_map('intval', $categoryIds));
+            if (!empty($categoryIds)) {
+                $filters['categories'] = $categoryIds;
+            }
+        }
+
+        if (isset($_GET['include_subcategories']) && $_GET['include_subcategories'] == '1') {
+            $filters['include_subcategories'] = true;
+        }
+
         if (isset($_GET['order_by'])) {
             $filters['order_by'] = $_GET['order_by'];
         }
@@ -56,7 +68,12 @@ class ServerController
             $userFavorites = Favorite::getForUserByServerIds(auth()->id, $serverIds);
         }
 
-        $categories = Category::getAll();
+        $categories = Category::getAllWithHierarchy();
+
+        foreach ($servers as $server) {
+            $server->categories = Server::getCategories($server->id);
+            $server->primary_category = Server::getPrimaryCategory($server->id);
+        }
 
         view('servers.index', [
             'servers' => $servers,
@@ -115,7 +132,7 @@ class ServerController
             redirect('/login');
         }
         
-        $categories = Category::getAll();
+        $categories = Category::getAllForSelect();
         $countries = getCountries();
 
         view('servers.submit', [
@@ -133,7 +150,8 @@ class ServerController
         $address = sanitize($_POST['address'] ?? '');
         $port = (int)($_POST['port'] ?? 25565);
         $name = sanitize($_POST['name'] ?? '');
-        $categoryId = (int)($_POST['category_id'] ?? 0);
+        $categoryIds = $_POST['category_ids'] ?? [];
+        $primaryCategoryId = (int)($_POST['primary_category_id'] ?? 0);
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
         $country = sanitize($_POST['country'] ?? 'US');
@@ -153,8 +171,17 @@ class ServerController
             $errors[] = 'Server name must be between 3 and 64 characters';
         }
 
-        if (!Category::find($categoryId)) {
-            $errors[] = 'Invalid category selected';
+        if (empty($categoryIds) || !is_array($categoryIds)) {
+            $errors[] = 'At least one category must be selected';
+        } else {
+            $categoryIds = array_filter(array_map('intval', $categoryIds));
+            if (empty($categoryIds)) {
+                $errors[] = 'Invalid categories selected';
+            }
+            
+            if ($primaryCategoryId && !in_array($primaryCategoryId, $categoryIds)) {
+                $errors[] = 'Primary category must be one of the selected categories';
+            }
         }
 
         if (strlen($description) > 2560) {
@@ -191,7 +218,7 @@ class ServerController
 
         $serverId = Server::create([
             'user_id' => auth()->id,
-            'category_id' => $categoryId,
+            'category_id' => $primaryCategoryId ?: $categoryIds[0],
             'address' => $address,
             'port' => $port,
             'name' => $name,
@@ -206,6 +233,8 @@ class ServerController
             'custom_data' => json_encode($customData)
         ]);
 
+        Server::setCategories($serverId, $categoryIds, $primaryCategoryId ?: $categoryIds[0]);
+
         flash('success', 'Server added successfully! It will be reviewed before being made public.');
         redirect('/my-servers');
     }
@@ -217,6 +246,11 @@ class ServerController
         }
 
         $servers = Server::getUserServers(auth()->id);
+
+        foreach ($servers as $server) {
+            $server->categories = Server::getCategories($server->id);
+            $server->primary_category = Server::getPrimaryCategory($server->id);
+        }
 
         $userFavorites = [];
         if (isLoggedIn()) {
@@ -237,6 +271,11 @@ class ServerController
         }
 
         $servers = Favorite::getUserFavorites(auth()->id);
+
+        foreach ($servers as $server) {
+            $server->categories = Server::getCategories($server->id);
+            $server->primary_category = Server::getPrimaryCategory($server->id);
+        }
 
         $userFavorites = [];
         if (isLoggedIn()) {
@@ -262,13 +301,15 @@ class ServerController
             redirect('/my-servers');
         }
 
-        $categories = Category::getAll();
+        $categories = Category::getAllForSelect();
         $countries = getCountries();
+        $serverCategories = Server::getCategories($id);
 
         view('servers.edit', [
             'server' => $server,
             'categories' => $categories,
-            'countries' => $countries
+            'countries' => $countries,
+            'server_categories' => $serverCategories
         ]);
     }
 
@@ -285,7 +326,7 @@ class ServerController
         }
 
         $name = sanitize($_POST['name'] ?? '');
-        $categoryId = (int)($_POST['category_id'] ?? 0);
+        $categoryIds = $_POST['category_ids'] ?? [];
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
         $country = sanitize($_POST['country'] ?? 'US');
@@ -297,8 +338,13 @@ class ServerController
             $errors[] = 'Server name must be between 3 and 64 characters';
         }
 
-        if (!Category::find($categoryId)) {
-            $errors[] = 'Invalid category selected';
+        if (empty($categoryIds) || !is_array($categoryIds)) {
+            $errors[] = 'At least one category must be selected';
+        } else {
+            $categoryIds = array_filter(array_map('intval', $categoryIds));
+            if (empty($categoryIds)) {
+                $errors[] = 'Invalid categories selected';
+            }
         }
 
         if (strlen($description) > 2560) {
@@ -314,7 +360,7 @@ class ServerController
 
         $updateData = [
             'name' => $name,
-            'category_id' => $categoryId,
+            'category_id' => $categoryIds[0],
             'description' => $description,
             'website' => $website,
             'country' => $country,
@@ -340,6 +386,7 @@ class ServerController
         }
 
         Database::update('servers', $updateData, 'id = ?', [$id]);
+        Server::setCategories($id, $categoryIds, $categoryIds[0]);
 
         flash('success', 'Server updated successfully');
         redirect('/my-servers');
