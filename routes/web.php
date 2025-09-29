@@ -37,6 +37,11 @@ $router->get('/comment/load-more', 'CommentController@loadMore');
 $router->post('/report', 'ReportController@store');
 $router->get('/banner', 'BannerController@generate');
 
+$router->get('/premium', 'PaymentController@showPurchase');
+$router->post('/paypal/create-order', 'PaymentController@createOrder');
+$router->post('/paypal/capture-payment', 'PaymentController@capturePayment');
+$router->get('/paypal/cancel', 'PaymentController@cancelPayment');
+
 $router->post('/blog', 'BlogController@store');
 $router->get('/blog/edit/{id}', 'BlogController@edit');
 $router->post('/blog/edit/{id}', 'BlogController@update');
@@ -65,6 +70,9 @@ $router->get('/admin/reports', 'Admin\ReportController@index');
 $router->get('/admin/reports/view/{id}', 'Admin\ReportController@view');
 $router->post('/admin/reports/action/{id}', 'Admin\ReportController@action');
 $router->post('/admin/reports/delete/{id}', 'Admin\ReportController@delete');
+
+$router->get('/admin/payments', 'Admin\PaymentController@index');
+$router->post('/admin/payments/delete/{id}', 'Admin\PaymentController@delete');
 
 $router->get('/admin/audit', 'Admin\AuditController@index');
 

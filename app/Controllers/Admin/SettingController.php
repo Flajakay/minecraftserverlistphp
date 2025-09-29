@@ -40,7 +40,15 @@ class SettingController
             'smtp_port' => sanitize($_POST['smtp_port'] ?? ''),
             'smtp_user' => sanitize($_POST['smtp_user'] ?? ''),
             'smtp_pass' => sanitize($_POST['smtp_pass'] ?? ''),
-            'smtp_secure' => sanitize($_POST['smtp_secure'] ?? '')
+            'smtp_secure' => sanitize($_POST['smtp_secure'] ?? ''),
+            'paypal_email' => sanitize($_POST['paypal_email'] ?? ''),
+            'paypal_client_id' => sanitize($_POST['paypal_client_id'] ?? ''),
+            'paypal_client_secret' => sanitize($_POST['paypal_client_secret'] ?? ''),
+            'paypal_sandbox' => isset($_POST['paypal_sandbox']) ? 1 : 0,
+            'payment_currency' => sanitize($_POST['payment_currency'] ?? 'USD'),
+            'per_day_cost' => (float)($_POST['per_day_cost'] ?? 0.00),
+            'minimum_days' => (int)($_POST['minimum_days'] ?? 1),
+            'maximum_days' => (int)($_POST['maximum_days'] ?? 30)
         ];
 
         Setting::update($data);

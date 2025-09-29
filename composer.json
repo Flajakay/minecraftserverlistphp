@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "php": ">=8.2",
-        "davedevelopment/stiphle": "^0.9.4"
+        "davedevelopment/stiphle": "^0.9.4",
+        "paypal/paypal-checkout-sdk": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"

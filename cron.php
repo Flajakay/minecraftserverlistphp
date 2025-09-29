@@ -34,7 +34,7 @@ foreach ($servers as $server) {
     }
 }
 
-Payment::expireHighlights();
-echo "Expired highlights updated\n";
+$expiredCount = Payment::expireHighlights();
+echo "Expired highlights: {$expiredCount} server highlights removed\n";
 
 echo "Update complete. Updated: {$updated}, Errors: {$errors}\n";

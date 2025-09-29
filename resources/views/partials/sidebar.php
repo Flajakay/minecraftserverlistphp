@@ -44,7 +44,7 @@
         </select>
     </div>
 
-    <?php if (\App\Models\Setting::getValue('premium')): ?>
+    <?php if (setting('premium')): ?>
         <div class="mb-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="premiumFilter" onchange="updateFilter('highlight', this.checked ? 1 : '')">

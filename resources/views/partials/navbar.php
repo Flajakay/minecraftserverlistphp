@@ -27,6 +27,11 @@
                             <i class="bi bi-plus-circle me-1"></i><?= lang('menu.submit') ?>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="<?= url('/premium') ?>">
+                            <i class="bi bi-star me-1"></i><?= lang('menu.premium') ?>
+                        </a>
+                    </li>
                 <?php endif; ?>
             </ul>
             
@@ -55,6 +60,7 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li><a class="dropdown-item" href="<?= url('/my-servers') ?>"><i class="bi bi-server me-2"></i><?= lang('menu.my_servers') ?></a></li>
                         <li><a class="dropdown-item" href="<?= url('/my-favorites') ?>"><i class="bi bi-heart me-2"></i><?= lang('menu.my_favorites') ?></a></li>
+                        <li><a class="dropdown-item" href="<?= url('/premium') ?>"><i class="bi bi-star me-2"></i><?= lang('menu.purchase_highlight') ?></a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= url('/profile/' . auth()->username) ?>"><i class="bi bi-person me-2"></i><?= lang('menu.my_profile') ?></a></li>
                         <li><a class="dropdown-item" href="<?= url('/settings/profile') ?>"><i class="bi bi-gear me-2"></i><?= lang('menu.settings') ?></a></li>

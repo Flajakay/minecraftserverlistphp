@@ -120,7 +120,7 @@ if (isset($_GET['categories'])) {
                                         </select>
                                     </div>
 
-                                    <?php if (\App\Models\Setting::getValue('premium')): ?>
+                                    <?php if (setting('premium')): ?>
                                         <div class="col-md-12">
                                             <label class="form-label fw-semibold text-dark"><?= lang('premium_only') ?></label>
                                             <div class="form-check form-switch mt-2">

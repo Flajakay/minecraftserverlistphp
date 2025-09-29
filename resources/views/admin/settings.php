@@ -303,6 +303,154 @@
             </div>
         </div>
 
+        <!-- PayPal Settings -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-transparent border-0 py-3">
+                <h5 class="fw-semibold mb-1">
+                    <i class="bi bi-credit-card text-primary me-2"></i>PayPal Settings
+                </h5>
+                <p class="text-muted mb-0 small">Configure PayPal integration for premium server highlighting</p>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="paypal_email" class="form-label fw-semibold">PayPal Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope text-muted"></i>
+                            </span>
+                            <input type="email"
+                                   class="form-control border-start-0 ps-0"
+                                   id="paypal_email"
+                                   name="paypal_email"
+                                   value="<?= htmlspecialchars($settings->paypal_email ?? '') ?>"
+                                   placeholder="your-paypal@example.com">
+                        </div>
+                        <small class="text-muted">PayPal account email for receiving payments</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="payment_currency" class="form-label fw-semibold">Currency</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-cash text-muted"></i>
+                            </span>
+                            <select class="form-select border-start-0" id="payment_currency" name="payment_currency">
+                                <option value="USD" <?= ($settings->payment_currency ?? 'USD') === 'USD' ? 'selected' : '' ?>>USD</option>
+                                <option value="EUR" <?= ($settings->payment_currency ?? 'USD') === 'EUR' ? 'selected' : '' ?>>EUR</option>
+                                <option value="GBP" <?= ($settings->payment_currency ?? 'USD') === 'GBP' ? 'selected' : '' ?>>GBP</option>
+                                <option value="CAD" <?= ($settings->payment_currency ?? 'USD') === 'CAD' ? 'selected' : '' ?>>CAD</option>
+                                <option value="AUD" <?= ($settings->payment_currency ?? 'USD') === 'AUD' ? 'selected' : '' ?>>AUD</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="paypal_client_id" class="form-label fw-semibold">PayPal Client ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-key text-muted"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control border-start-0 ps-0"
+                                   id="paypal_client_id"
+                                   name="paypal_client_id"
+                                   value="<?= htmlspecialchars($settings->paypal_client_id ?? '') ?>"
+                                   placeholder="Your PayPal Client ID">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="paypal_client_secret" class="form-label fw-semibold">PayPal Client Secret</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-shield-lock text-muted"></i>
+                            </span>
+                            <input type="password"
+                                   class="form-control border-start-0 ps-0"
+                                   id="paypal_client_secret"
+                                   name="paypal_client_secret"
+                                   value="<?= htmlspecialchars($settings->paypal_client_secret ?? '') ?>"
+                                   placeholder="Your PayPal Client Secret">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="paypal_sandbox"
+                                   name="paypal_sandbox"
+                                   <?= ($settings->paypal_sandbox ?? 1) ? 'checked' : '' ?>>
+                            <label class="form-check-label fw-semibold" for="paypal_sandbox">
+                                Use PayPal Sandbox
+                            </label>
+                        </div>
+                        <small class="text-muted">Enable for testing, disable for production</small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="per_day_cost" class="form-label fw-semibold">Cost Per Day ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-cash-stack text-muted"></i>
+                            </span>
+                            <input type="number"
+                                   class="form-control border-start-0 ps-0"
+                                   id="per_day_cost"
+                                   name="per_day_cost"
+                                   value="<?= $settings->per_day_cost ?? 0.00 ?>"
+                                   min="0.01"
+                                   max="100.00"
+                                   step="0.01"
+                                   placeholder="0.00">
+                        </div>
+                        <small class="text-muted">Price per day for server highlighting</small>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label for="minimum_days" class="form-label fw-semibold">Minimum Days</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-dash-circle text-muted"></i>
+                            </span>
+                            <input type="number"
+                                   class="form-control border-start-0 ps-0"
+                                   id="minimum_days"
+                                   name="minimum_days"
+                                   value="<?= $settings->minimum_days ?? 1 ?>"
+                                   min="1"
+                                   max="365"
+                                   placeholder="1">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="maximum_days" class="form-label fw-semibold">Maximum Days</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-plus-circle text-muted"></i>
+                            </span>
+                            <input type="number"
+                                   class="form-control border-start-0 ps-0"
+                                   id="maximum_days"
+                                   name="maximum_days"
+                                   value="<?= $settings->maximum_days ?? 30 ?>"
+                                   min="1"
+                                   max="365"
+                                   placeholder="30">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Save Button -->
         <div class="text-center mt-4 pt-3 border-top">
             <button type="submit" class="btn btn-primary btn-lg px-5 py-2 fw-semibold">

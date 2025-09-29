@@ -117,8 +117,13 @@ CREATE TABLE IF NOT EXISTS `payments` (
   `highlighted_days` int(11) NOT NULL,
   `revenue` decimal(10,2) NOT NULL,
   `email` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('pending','completed','cancelled','expired','failed') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `paypal_order_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_paypal_order_id` (`paypal_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `blog_posts` (
@@ -171,6 +176,9 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `bottom_ads` text COLLATE utf8mb4_unicode_ci,
   `side_ads` text COLLATE utf8mb4_unicode_ci,
   `paypal_email` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `paypal_client_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `paypal_client_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `paypal_sandbox` int(11) NOT NULL DEFAULT '1',
   `payment_currency` varchar(4) COLLATE utf8mb4_unicode_ci DEFAULT 'USD',
   `maximum_slots` int(11) NOT NULL DEFAULT '0',
   `per_day_cost` decimal(10,2) NOT NULL DEFAULT '0.00',
