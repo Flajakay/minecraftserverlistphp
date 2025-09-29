@@ -88,11 +88,14 @@ class ServerController
     public function show($address, $port)
     {
         $server = Server::findByAddress($address, $port);
-        
-        if (!$server || (!$server->active || $server->private)) {
-            flash('error', 'Server not found');
+        $isOwner = isLoggedIn() && auth()->id == $server->user_id;
+
+        if (!$server || !$server->active || ($server->private && (!$isOwner || !isAdmin()))) {
+            flash('error', lang('server_not_found'));
             redirect('/servers');
         }
+		
+		
         
         SEO::configureServerPage($server);
 
@@ -106,7 +109,7 @@ class ServerController
         $monthlyVotes = Vote::getServerVotes($server->id, 'month');
         $monthlyHits = Vote::getServerHits($server->id, 'month');
         
-        $isOwner = isLoggedIn() && auth()->id == $server->user_id;
+      
         $canVote = isLoggedIn() && Vote::canVote($server->id, $_SERVER['REMOTE_ADDR']);
         $isFavorite = isLoggedIn() && Favorite::exists(auth()->id, $server->id);
 

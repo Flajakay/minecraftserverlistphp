@@ -68,11 +68,7 @@
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <?php if ($is_owner): ?>
-                                <a href="<?= url('/edit-server/' . $server->id) ?>" class="btn btn-light">
-                                    <i class="bi bi-pencil me-1"></i><?= lang('edit') ?>
-                                </a>
-                            <?php endif; ?>
+
                         </div>
                         
 
@@ -581,6 +577,15 @@
                                 onclick="reportServer(<?= $server->id ?>)">
                             <i class="bi bi-flag me-2"></i><?= lang('report_server') ?>
                         </button>
+						
+						<?php if ($is_owner): ?>
+	                        <button type="button" 
+                                class="btn btn-outline-info w-100 mb-3 py-2" 
+                                onclick="editServer(<?= $server->id ?>)">
+								<i class="bi bi-pencil me-2"></i><?= lang('edit_server') ?>
+							</button>
+						<?php endif; ?>
+						
                     <?php else: ?>
                         <div class="alert alert-info border-0 mb-3">
                             <i class="bi bi-info-circle me-2"></i>
@@ -593,6 +598,9 @@
                             onclick="copyServerAddress()">
                         <i class="bi bi-clipboard me-2"></i><?= lang('copy_server_address') ?>
                     </button>
+					
+
+					
                 </div>
             </div>
             

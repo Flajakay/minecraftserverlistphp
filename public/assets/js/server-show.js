@@ -742,6 +742,10 @@ window.deleteBlogPost = function(id) {
     }
 };
 
+window.editServer = function(serverId) {
+    window.location.href = `${window.location.origin}/edit-server/${serverId}`;
+};
+
 window.generateBanner = function() {
     if (window.serverShowInstance) {
         window.serverShowInstance.generateBanner();
