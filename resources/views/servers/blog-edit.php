@@ -52,10 +52,6 @@
     </div>
 </div>
 
-<!-- Load Jodit Assets -->
-<script src="https://unpkg.com/jodit@3/build/jodit.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/jodit@3/build/jodit.min.css"/>
-
 <!-- Load Jodit Helper -->
 <?php joditAssets(); ?>
 

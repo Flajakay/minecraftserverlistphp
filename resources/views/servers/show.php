@@ -163,9 +163,35 @@
                                             <span class="text-muted">
                                                 <i class="bi bi-folder me-2"></i><?= lang('server_category') ?>
                                             </span>
-                                            <a href="<?= url('/category/' . $category->url) ?>" class="text-decoration-none">
-                                                <?= htmlspecialchars($category->name) ?>
-                                            </a>
+                                            <span>
+                                                <?php 
+                                                $displayLimit = 2;
+                                                $totalCategories = count($categories);
+                                                $displayCategories = array_slice($categories, 0, $displayLimit);
+                                                $remainingCount = $totalCategories - $displayLimit;
+                                                ?>
+                                                <?php foreach ($displayCategories as $index => $cat): ?>
+                                                    <a href="<?= url('/servers?categories=' . $cat->category_id) ?>" class="text-decoration-none">
+                                                        <?= htmlspecialchars($cat->category_name) ?>
+                                                    </a><?php if ($index < count($displayCategories) - 1): ?>, <?php endif; ?>
+                                                <?php endforeach; ?>
+                                                <?php if ($remainingCount > 0): ?>
+                                                    <?php
+                                                    $popoverContent = implode(', ', array_map(function($c) {
+                                                        return '<a href="' . url('/servers?categories=' . $c->category_id) . '" class="text-decoration-none">' . htmlspecialchars($c->category_name) . '</a>';
+                                                    }, array_slice($categories, $displayLimit)));
+                                                    ?>
+                                                    <a href="#" 
+                                                       class="text-decoration-none text-muted ms-1" 
+                                                       data-bs-toggle="popover" 
+                                                       data-bs-trigger="hover focus"
+                                                       data-bs-placement="bottom"
+                                                       data-bs-html="true"
+                                                       data-bs-content='<?= $popoverContent ?>'>
+                                                        +<?= $remainingCount ?> more
+                                                    </a>
+                                                <?php endif; ?>
+                                            </span>
                                         </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                             <span class="text-muted">
@@ -650,8 +676,7 @@
     </div>
 </div>
 
-<script src="https://unpkg.com/jodit@3/build/jodit.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/jodit@3/build/jodit.min.css"/>
+<link rel="stylesheet" href="<?= asset('css/category-popover.css') ?>">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -675,6 +700,50 @@ document.addEventListener('DOMContentLoaded', function() {
         <?= $server->port ?>,
         '<?= csrf() ?>'
     );
+    
+    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    popoverTriggerList.map(function (popoverTriggerEl) {
+        const popover = new bootstrap.Popover(popoverTriggerEl, {
+            trigger: 'manual'
+        });
+        
+        let isHoveringTrigger = false;
+        let isHoveringPopover = false;
+        
+        popoverTriggerEl.addEventListener('mouseenter', function() {
+            isHoveringTrigger = true;
+            popover.show();
+            
+            setTimeout(function() {
+                const popoverElement = document.querySelector('.popover');
+                if (popoverElement) {
+                    popoverElement.addEventListener('mouseenter', function() {
+                        isHoveringPopover = true;
+                    });
+                    
+                    popoverElement.addEventListener('mouseleave', function() {
+                        isHoveringPopover = false;
+                        setTimeout(function() {
+                            if (!isHoveringTrigger && !isHoveringPopover) {
+                                popover.hide();
+                            }
+                        }, 100);
+                    });
+                }
+            }, 10);
+        });
+        
+        popoverTriggerEl.addEventListener('mouseleave', function() {
+            isHoveringTrigger = false;
+            setTimeout(function() {
+                if (!isHoveringTrigger && !isHoveringPopover) {
+                    popover.hide();
+                }
+            }, 100);
+        });
+        
+        return popover;
+    });
 });
 </script>
 

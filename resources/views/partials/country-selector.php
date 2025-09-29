@@ -9,7 +9,7 @@
                    class="form-control border-start-0 ps-0 searchable-select-input" 
                    id="country-search"
                    placeholder="<?= lang('select_country_placeholder') ?>"
-                   autocomplete="off">
+                   autocomplete="new-password">
             <input type="hidden" name="country" id="country" value="<?= $selectedCountry ?? old('country') ?>">
         </div>
         <div class="searchable-select-dropdown" id="country-dropdown">

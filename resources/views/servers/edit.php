@@ -2,7 +2,7 @@
 
 <div class="container py-5">
     <div class="row g-4 justify-content-center">
-		<div class="text-center mb-4">
+		<div class="text-center">
 			<div class="mb-3">
 				<i class="bi bi-pencil-square text-primary" style="font-size: 2.5rem;"></i>
 			</div>

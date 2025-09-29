@@ -75,9 +75,7 @@
                                 <span class="badge bg-secondary me-1 <?= $category->is_primary ? 'bg-primary' : 'bg-secondary' ?>">
                                     <i class="bi bi-tag me-1"></i>
                                     <?= htmlspecialchars($category->category_name) ?>
-                                    <?php if ($category->is_primary): ?>
-                                        <i class="bi bi-star-fill ms-1" title="<?= lang('primary_category') ?>"></i>
-                                    <?php endif; ?>
+
                                 </span>
                             <?php elseif ($index == 3): ?>
                                 <span class="badge bg-light text-dark border me-1" title="<?= implode(', ', array_slice(array_column($server->categories, 'category_name'), 3)) ?>">

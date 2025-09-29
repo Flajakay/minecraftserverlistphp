@@ -7,7 +7,7 @@
     </div>
     
     <small class="text-muted">
-        Click categories to select them. Main categories will show their subcategories when selected.
+        <?= lang('how_to_select_categories'); ?> 
     </small>
 </div>
 

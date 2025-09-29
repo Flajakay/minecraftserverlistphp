@@ -29,7 +29,7 @@ class ServerController
         
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            $server->primary_category = Server::getPrimaryCategory($server->id);
+            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
         
         $totalServers = Server::countAllAdmin($search, $filters);

@@ -1,0 +1,15 @@
+.popover {
+    max-width: 300px;
+}
+
+.popover-body a {
+    display: inline;
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.popover-body a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}

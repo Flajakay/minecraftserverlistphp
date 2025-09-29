@@ -72,7 +72,7 @@ class ServerController
 
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            $server->primary_category = Server::getPrimaryCategory($server->id);
+            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         view('servers.index', [
@@ -101,7 +101,7 @@ class ServerController
         $comments = Comment::getServerComments($server->id, 10);
         $blogPosts = BlogPost::getServerPosts($server->id, 5);
         $blogPostsCount = BlogPost::countServerPosts($server->id);
-        $category = Category::find($server->category_id);
+        $categories = Server::getCategories($server->id);
         $statistics = Vote::getStatistics($server->id, 7);
         $monthlyVotes = Vote::getServerVotes($server->id, 'month');
         $monthlyHits = Vote::getServerHits($server->id, 'month');
@@ -112,7 +112,7 @@ class ServerController
 
         view('servers.show', [
             'server' => $server,
-            'category' => $category,
+            'categories' => $categories,
             'comments' => $comments,
             'blog_posts' => $blogPosts,
             'blog_posts_count' => $blogPostsCount,
@@ -151,7 +151,7 @@ class ServerController
         $port = (int)($_POST['port'] ?? 25565);
         $name = sanitize($_POST['name'] ?? '');
         $categoryIds = $_POST['category_ids'] ?? [];
-        $primaryCategoryId = (int)($_POST['primary_category_id'] ?? 0);
+        //$primaryCategoryId = (int)($_POST['primary_category_id'] ?? 0);
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
         $country = sanitize($_POST['country'] ?? 'US');
@@ -249,7 +249,7 @@ class ServerController
 
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            $server->primary_category = Server::getPrimaryCategory($server->id);
+            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         $userFavorites = [];
@@ -274,7 +274,7 @@ class ServerController
 
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            $server->primary_category = Server::getPrimaryCategory($server->id);
+            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         $userFavorites = [];

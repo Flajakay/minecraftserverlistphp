@@ -119,9 +119,9 @@
         gap: 0.375rem;
     }
     
-    .category-cloud-container {
+/*     .category-cloud-container {
         padding: 0.75rem;
-    }
+    } */
 }
 
 @media (max-width: 576px) {

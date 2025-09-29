@@ -690,6 +690,9 @@ $language['reset_votes_warning'] = "Reset all server votes to 0. This action can
 $language['quick_links'] = "Quick Links";
 $language['save_settings'] = "Save Settings";
 $language['blog_posts_management'] = "Blog Posts Management"; 
+$language['how_to_select_categories'] = "Click categories to select them. Main categories will show their subcategories when selected.";
+$language['select_country_placeholder'] = "Please select country";
+
 
 $language['seo']['home_description'] = "Find and join the best Minecraft servers. Browse servers by category, vote for your favorites, and discover new communities.";
 $language['seo']['servers_description'] = "Browse all Minecraft servers. Find survival, creative, PvP, roleplay and mini-game servers.";

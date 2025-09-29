@@ -31,7 +31,7 @@ class HomeController
         $allServers = array_merge($featuredServers, $recentServers, $topVotedServers);
         foreach ($allServers as $server) {
             $server->categories = Server::getCategories($server->id);
-            $server->primary_category = Server::getPrimaryCategory($server->id);
+            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         $userFavorites = [];
