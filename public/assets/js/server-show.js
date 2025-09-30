@@ -636,15 +636,21 @@ class ServerShow {
         const form = document.getElementById('bannerForm');
         const formData = new FormData(form);
         
+        const textColor = formData.get('text_color') || '#ffffff';
+        const fontSize = formData.get('font_size') || '12';
+        const message = formData.get('message') || 'Vote for this server on our website!';
+        const background = formData.get('background') || 'default';
+        
         const params = new URLSearchParams({
             server_id: this.serverId,
-            background: formData.get('background'),
-            text_color: formData.get('text_color').replace('#', ''),
-            border_color: formData.get('border_color').replace('#', '')
+            background: background,
+            message: message,
+            text_color: textColor.replace('#', ''),
+            font_size: fontSize
         });
         
         const bannerUrl = `/banner?${params.toString()}`;
-        document.getElementById('bannerPreview').src = bannerUrl;
+        document.getElementById('bannerPreview').src = bannerUrl + '&t=' + Date.now();
         
         const serverUrl = `/server/${this.serverAddress}:${this.serverPort}`;
         const htmlCode = `<a href="${serverUrl}" target="_blank"><img src="${bannerUrl}" alt="${this.serverAddress} Banner"></a>`;

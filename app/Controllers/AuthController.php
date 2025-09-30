@@ -141,12 +141,14 @@ class AuthController
 
     public function activate($email, $code)
     {
+        $email = urldecode($email);
+
         if (User::activate($email, $code)) {
             flash('success', 'Account activated successfully!');
         } else {
             flash('error', 'Invalid activation link');
         }
-        
+
         redirect('/login');
     }
 

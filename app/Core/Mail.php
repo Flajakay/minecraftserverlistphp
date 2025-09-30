@@ -69,8 +69,9 @@ class Mail
     private function sendWithPhpMail()
     {
         $headers = $this->buildHeaders();
-        $to = implode(', ', $this->to);
-        
+        $recipients = array_map([$this, 'extractEmail'], $this->to);
+        $to = implode(', ', $recipients);
+
         return mail($to, $this->subject, $this->body, $headers);
     }
 

@@ -35,6 +35,8 @@ class User
 
     public static function activate($email, $code)
     {
+        echo $email;
+        echo $code;
         return Database::update('users', 
             ['active' => 1, 'email_activation_code' => ''], 
             'email = ? AND email_activation_code = ?', 

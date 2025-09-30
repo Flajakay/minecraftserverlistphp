@@ -485,57 +485,15 @@
                                 <?php endforeach; ?>
                             </div>
                             
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-header bg-transparent border-0">
-                                    <h6 class="fw-semibold mb-0">
-                                        <i class="bi bi-palette text-primary me-2"></i><?= lang('custom_banner_generator') ?>
-                                    </h6>
+
+                                <div class="text-center py-5">
+                                    <i class="bi bi-images text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <h5 class="fw-semibold mb-3">Create Your Custom Animated Banner</h5>
+                                    <p class="text-muted mb-4">Generate awesome animated GIF banners with multiple frames, custom text, and backgrounds!</p>
+                                    <a href="<?= url('/banner-generator?server_id=' . $server->id) ?>" class="btn btn-primary">
+                                        <i class="bi bi-magic me-1"></i>Open Banner Generator
+                                    </a>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <form id="bannerForm">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold"><?= lang('background_style') ?></label>
-                                                    <select class="form-select" name="background">
-                                                        <option value="default"><?= lang('default_theme') ?></option>
-                                                    </select>
-                                                </div>
-                                                <div class="row g-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold"><?= lang('text_color') ?></label>
-                                                        <input type="color" class="form-control form-control-color" name="text_color" value="#000000">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-semibold"><?= lang('border_color') ?></label>
-                                                        <input type="color" class="form-control form-control-color" name="border_color" value="#000000">
-                                                    </div>
-                                                </div>
-                                                <button type="button" class="btn btn-primary mt-3" onclick="generateBanner()">
-                                                    <i class="bi bi-magic me-1"></i><?= lang('generate_banner') ?>
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="text-center">
-                                                <label class="form-label fw-semibold"><?= lang('preview') ?></label>
-                                                <div class="bg-light rounded p-3 mb-3">
-                                                    <img id="bannerPreview" 
-                                                         src="<?= url('/banner?server_id=' . $server->id) ?>" 
-                                                         alt="<?= lang('generated_banner') ?>" 
-                                                         class="img-fluid border rounded">
-                                                </div>
-                                                <textarea id="bannerCode" 
-                                                          class="form-control small" 
-                                                          rows="3" 
-                                                          readonly 
-                                                          onclick="this.select()"
-                                                          placeholder="<?= lang('generated_code_placeholder') ?>"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

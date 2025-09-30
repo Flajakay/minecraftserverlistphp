@@ -35,7 +35,7 @@ $router->post('/comment', 'CommentController@store');
 $router->post('/comment/delete', 'CommentController@delete');
 $router->get('/comment/load-more', 'CommentController@loadMore');
 $router->post('/report', 'ReportController@store');
-$router->get('/banner', 'BannerController@generate');
+$router->get('/banner-generator', 'BannerController@show');
 
 $router->get('/premium', 'PaymentController@showPurchase');
 $router->post('/paypal/create-order', 'PaymentController@createOrder');
