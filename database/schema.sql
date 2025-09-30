@@ -140,6 +140,19 @@ CREATE TABLE IF NOT EXISTS `blog_posts` (
   KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `identifier_type` enum('username','ip') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` int(11) NOT NULL DEFAULT '1',
+  `first_attempt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_attempt` datetime DEFAULT CURRENT_TIMESTAMP,
+  `lockout_until` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_identifier` (`identifier`,`identifier_type`),
+  KEY `idx_lockout` (`lockout_until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `audit_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,

@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Core\CookieManager;
+use App\Core\LoginSecurity;
 
 class Auth
 {
@@ -49,11 +50,13 @@ class Auth
     public static function attempt($username, $password)
     {
         $user = Database::fetch('SELECT * FROM users WHERE username = ?', [$username]);
-        
+
         if ($user && self::verifyPassword($password, $user->password)) {
+            LoginSecurity::clearFailedAttempts($username, 'username');
+            LoginSecurity::clearFailedAttempts($_SERVER['REMOTE_ADDR'], 'ip');
             return $user;
         }
-        
+
         return false;
     }
 

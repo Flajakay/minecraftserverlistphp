@@ -8,6 +8,7 @@ use App\Core\Database;
 use App\Core\Mail;
 use App\Models\Setting;
 use App\Core\SEO;
+use App\Core\LoginSecurity;
 use Exception;
 
 class AuthController
@@ -26,25 +27,49 @@ class AuthController
         $username = sanitize($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']);
+        $ip = $_SERVER['REMOTE_ADDR'];
 
         if (empty($username) || empty($password)) {
             flash('error', 'Please fill all fields');
             redirect('/login');
         }
 
-        if (!User::isActive($username)) {
-            flash('error', 'Account is not active or blocked');
+        if (LoginSecurity::isLockedOut($username, 'username')) {
+            $remaining = LoginSecurity::getLockoutTimeRemaining($username, 'username');
+            $minutes = ceil($remaining / 60);
+            flash('error', "Account is temporarily locked due to too many failed login attempts. Please try again in {$minutes} minute(s).");
+            redirect('/login');
+        }
+
+        if (LoginSecurity::isLockedOut($ip, 'ip')) {
+            $remaining = LoginSecurity::getLockoutTimeRemaining($ip, 'ip');
+            $minutes = ceil($remaining / 60);
+            flash('error', "Too many login attempts from your IP address. Please try again in {$minutes} minute(s).");
             redirect('/login');
         }
 
         $user = Auth::attempt($username, $password);
         if ($user) {
+            if (!User::isActive($username)) {
+                flash('error', 'Account is not active or blocked');
+                redirect('/login');
+            }
+
             Auth::login($user, $remember);
             flash('success', 'Welcome back!');
             redirect('/');
         }
 
-        flash('error', 'Invalid username or password');
+        LoginSecurity::recordFailedAttempt($username, 'username', $ip);
+        LoginSecurity::recordFailedAttempt($ip, 'ip', $ip);
+
+        $remaining = LoginSecurity::getRemainingAttempts($username, 'username');
+        if ($remaining > 0) {
+            flash('error', "Invalid username or password. {$remaining} attempt(s) remaining.");
+        } else {
+            flash('error', 'Invalid username or password. Account temporarily locked due to too many failed attempts.');
+        }
+
         redirect('/login');
     }
 

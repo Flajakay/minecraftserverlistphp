@@ -24,7 +24,7 @@ A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and 
 
 ## Requirements
 
-- PHP 8.0 or higher
+- PHP 8.0 or higher (+ GD, sockets, curl, pdo_mysql)
 - MySQL 5.7+
 
 ## Installation
@@ -35,6 +35,7 @@ A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and 
    # Example: /var/www/html/minecraft-servers/
    ```
 2. **Run Installation**
+   - Run composer install
    - Navigate to `your-domain.com/`
    - Fill in database and site configuration
    - Click Install

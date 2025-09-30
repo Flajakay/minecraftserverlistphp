@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use App\Core\Auth;
-
+use App\Core\LoginSecurity;
 
 class User
 {
@@ -59,6 +59,16 @@ class User
     {
         $user = self::findByUsername($username);
         return $user && $user->active == 1;
+    }
+
+    public static function isLockedOut($username)
+    {
+        return LoginSecurity::isLockedOut($username, 'username');
+    }
+
+    public static function clearFailedAttempts($username)
+    {
+        LoginSecurity::clearFailedAttempts($username, 'username');
     }
 
     public static function getAllPaginated($page = 1, $limit = 20, $search = '', $filters = [])
