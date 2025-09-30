@@ -1,7 +1,4 @@
-Payments
-Fix / improve custom banner generator
 Overall design improvements
-Email system
 Profiles
 Votifier
 
