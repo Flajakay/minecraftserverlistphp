@@ -2,24 +2,31 @@
 
 namespace App\Core;
 
-use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalCheckoutSdk\Core\SandboxEnvironment;
-use PayPalCheckoutSdk\Core\ProductionEnvironment;
-use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
-use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
+use PaypalServerSdkLib\PaypalServerSdkClientBuilder;
+use PaypalServerSdkLib\Authentication\ClientCredentialsAuthCredentialsBuilder;
+use PaypalServerSdkLib\Environment;
+use PaypalServerSdkLib\Models\Builders\OrderRequestBuilder;
+use PaypalServerSdkLib\Models\CheckoutPaymentIntent;
+use PaypalServerSdkLib\Models\Builders\PurchaseUnitRequestBuilder;
+use PaypalServerSdkLib\Models\Builders\AmountWithBreakdownBuilder;
 use App\Models\Setting;
 
 class PayPalService
 {
     private $client;
+    private $ordersController;
 
     public function __construct()
     {
         $this->client = $this->getClient();
+        $this->ordersController = $this->client->getOrdersController();
     }
 
     private function getClient()
     {
+
+        
+
         $clientId = Setting::getValue('paypal_client_id');
         $clientSecret = Setting::getValue('paypal_client_secret');
         $isSandbox = Setting::getValue('paypal_sandbox', 1);
@@ -28,36 +35,38 @@ class PayPalService
             throw new \Exception('PayPal client credentials not configured');
         }
 
-        if ($isSandbox) {
-            $environment = new SandboxEnvironment($clientId, $clientSecret);
-        } else {
-            $environment = new ProductionEnvironment($clientId, $clientSecret);
-        }
-
-        return new PayPalHttpClient($environment);
+        $environment = $isSandbox ? Environment::SANDBOX : Environment::PRODUCTION;
+        return PaypalServerSdkClientBuilder::init()
+            ->clientCredentialsAuthCredentials(
+                ClientCredentialsAuthCredentialsBuilder::init(
+                    $clientId,
+                    $clientSecret
+                )
+            )
+            ->environment($environment)
+            ->build();
     }
 
     public function createOrder($amount, $currency, $description)
     {
-        $request = new OrdersCreateRequest();
-        $request->prefer('return=representation');
-        $request->body = [
-            'intent' => 'CAPTURE',
-            'purchase_units' => [[
-                'amount' => [
-                    'currency_code' => $currency,
-                    'value' => number_format($amount, 2, '.', '')
-                ],
-                'description' => $description
-            ]],
-            'application_context' => [
-                'cancel_url' => url('/paypal/cancel'),
-                'return_url' => url('/premium')
+        $orderRequest = OrderRequestBuilder::init(
+            CheckoutPaymentIntent::CAPTURE,
+            [
+                PurchaseUnitRequestBuilder::init(
+                    AmountWithBreakdownBuilder::init(
+                        $currency,
+                        number_format($amount, 2, '.', '')
+                    )->build()
+                )
+                ->description($description)
+                ->build()
             ]
-        ];
-
+        )->build();
         try {
-            $response = $this->client->execute($request);
+            $response = $this->ordersController->createOrder([
+                'body' => $orderRequest,
+                'prefer' => 'return=representation'
+            ]);
             return $response;
         } catch (\Exception $e) {
             error_log('PayPal order creation failed: ' . $e->getMessage());
@@ -67,10 +76,11 @@ class PayPalService
 
     public function capturePayment($orderId)
     {
-        $request = new OrdersCaptureRequest($orderId);
-
         try {
-            $response = $this->client->execute($request);
+            $response = $this->ordersController->captureOrder([
+                'id' => $orderId,
+                'prefer' => 'return=representation'
+            ]);
             return $response;
         } catch (\Exception $e) {
             error_log('PayPal payment capture failed: ' . $e->getMessage());

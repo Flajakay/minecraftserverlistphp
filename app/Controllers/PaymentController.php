@@ -19,7 +19,6 @@ class PaymentController
             flash('error', 'Premium features are not available at this time');
             redirect('/');
         }
-
         $userServers = Server::getUserServers(auth()->id);
         $currency = Setting::getValue('payment_currency', 'USD');
         $costPerDay = Setting::getValue('per_day_cost', 0.00);
@@ -37,6 +36,8 @@ class PaymentController
 
     public function createOrder()
     {
+        header('Content-Type: application/json');
+        
         if (!isLoggedIn()) {
             http_response_code(401);
             echo json_encode(['error' => 'Unauthorized']);
@@ -46,9 +47,6 @@ class PaymentController
         try {
             $paypalService = new PayPalService();
 
-            if (!$paypalService->validateConfiguration()) {
-                throw new \Exception('PayPal payment system is not configured');
-            }
 
             $serverId = (int)($_POST['server_id'] ?? 0);
             $days = (int)($_POST['days'] ?? 0);
@@ -67,9 +65,8 @@ class PaymentController
             $description = "Server highlight for {$server->name} - {$days} days";
 
             $order = $paypalService->createOrder($amount, $currency, $description);
-
             echo json_encode([
-                'order_id' => $order->result->id,
+                'order_id' => $order->getResult()->getId(),
                 'server_id' => $serverId,
                 'days' => $days,
                 'amount' => $amount
@@ -84,6 +81,8 @@ class PaymentController
 
     public function capturePayment()
     {
+        header('Content-Type: application/json');
+        
         if (!isLoggedIn()) {
             http_response_code(401);
             echo json_encode(['error' => 'Unauthorized']);
@@ -92,10 +91,6 @@ class PaymentController
 
         try {
             $paypalService = new PayPalService();
-
-            if (!$paypalService->validateConfiguration()) {
-                throw new \Exception('PayPal payment system is not configured');
-            }
 
             $orderId = $_POST['order_id'] ?? '';
             $serverId = (int)($_POST['server_id'] ?? 0);
@@ -110,8 +105,7 @@ class PaymentController
                 throw new \Exception('Invalid server');
             }
             $capture = $paypalService->capturePayment($orderId);
-
-            if ($capture->result->status !== 'COMPLETED') {
+            if ($capture->getResult()->getStatus() !== 'COMPLETED') {
                 throw new \Exception('Payment not completed');
             }
 

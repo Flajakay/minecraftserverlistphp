@@ -179,10 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return fetch('<?= url('/paypal/create-order') ?>', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-Token': document.querySelector('[name="csrf_token"]').value
+                        'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     body: new URLSearchParams({
+                        csrf_token: document.querySelector('[name="csrf_token"]').value,
                         server_id: serverSelect.value,
                         days: daysInput.value
                     })
@@ -208,10 +208,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return fetch('<?= url('/paypal/capture-payment') ?>', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-Token': document.querySelector('[name="csrf_token"]').value
+                        'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     body: new URLSearchParams({
+                        csrf_token: document.querySelector('[name="csrf_token"]').value,
                         order_id: data.orderID,
                         server_id: serverSelect.value,
                         days: daysInput.value
