@@ -16,14 +16,19 @@ if (isset($_GET['categories'])) {
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-gradient text-white border-0" style="background: linear-gradient(45deg, #0d6efd, #0056b3) !important;">
-                <h5 class="modal-title fw-bold" id="filterModalLabel">
+            <div class="modal-header bg-gradient text-white border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
+                <h5 class="modal-title fw-bold d-flex align-items-center" id="filterModalLabel">
                     <i class="bi bi-funnel-fill me-2"></i><?= $modalTitle ?>
                     <?php if ($filterCount > 0): ?>
                         <span class="badge bg-light text-dark ms-2" id="filterCount"><?= $filterCount ?></span>
                     <?php endif; ?>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<?= lang('close_modal') ?>"></button>
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="btn btn-sm btn-link text-white text-decoration-none opacity-75 hover-opacity-100 p-0" id="clearFiltersHeader" style="font-size: 0.875rem;">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i><?= lang('reset_filters') ?>
+                    </button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<?= lang('close_modal') ?>"></button>
+                </div>
             </div>
             <div class="modal-body p-4" style="background-color: #f8f9fa;">
                 <div class="row g-4">
@@ -36,32 +41,39 @@ if (isset($_GET['categories'])) {
                             </div>
                             <div class="card-body p-0">
                                 <?php $categories = \App\Models\Category::getAllWithHierarchy(); ?>
-                                <div class="category-grid" style="max-height: 400px; overflow-y: auto; padding: 15px;">
+                                <div class="category-grid" style="max-height: 400px; overflow-y: auto;">
                                     <?php 
                                     $parentCategories = array_filter($categories, fn($c) => $c->parent_id == 0);
                                     foreach ($parentCategories as $cat): 
                                         $subcategories = array_filter($categories, fn($c) => $c->parent_id == $cat->id);
+                                        $isChecked = in_array($cat->id, $selectedCategories);
                                     ?>
-                                        <div class="category-item mb-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input category-checkbox" type="checkbox" 
-                                                       value="<?= $cat->id ?>" id="cat_<?= $cat->id ?>"
-                                                       <?= in_array($cat->id, $selectedCategories) ? 'checked' : '' ?>>
-                                                <label class="form-check-label fw-semibold" for="cat_<?= $cat->id ?>">
-                                                    <?= htmlspecialchars($cat->name) ?>
-                                                </label>
+                                        <div class="category-parent-group">
+                                            <div class="category-item parent-category <?= $isChecked ? 'selected' : '' ?>" data-category-id="<?= $cat->id ?>">
+                                                <div class="form-check">
+                                                    <input class="form-check-input category-checkbox" type="checkbox" 
+                                                           value="<?= $cat->id ?>" id="cat_<?= $cat->id ?>"
+                                                           <?= $isChecked ? 'checked' : '' ?>>
+                                                    <label class="form-check-label fw-semibold" for="cat_<?= $cat->id ?>">
+                                                        <?= htmlspecialchars($cat->name) ?>
+                                                    </label>
+                                                </div>
                                             </div>
                                             <?php if (!empty($subcategories)): ?>
-                                                <div class="ms-4 mt-2">
-                                                    <?php foreach ($subcategories as $subcat): ?>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input category-checkbox subcategory" type="checkbox" 
-                                                                   value="<?= $subcat->id ?>" id="cat_<?= $subcat->id ?>"
-                                                                   data-parent="<?= $cat->id ?>"
-                                                                   <?= in_array($subcat->id, $selectedCategories) ? 'checked' : '' ?>>
-                                                            <label class="form-check-label small" for="cat_<?= $subcat->id ?>">
-                                                                <?= htmlspecialchars($subcat->name) ?>
-                                                            </label>
+                                                <div class="subcategory-group">
+                                                    <?php foreach ($subcategories as $subcat): 
+                                                        $isSubChecked = in_array($subcat->id, $selectedCategories);
+                                                    ?>
+                                                        <div class="category-item subcategory <?= $isSubChecked ? 'selected' : '' ?>" data-category-id="<?= $subcat->id ?>">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input category-checkbox subcategory" type="checkbox" 
+                                                                       value="<?= $subcat->id ?>" id="cat_<?= $subcat->id ?>"
+                                                                       data-parent="<?= $cat->id ?>"
+                                                                       <?= $isSubChecked ? 'checked' : '' ?>>
+                                                                <label class="form-check-label" for="cat_<?= $subcat->id ?>">
+                                                                    <?= htmlspecialchars($subcat->name) ?>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     <?php endforeach; ?>
                                                 </div>
@@ -120,19 +132,7 @@ if (isset($_GET['categories'])) {
                                         </select>
                                     </div>
 
-                                    <?php if (setting('premium')): ?>
-                                        <div class="col-md-12">
-                                            <label class="form-label fw-semibold text-dark"><?= lang('premium_only') ?></label>
-                                            <div class="form-check form-switch mt-2">
-                                                <input class="form-check-input" type="checkbox" id="premiumFilter" 
-                                                       <?= (isset($_GET['highlight']) && $_GET['highlight']) ? 'checked' : '' ?> 
-                                                       style="transform: scale(1.2);">
-                                                <label class="form-check-label fw-semibold" for="premiumFilter">
-                                                    <i class="bi bi-star-fill text-warning me-1"></i><?= lang('premium_only') ?>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>
@@ -140,14 +140,11 @@ if (isset($_GET['categories'])) {
                 </div>
             </div>
             <div class="modal-footer bg-light border-0">
-                <button type="button" class="btn btn-outline-secondary" id="clearFilters">
-                    <i class="bi bi-arrow-clockwise me-1"></i><?= lang('reset_filters') ?>
-                </button>
-                <button type="button" class="btn btn-primary" id="applyFilters">
-                    <i class="bi bi-check me-1"></i><?= lang('apply_filters') ?>
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     <?= lang('close_modal') ?>
+                </button>
+                <button type="button" class="btn btn-primary px-4" id="applyFilters">
+                    <i class="bi bi-check-lg me-2"></i><?= lang('apply_filters') ?>
                 </button>
             </div>
         </div>
@@ -188,12 +185,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.category-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const categoryId = parseInt(this.value);
+            const categoryItem = this.closest('.category-item');
+            
             if (this.checked) {
                 if (!filterState.categories.includes(categoryId)) {
                     filterState.categories.push(categoryId);
                 }
+                if (categoryItem) {
+                    categoryItem.classList.add('selected');
+                }
             } else {
                 filterState.categories = filterState.categories.filter(id => id !== categoryId);
+                if (categoryItem) {
+                    categoryItem.classList.remove('selected');
+                }
             }
             updateFilterCount();
         });
@@ -249,14 +254,20 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = url.toString();
     });
 
-    document.getElementById('clearFilters').addEventListener('click', function() {
+    const clearFiltersHandler = function() {
         filterState.categories = [];
         filterState.order_by = '';
         filterState.status = '';
         filterState.country = '';
         filterState.highlight = false;
         
-        document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.category-checkbox').forEach(cb => {
+            cb.checked = false;
+            const categoryItem = cb.closest('.category-item');
+            if (categoryItem) {
+                categoryItem.classList.remove('selected');
+            }
+        });
         document.getElementById('orderByFilter').value = '';
         document.getElementById('statusFilter').value = '';
         document.getElementById('countryFilter').value = '';
@@ -267,6 +278,8 @@ document.addEventListener('DOMContentLoaded', function() {
         updateFilterCount();
         
         window.location.href = window.location.pathname;
-    });
+    };
+
+    document.getElementById('clearFiltersHeader').addEventListener('click', clearFiltersHandler);
 });
 </script>

@@ -336,6 +336,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <span>cURL <?= function_exists('curl_init') ? '✓' : '✗' ?></span>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-<?= extension_loaded('sockets') ? 'check-circle text-success' : 'x-circle text-danger' ?> me-2"></i>
+                                <span>Sockets <?= extension_loaded('sockets') ? '✓' : '✗' ?></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-<?= extension_loaded('gd') ? 'check-circle text-success' : 'x-circle text-danger' ?> me-2"></i>
+                                <span>GD <?= extension_loaded('gd') ? '✓' : '✗' ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

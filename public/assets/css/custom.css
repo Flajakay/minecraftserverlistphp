@@ -468,6 +468,18 @@ footer a:hover {
 #filterModal .modal-content {
     border-radius: 1rem;
     overflow: hidden;
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 #filterModal .modal-header {
@@ -485,12 +497,6 @@ footer a:hover {
 
 #filterModal .card {
     border-radius: 0.75rem;
-/*     transition: var(--transition);
- */}
-
-#filterModal .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 #filterModal .card-header {
@@ -498,42 +504,73 @@ footer a:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+#filterModal .category-parent-group {
+    border-bottom: 1px solid #f1f3f4;
+}
+
+#filterModal .category-parent-group:last-child {
+    border-bottom: none;
+}
+
 #filterModal .category-item {
-/*     transition: all 0.2s ease;
- */    border-bottom: 1px solid #f1f3f4 !important;
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+#filterModal .category-item.parent-category {
+    padding: 14px 16px;
 }
 
 #filterModal .category-item:hover {
-/*     background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
- *//*     transform: translateX(3px);
- */   /*  border-left: 3px solid #667eea; */
+    background: rgba(102, 126, 234, 0.04);
 }
 
-#filterModal .category-item:last-child {
-    border-bottom: none !important;
+#filterModal .category-item.selected {
+    background: rgba(102, 126, 234, 0.08);
+    border-left-color: #667eea;
 }
 
-#filterModal .active-category {
-/*     background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
- */    border-left: 4px solid #667eea !important;
-    font-weight: 600;
+#filterModal .subcategory-group {
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid #e9ecef;
+    margin-left: 16px;
+}
+
+#filterModal .category-item.subcategory {
+    padding: 10px 16px;
+}
+
+#filterModal .category-item.subcategory .form-check-label {
+    font-size: 0.9rem;
 }
 
 #filterModal .form-select {
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
     font-weight: 500;
-/*     transition: var(--transition);
- */}
+    transition: var(--transition);
+}
+
+#filterModal .form-select:hover {
+    border-color: #adb5bd;
+}
 
 #filterModal .form-select:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
 }
 
+#filterModal .form-check-input {
+    transition: all 0.2s ease;
+}
+
 #filterModal .form-check-input:checked {
-/*     background-color: #667eea;
- */    border-color: #667eea;
+    background-color: #667eea;
+    border-color: #667eea;
 }
 
 #filterModal .form-check-input:focus {
@@ -544,6 +581,19 @@ footer a:hover {
 #filterModal .badge {
     font-weight: 600;
     padding: 0.4em 0.8em;
+    animation: badgePulse 0.3s ease-out;
+}
+
+@keyframes badgePulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 #filterModal .modal-footer {
@@ -554,12 +604,61 @@ footer a:hover {
     border-radius: 0.5rem;
     font-weight: 600;
     padding: 0.6rem 1.5rem;
+    transition: var(--transition);
 }
 
 #filterModal .btn-outline-secondary:hover {
     background-color: #6c757d;
     border-color: #6c757d;
     transform: translateY(-1px);
+}
+
+#filterModal .premium-filter-box {
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+    border: 2px solid #ffc107;
+    transition: var(--transition);
+}
+
+#filterModal .premium-filter-box:hover {
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    transform: translateY(-2px);
+}
+
+#filterModal .premium-toggle {
+    width: 3rem;
+    height: 1.5rem;
+}
+
+#filterModal .premium-toggle:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+#filterModal .hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+
+#filterModal .category-grid {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(102, 126, 234, 0.3) #f1f3f4;
+}
+
+#filterModal .category-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+#filterModal .category-grid::-webkit-scrollbar-track {
+    background: #f1f3f4;
+    border-radius: 3px;
+}
+
+#filterModal .category-grid::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.3);
+    border-radius: 3px;
+}
+
+#filterModal .category-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.5);
 }
 
 /* Active Filter Badges */

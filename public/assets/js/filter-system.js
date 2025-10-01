@@ -37,7 +37,13 @@ class FilterSystem {
     updateUI() {
         this.state.categories.forEach(categoryId => {
             const checkbox = document.getElementById(`cat_${categoryId}`);
-            if (checkbox) checkbox.checked = true;
+            if (checkbox) {
+                checkbox.checked = true;
+                const categoryItem = checkbox.closest('.category-item');
+                if (categoryItem) {
+                    categoryItem.classList.add('selected');
+                }
+            }
         });
 
         const includeSubcategories = document.getElementById('includeSubcategories');
@@ -62,12 +68,20 @@ class FilterSystem {
         document.querySelectorAll('.category-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', (e) => {
                 const categoryId = parseInt(e.target.value);
+                const categoryItem = e.target.closest('.category-item');
+                
                 if (e.target.checked) {
                     if (!this.state.categories.includes(categoryId)) {
                         this.state.categories.push(categoryId);
                     }
+                    if (categoryItem) {
+                        categoryItem.classList.add('selected');
+                    }
                 } else {
                     this.state.categories = this.state.categories.filter(id => id !== categoryId);
+                    if (categoryItem) {
+                        categoryItem.classList.remove('selected');
+                    }
                 }
                 this.updateFilterCount();
             });
@@ -120,6 +134,11 @@ class FilterSystem {
         const clearButton = document.getElementById('clearFilters');
         if (clearButton) {
             clearButton.addEventListener('click', () => this.clearFilters());
+        }
+
+        const clearHeaderButton = document.getElementById('clearFiltersHeader');
+        if (clearHeaderButton) {
+            clearHeaderButton.addEventListener('click', () => this.clearFilters());
         }
     }
 
@@ -187,7 +206,13 @@ class FilterSystem {
             highlight: false
         };
         
-        document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.category-checkbox').forEach(cb => {
+            cb.checked = false;
+            const categoryItem = cb.closest('.category-item');
+            if (categoryItem) {
+                categoryItem.classList.remove('selected');
+            }
+        });
         
         const includeSubcategories = document.getElementById('includeSubcategories');
         if (includeSubcategories) includeSubcategories.checked = false;
