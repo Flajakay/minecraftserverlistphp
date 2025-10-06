@@ -59,7 +59,7 @@ class CategoryController
         }
 
         if (Category::findByUrl($data['url'])) {
-            flash('error', 'URL already exists');
+            flash('error', lang('url_already_exists'));
             redirect('/admin/categories');
         }
 
@@ -68,7 +68,7 @@ class CategoryController
             AuditLog::log('create', 'categories', 0, $currentUser->id, 'Created category: ' . $data['name']);
             flash('success', lang('category_created'));
         } else {
-            flash('error', 'Failed to create category');
+            flash('error', lang('category_create_failed'));
         }
 
         redirect('/admin/categories');
@@ -83,7 +83,7 @@ class CategoryController
 
         $category = Category::find($id);
         if (!$category) {
-            flash('error', 'Category not found');
+            flash('error', lang('category_not_found'));
             redirect('/admin/categories');
         }
 
@@ -108,7 +108,7 @@ class CategoryController
 
         $category = Category::find($id);
         if (!$category) {
-            flash('error', 'Category not found');
+            flash('error', lang('category_not_found'));
             redirect('/admin/categories');
         }
 
@@ -127,7 +127,7 @@ class CategoryController
 
         $existingCategory = Category::findByUrl($data['url']);
         if ($existingCategory && $existingCategory->id != $id) {
-            flash('error', 'URL already exists');
+            flash('error', lang('url_already_exists'));
             redirect('/admin/categories');
         }
 
@@ -136,7 +136,7 @@ class CategoryController
             AuditLog::log('update', 'categories', $id, $currentUser->id, 'Updated category: ' . $category->name);
             flash('success', lang('category_updated'));
         } else {
-            flash('error', 'Failed to update category');
+            flash('error', lang('category_update_failed'));
         }
 
         redirect('/admin/categories');
@@ -151,12 +151,12 @@ class CategoryController
 
         $category = Category::find($id);
         if (!$category) {
-            flash('error', 'Category not found');
+            flash('error', lang('category_not_found'));
             redirect('/admin/categories');
         }
 
         if ($id == 1) {
-            flash('error', 'Cannot delete default category');
+            flash('error', lang('cannot_delete_default_category'));
             redirect('/admin/categories');
         }
 
@@ -165,7 +165,7 @@ class CategoryController
             AuditLog::log('delete', 'categories', $id, $currentUser->id, 'Deleted category: ' . $category->name);
             flash('success', lang('category_deleted'));
         } else {
-            flash('error', 'Failed to delete category');
+            flash('error', lang('category_delete_failed'));
         }
 
         redirect('/admin/categories');

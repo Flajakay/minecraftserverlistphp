@@ -12,7 +12,7 @@
                     <div>
                         <h2 class="h4 fw-bold text-dark mb-1"><?= lang('audit_logs') ?></h2>
                         <p class="text-muted mb-0">
-                            <?= sprintf(lang('total_results'), number_format($totalLogs)) ?> audit entries
+                            <?= sprintf(lang('total_results'), number_format($totalLogs)) ?> <?= lang('audit_entries') ?>
                         </p>
                     </div>
                 </div>

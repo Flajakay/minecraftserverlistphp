@@ -151,25 +151,33 @@ class ServerShow {
         }
 
         const chartData = window.serverStatistics || [];
-        
+
         this.statisticsChart = new Chart(ctx.getContext('2d'), {
             type: 'line',
             data: {
-                labels: chartData.map(d => d.date),
+                labels: chartData.map(d => {
+                    const date = new Date(d.date);
+                    return date.toLocaleDateString();
+                }),
                 datasets: [{
-                    label: 'Views',
-                    data: chartData.map(d => d.hits),
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    label: 'Average Players',
+                    data: chartData.map(d => parseFloat(d.avg_players) || 0),
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
                     tension: 0.4,
-                    fill: true
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }, {
-                    label: 'Votes',
-                    data: chartData.map(d => d.votes),
+                    label: 'Peak Players',
+                    data: chartData.map(d => parseInt(d.max_players) || 0),
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.1)',
                     tension: 0.4,
-                    fill: true
+                    fill: false,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    borderDash: [5, 5]
                 }]
             },
             options: {
@@ -178,6 +186,23 @@ class ServerShow {
                 plugins: {
                     legend: {
                         position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += Math.round(context.parsed.y * 100) / 100;
+                                if (context.datasetIndex === 0) {
+                                    label += ' avg players';
+                                } else {
+                                    label += ' max players';
+                                }
+                                return label;
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -185,11 +210,19 @@ class ServerShow {
                         beginAtZero: true,
                         grid: {
                             color: 'rgba(0,0,0,0.1)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Player Count'
                         }
                     },
                     x: {
                         grid: {
                             color: 'rgba(0,0,0,0.1)'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
                         }
                     }
                 }

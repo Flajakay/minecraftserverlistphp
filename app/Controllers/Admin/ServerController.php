@@ -56,7 +56,7 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server) {
-            flash('error', 'Server not found');
+            flash('error', lang('server_not_found_admin'));
             redirect('/admin/servers');
         }
 
@@ -85,20 +85,25 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server) {
-            flash('error', 'Server not found');
+            flash('error', lang('server_not_found_admin'));
             redirect('/admin/servers');
         }
 
         $categoryIds = $_POST['category_ids'] ?? [];
         
         if (empty($categoryIds) || !is_array($categoryIds)) {
-            flash('error', 'At least one category must be selected');
+            flash('error', lang('category_required'));
             redirect("/admin/servers/edit/{$id}");
         }
         
         $categoryIds = array_filter(array_map('intval', $categoryIds));
         if (empty($categoryIds)) {
-            flash('error', 'Invalid categories selected');
+            flash('error', lang('invalid_categories'));
+            redirect("/admin/servers/edit/{$id}");
+        }
+
+        if (empty($_POST['country'] ?? '')) {
+            flash('error', 'Country is required');
             redirect("/admin/servers/edit/{$id}");
         }
 
@@ -109,7 +114,7 @@ class ServerController
             'category_id' => $categoryIds[0],
             'description' => sanitize($_POST['description'] ?? ''),
             'website' => sanitize($_POST['website'] ?? ''),
-            'country' => sanitize($_POST['country'] ?? 'US'),
+            'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
             'active' => isset($_POST['active']) ? 1 : 0,
             'private' => isset($_POST['private']) ? 1 : 0,
@@ -139,7 +144,7 @@ class ServerController
             AuditLog::log('update', 'servers', $id, $currentUser->id, 'Updated server: ' . $server->name);
             flash('success', lang('server_updated'));
         } else {
-            flash('error', 'Failed to update server');
+            flash('error', lang('server_update_failed'));
         }
 
         redirect("/admin/servers/edit/{$id}");
@@ -154,7 +159,7 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server) {
-            flash('error', 'Server not found');
+            flash('error', lang('server_not_found_admin'));
             redirect('/admin/servers');
         }
 
@@ -163,7 +168,7 @@ class ServerController
             AuditLog::log('delete', 'servers', $id, $currentUser->id, 'Deleted server: ' . $server->name);
             flash('success', lang('server_deleted'));
         } else {
-            flash('error', 'Failed to delete server');
+            flash('error', lang('server_delete_failed'));
         }
 
         redirect('/admin/servers');
@@ -180,7 +185,7 @@ class ServerController
         $server = Server::find($id);
         
         if (!$server) {
-            flash('error', 'Server not found');
+            flash('error', lang('server_not_found_admin'));
             redirect('/admin/servers');
         }
 
@@ -190,32 +195,32 @@ class ServerController
             case 'activate':
                 Server::update($id, ['active' => 1]);
                 AuditLog::log('activate', 'servers', $id, $currentUser->id, 'Activated server: ' . $server->name);
-                flash('success', 'Server activated');
+                flash('success', lang('server_activated'));
                 break;
             case 'deactivate':
                 Server::update($id, ['active' => 0]);
                 AuditLog::log('deactivate', 'servers', $id, $currentUser->id, 'Deactivated server: ' . $server->name);
-                flash('success', 'Server deactivated');
+                flash('success', lang('server_deactivated'));
                 break;
             case 'make_private':
                 Server::update($id, ['private' => 1]);
                 AuditLog::log('make_private', 'servers', $id, $currentUser->id, 'Made server private: ' . $server->name);
-                flash('success', 'Server made private');
+                flash('success', lang('server_made_private'));
                 break;
             case 'make_public':
                 Server::update($id, ['private' => 0]);
                 AuditLog::log('make_public', 'servers', $id, $currentUser->id, 'Made server public: ' . $server->name);
-                flash('success', 'Server made public');
+                flash('success', lang('server_made_public'));
                 break;
             case 'add_highlight':
                 Server::update($id, ['highlight' => 1]);
                 AuditLog::log('add_highlight', 'servers', $id, $currentUser->id, 'Added highlight to server: ' . $server->name);
-                flash('success', 'Server highlighted');
+                flash('success', lang('server_highlighted'));
                 break;
             case 'remove_highlight':
                 Server::update($id, ['highlight' => 0]);
                 AuditLog::log('remove_highlight', 'servers', $id, $currentUser->id, 'Removed highlight from server: ' . $server->name);
-                flash('success', 'Server highlight removed');
+                flash('success', lang('server_highlight_removed'));
                 break;
             case 'delete':
                 if (Server::delete($id)) {

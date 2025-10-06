@@ -184,7 +184,7 @@
                                                        data-bs-placement="bottom"
                                                        data-bs-html="true"
                                                        data-bs-content='<?= $popoverContent ?>'>
-                                                        +<?= $remainingCount ?> more
+                                                        +<?= $remainingCount ?> <?= lang('more') ?>
                                                     </a>
                                                 <?php endif; ?>
                                             </span>
@@ -205,6 +205,25 @@
                                                 <?= getCountryName($server->country) ?>
                                             </span>
                                         </div>
+                                        <?php if ($server->website): ?>
+                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                                <span class="text-muted">
+                                                    <i class="bi bi-link me-2"></i><?= lang('website') ?>
+                                                </span>
+                                                <span>
+                                                <a href="<?= htmlspecialchars($server->website) ?>" 
+                                                    target="_blank" 
+                                                    rel="noopener" 
+                                                    class="text-decoration-none">
+                                                    <?= htmlspecialchars($server->website) ?>
+                                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                                </a>  
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
+
+
+
                                     </div>
                                 </div>
                                 
@@ -255,21 +274,7 @@
                                 </div>
                             </div>
                             
-                            <?php if ($server->website): ?>
-                                <div class="mt-4 p-3 bg-light rounded">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-link text-primary me-2"></i>
-                                        <strong class="me-2"><?= lang('website') ?>:</strong>
-                                        <a href="<?= htmlspecialchars($server->website) ?>" 
-                                           target="_blank" 
-                                           rel="noopener" 
-                                           class="text-decoration-none">
-                                            <?= htmlspecialchars($server->website) ?>
-                                            <i class="bi bi-box-arrow-up-right ms-1"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
+
                             
                             <?php if ($server->description): ?>
                                 <div class="mt-4">

@@ -11,7 +11,7 @@ class SettingController
     public function index()
     {
         if (!isAdmin()) {
-            flash('error', 'Access denied');
+            flash('error', lang('access_denied'));
             redirect('/');
         }
 
@@ -23,7 +23,7 @@ class SettingController
     public function update()
     {
         if (!isAdmin()) {
-            flash('error', 'Access denied');
+            flash('error', lang('access_denied'));
             redirect('/');
         }
 
@@ -53,14 +53,14 @@ class SettingController
 
         Setting::update($data);
 
-        flash('success', 'Settings updated successfully');
+        flash('success', lang('settings_updated_successfully'));
         redirect('/admin/settings');
     }
 
     public function resetVotes()
     {
         if (!isAdmin()) {
-            flash('error', 'Access denied');
+            flash('error', lang('access_denied'));
             redirect('/');
         }
 
@@ -70,7 +70,7 @@ class SettingController
                 AuditLog::log('reset_votes', 'servers', 0, $currentUser->id, 'Reset all server votes');
                 flash('success', lang('votes_reset_success'));
             } else {
-                flash('error', 'Failed to reset votes');
+                flash('error', lang('votes_reset_failed'));
             }
         }
 

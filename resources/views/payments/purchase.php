@@ -8,7 +8,7 @@
                     <i class="bi bi-star text-warning" style="font-size: 2.5rem;"></i>
                 </div>
                 <h2 class="h3 fw-bold text-dark"><?= lang('titles.purchase_highlight') ?></h2>
-                <p class="text-muted">Highlight your server to attract more players</p>
+                <p class="text-muted"><?= lang('highlight_description') ?></p>
             </div>
 
             <div class="card border-0 shadow-sm">
@@ -19,35 +19,35 @@
                         <!-- Server Selection Section -->
                         <div class="mb-4">
                             <h5 class="fw-semibold text-dark mb-3">
-                                <i class="bi bi-server text-primary me-2"></i>Select Server
+                                <i class="bi bi-server text-primary me-2"></i><?= lang('select_server') ?>
                             </h5>
 
                             <div class="mb-3">
-                                <label for="server_id" class="form-label fw-semibold">Choose Server *</label>
+                                <label for="server_id" class="form-label fw-semibold"><?= lang('choose_server') ?></label>
                                 <select class="form-select" id="server_id" name="server_id" required>
-                                    <option value="">Select a server...</option>
+                                    <option value=""><?= lang('select_a_server') ?></option>
                                     <?php foreach ($servers as $server): ?>
                                         <option value="<?= $server->id ?>" <?= $server->highlight ? 'disabled' : '' ?>>
                                             <?= htmlspecialchars($server->name) ?> (<?= $server->address ?>:<?= $server->port ?>)
                                             <?php if ($server->highlight): ?>
-                                                <span class="text-warning">- Already highlighted</span>
+                                                <span class="text-warning">- <?= lang('already_highlighted') ?></span>
                                             <?php endif; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <small class="text-muted">Only non-highlighted servers are available for purchase</small>
+                                <small class="text-muted"><?= lang('non_highlighted_only') ?></small>
                             </div>
                         </div>
 
                         <!-- Duration Selection Section -->
                         <div class="mb-4">
                             <h5 class="fw-semibold text-dark mb-3">
-                                <i class="bi bi-calendar text-primary me-2"></i>Select Duration
+                                <i class="bi bi-calendar text-primary me-2"></i><?= lang('select_duration') ?>
                             </h5>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="days" class="form-label fw-semibold">Number of Days *</label>
+                                    <label for="days" class="form-label fw-semibold"><?= lang('number_of_days') ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="bi bi-calendar-event text-muted"></i>
@@ -61,16 +61,16 @@
                                                value="<?= $min_days ?>"
                                                required>
                                     </div>
-                                    <small class="text-muted">Minimum: <?= $min_days ?> days, Maximum: <?= $max_days ?> days</small>
+                                    <small class="text-muted"><?= sprintf(lang('min_max_days'), $min_days, $max_days) ?></small>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Cost Calculation</label>
+                                    <label class="form-label fw-semibold"><?= lang('cost_calculation') ?></label>
                                     <div class="card bg-light">
                                         <div class="card-body py-3">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span id="cost-display">
-                                                    <span id="days-display"><?= $min_days ?></span> days × $<?= number_format($cost_per_day, 2) ?>/day
+                                                    <span id="days-display"><?= $min_days ?></span> <?= lang('days') ?> × $<?= number_format($cost_per_day, 2) ?>/<?= lang('day') ?>
                                                 </span>
                                                 <strong id="total-display">$<?= number_format($min_days * $cost_per_day, 2) ?> <?= $currency ?></strong>
                                             </div>
@@ -83,32 +83,32 @@
                         <!-- PayPal Button Section -->
                         <div class="mb-4">
                             <h5 class="fw-semibold text-dark mb-3">
-                                <i class="bi bi-credit-card text-primary me-2"></i>Payment
+                                <i class="bi bi-credit-card text-primary me-2"></i><?= lang('payment') ?>
                             </h5>
 
                             <div id="paypal-button-container" class="text-center">
                                 <?php if (empty(setting('paypal_client_id')) || empty(setting('paypal_client_secret'))): ?>
                                     <div class="alert alert-warning">
                                         <i class="bi bi-exclamation-triangle me-2"></i>
-                                        PayPal payment system is not configured. Please contact the administrator.
+                                        <?= lang('paypal_not_configured') ?>
                                     </div>
                                 <?php else: ?>
-                                    <p class="text-muted">Complete your payment using PayPal</p>
+                                    <p class="text-muted"><?= lang('complete_payment_paypal') ?></p>
                                 <?php endif; ?>
                             </div>
 
                             <div class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
-                                Your server will be highlighted immediately after successful payment and will remain highlighted for the selected duration.
+                                <?= lang('highlight_info') ?>
                             </div>
                         </div>
 
                         <!-- Loading and Messages -->
                         <div id="loading-spinner" class="text-center d-none">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Processing...</span>
+                                <span class="visually-hidden"><?= lang('processing') ?></span>
                             </div>
-                            <p class="mt-2 text-muted">Processing payment...</p>
+                            <p class="mt-2 text-muted"><?= lang('processing_payment') ?></p>
                         </div>
 
                         <div id="payment-messages"></div>
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (this.value) {
             renderPayPalButton();
         } else {
-            paypalContainer.innerHTML = '<p class="text-muted">Complete your payment using PayPal</p>';
+            paypalContainer.innerHTML = '<p class="text-muted"><?= lang('complete_payment_paypal') ?></p>';
         }
     });
 
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         throw new Error(captureData.error);
                     }
 
-                    showMessage('Payment successful! Redirecting...', 'success');
+                    showMessage('<?= lang('payment_successful') ?>', 'success');
                     setTimeout(() => {
                         window.location.href = '<?= url('/my-servers') ?>';
                     }, 2000);

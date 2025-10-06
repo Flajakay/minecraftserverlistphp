@@ -44,7 +44,7 @@ class ReportController
 
         $report = Report::getWithDetails($id);
         if (!$report) {
-            flash('error', 'Report not found');
+            flash('error', lang('report_not_found'));
             redirect('/admin/reports');
         }
 
@@ -60,7 +60,7 @@ class ReportController
 
         $report = Report::find($id);
         if (!$report) {
-            flash('error', 'Report not found');
+            flash('error', lang('report_not_found'));
             redirect('/admin/reports');
         }
 
@@ -69,7 +69,7 @@ class ReportController
             AuditLog::log('delete', 'reports', $id, $currentUser->id, 'Deleted report #' . $id);
             flash('success', lang('report_deleted'));
         } else {
-            flash('error', 'Failed to delete report');
+            flash('error', lang('report_delete_failed'));
         }
 
         redirect('/admin/reports');
@@ -86,7 +86,7 @@ class ReportController
         $report = Report::find($id);
         
         if (!$report) {
-            flash('error', 'Report not found');
+            flash('error', lang('report_not_found'));
             redirect('/admin/reports');
         }
 

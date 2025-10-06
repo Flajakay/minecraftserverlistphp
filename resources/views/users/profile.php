@@ -69,13 +69,13 @@
                 <div class="card-body">
                     <?php if ($user->facebook): ?>
                         <a href="https://facebook.com/<?= sanitize($user->facebook) ?>" target="_blank" class="btn btn-outline-primary btn-sm me-2">
-                            <i class="bi bi-facebook"></i> Facebook
+                            <i class="bi bi-facebook"></i> <?= lang('facebook') ?>
                         </a>
                     <?php endif; ?>
                     
                     <?php if ($user->twitter): ?>
                         <a href="https://twitter.com/<?= sanitize($user->twitter) ?>" target="_blank" class="btn btn-outline-info btn-sm">
-                            <i class="bi bi-twitter"></i> Twitter
+                            <i class="bi bi-twitter"></i> <?= lang('twitter') ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -89,7 +89,7 @@
                 <img src="<?= url('public/uploads/covers/' . $user->cover) ?>" 
                      class="card-img-top" 
                      style="height: 200px; object-fit: cover;"
-                     alt="Cover">
+                     alt="<?= lang('cover') ?>">
             </div>
             <?php endif; ?>
             

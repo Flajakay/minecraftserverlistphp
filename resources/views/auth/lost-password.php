@@ -57,5 +57,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = 'Reset Password - Minecraft Server List'; ?>
+<?php $title = lang('titles.lostpassword') . ' - ' . setting('title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

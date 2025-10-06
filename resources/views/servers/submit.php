@@ -128,7 +128,7 @@
                                                id="youtube_id" 
                                                name="youtube_id" 
                                                value="<?= old('youtube_id') ?>"
-                                               placeholder="dQw4w9WgXcQ">
+                                               placeholder="<?= lang('youtube_placeholder') ?>">
                                     </div>
                                     <small class="text-muted"><?= lang('youtube_id_help') ?></small>
                                 </div>

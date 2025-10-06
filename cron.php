@@ -4,6 +4,7 @@ require_once __DIR__ . '/bootstrap.php';
 
 use App\Models\Server;
 use App\Models\Payment;
+use App\Models\PlayerHistory;
 use App\Core\MinecraftPing;
 use App\Core\Database;
 
@@ -16,18 +17,22 @@ $errors = 0;
 foreach ($servers as $server) {
     try {
         $status = MinecraftPing::checkServer($server->address, $server->port);
-        
-        Server::updateStatus($server->id, 
-            $status['online'] ? 1 : 0, 
-            $status['players'], 
-            $status['max_players'], 
+
+        Server::updateStatus($server->id,
+            $status['online'] ? 1 : 0,
+            $status['players'],
+            $status['max_players'],
             $status['version']
         );
-        
+
+        if (PlayerHistory::shouldRecord($server->id, 15)) {
+            PlayerHistory::record($server->id, $status['players'], $status['max_players'], $status['online'] ? 1 : 0);
+        }
+
         $updated++;
-        echo "Updated {$server->name} ({$server->address}:{$server->port}) - " . 
+        echo "Updated {$server->name} ({$server->address}:{$server->port}) - " .
              ($status['online'] ? 'Online' : 'Offline') . "\n";
-             
+
     } catch (Exception $e) {
         $errors++;
         echo "Error updating {$server->name}: " . $e->getMessage() . "\n";

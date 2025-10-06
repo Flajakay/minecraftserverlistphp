@@ -8,7 +8,7 @@
                     <i class="bi bi-file-text text-primary" style="font-size: 2.5rem;"></i>
                 </div>
                 <h2 class="h3 fw-bold text-dark"><?= lang('terms-of-service') ?></h2>
-                <p class="text-muted">Last updated: September 17, 2025</p>
+                <p class="text-muted"><?= lang('last_updated') ?> September 17, 2025</p>
             </div>
 
             <div class="card border-0 shadow-sm">

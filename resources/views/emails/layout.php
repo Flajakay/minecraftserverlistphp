@@ -69,7 +69,7 @@
         </div>
         
         <div class="footer">
-            <p><?= lang('email_footer_message' . setting('title')) ?></p>
+            <p><?= lang('email_footer_message') ?> <?= setting('title') ?></p>
             <p><a href="<?= setting('url') ?>"><?= setting('url') ?></a></p>
         </div>
     </div>

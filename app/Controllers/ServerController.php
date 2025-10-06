@@ -9,6 +9,7 @@ use App\Models\Vote;
 use App\Models\Comment;
 use App\Models\Favorite;
 use App\Models\BlogPost;
+use App\Models\PlayerHistory;
 use App\Core\Auth;
 use App\Core\MinecraftPing;
 use App\Core\Database;
@@ -105,7 +106,7 @@ class ServerController
         $blogPosts = BlogPost::getServerPosts($server->id, 5);
         $blogPostsCount = BlogPost::countServerPosts($server->id);
         $categories = Server::getCategories($server->id);
-        $statistics = Vote::getStatistics($server->id, 7);
+        $statistics = PlayerHistory::getStatistics($server->id, 7);
         $monthlyVotes = Vote::getServerVotes($server->id, 'month');
         $monthlyHits = Vote::getServerHits($server->id, 'month');
         
@@ -131,7 +132,7 @@ class ServerController
     public function showSubmit()
     {
         if (!isLoggedIn()) {
-            flash('error', 'You must be logged in to submit a server');
+            flash('error', lang('login_required_submit'));
             redirect('/login');
         }
         
@@ -157,13 +158,17 @@ class ServerController
         //$primaryCategoryId = (int)($_POST['primary_category_id'] ?? 0);
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
-        $country = sanitize($_POST['country'] ?? 'US');
+        $country = sanitize($_POST['country'] ?? '');
         $youtubeId = sanitize($_POST['youtube_id'] ?? '');
 
         $errors = [];
 
         if (empty($address)) {
             $errors[] = 'Server address is required';
+        }
+
+        if (empty($country)) {
+            $errors[] = 'Country is required';
         }
 
         if (Server::exists($address, $port)) {
@@ -207,7 +212,7 @@ class ServerController
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $image = uploadFile($_FILES['image'], 'banners');
             if (!$image) {
-                flash('error', 'Failed to upload banner image');
+                flash('error', lang('banner_upload_failed'));
                 redirect('/submit');
             }
         }
@@ -238,7 +243,7 @@ class ServerController
 
         Server::setCategories($serverId, $categoryIds, $primaryCategoryId ?: $categoryIds[0]);
 
-        flash('success', 'Server added successfully! It will be reviewed before being made public.');
+        flash('success', lang('server_added_review'));
         redirect('/my-servers');
     }
 
@@ -300,7 +305,7 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server || $server->user_id != auth()->id) {
-            flash('error', 'Server not found or access denied');
+            flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }
 
@@ -324,7 +329,7 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server || $server->user_id != auth()->id) {
-            flash('error', 'Server not found or access denied');
+            flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }
 
@@ -332,13 +337,17 @@ class ServerController
         $categoryIds = $_POST['category_ids'] ?? [];
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
-        $country = sanitize($_POST['country'] ?? 'US');
+        $country = sanitize($_POST['country'] ?? '');
         $youtubeId = sanitize($_POST['youtube_id'] ?? '');
 
         $errors = [];
 
         if (strlen($name) < 3 || strlen($name) > 64) {
             $errors[] = 'Server name must be between 3 and 64 characters';
+        }
+
+        if (empty($country)) {
+            $errors[] = 'Country is required';
         }
 
         if (empty($categoryIds) || !is_array($categoryIds)) {
@@ -391,7 +400,7 @@ class ServerController
         Database::update('servers', $updateData, 'id = ?', [$id]);
         Server::setCategories($id, $categoryIds, $categoryIds[0]);
 
-        flash('success', 'Server updated successfully');
+        flash('success', lang('server_updated'));
         redirect('/my-servers');
     }
 
@@ -403,7 +412,7 @@ class ServerController
 
         $server = Server::find($id);
         if (!$server || $server->user_id != auth()->id) {
-            flash('error', 'Server not found or access denied');
+            flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }
 
@@ -412,22 +421,22 @@ class ServerController
         switch ($action) {
             case 'make_public':
                 Server::setPrivate($id, 0);
-                flash('success', 'Server is now public');
+                flash('success', lang('server_now_public'));
                 break;
                 
             case 'make_private':
                 Server::setPrivate($id, 1);
-                flash('success', 'Server is now private');
+                flash('success', lang('server_now_private'));
                 break;
                 
             case 'delete':
                 Server::delete($id);
-                flash('success', 'Server deleted successfully');
+                flash('success', lang('server_deleted'));
                 redirect('/my-servers');
                 return;
                 
             default:
-                flash('error', 'Invalid action');
+                flash('error', lang('invalid_action'));
         }
 
         redirect('/edit-server/' . $id);

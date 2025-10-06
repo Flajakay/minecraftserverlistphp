@@ -13,12 +13,12 @@ class UserController
     {
         $user = User::findByUsername($username);
         if (!$user) {
-            flash('error', 'User not found');
+            flash('error', lang('user_not_found'));
             redirect('/');
         }
 
         if ($user->private && (!isLoggedIn() || auth()->id != $user->id)) {
-            flash('error', 'This profile is private');
+            flash('error', lang('profile_private'));
             redirect('/');
         }
 

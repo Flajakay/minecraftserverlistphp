@@ -16,7 +16,7 @@ class PaymentController
         }
 
         if (!Setting::getValue('per_day_cost', 0) > 0) {
-            flash('error', 'Premium features are not available at this time');
+            flash('error', lang('premium_not_available'));
             redirect('/');
         }
         $userServers = Server::getUserServers(auth()->id);
@@ -124,7 +124,7 @@ class PaymentController
 
             Server::updateHighlight($serverId, 1);
 
-            flash('success', 'Payment successful! Your server is now highlighted.');
+            flash('success', lang('payment_successful_highlight'));
             echo json_encode(['success' => true]);
 
         } catch (\Exception $e) {
@@ -140,7 +140,7 @@ class PaymentController
             redirect('/login');
         }
 
-        flash('info', 'Payment was cancelled');
+        flash('info', lang('payment_cancelled'));
         redirect('/premium');
     }
 }

@@ -21,7 +21,7 @@
                         <div class="mb-3">
                             <label for="new_password" class="form-label"><?= lang('new_password') ?> *</label>
                             <input type="password" class="form-control" id="new_password" name="new_password" required minlength="6">
-                            <div class="form-text">Minimum 6 characters</div>
+                            <div class="form-text"><?= lang('minimum_6_characters') ?></div>
                         </div>
                         
                         <div class="mb-3">

@@ -228,6 +228,19 @@ CREATE TABLE IF NOT EXISTS `server_categories` (
   FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `server_player_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` int(11) NOT NULL,
+  `players` int(11) NOT NULL DEFAULT '0',
+  `max_players` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_server_id` (`server_id`),
+  KEY `idx_created_at` (`created_at`),
+  FOREIGN KEY (`server_id`) REFERENCES `servers`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 INSERT INTO `categories` (`id`, `name`, `url`, `description`) VALUES
 (1, 'Survival', 'survival', 'Survival servers'),
 (2, 'Creative', 'creative', 'Creative servers'),

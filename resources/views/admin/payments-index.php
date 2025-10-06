@@ -10,15 +10,15 @@
                         <i class="bi bi-credit-card text-primary" style="font-size: 2rem;"></i>
                     </div>
                     <div>
-                        <h2 class="h4 fw-bold text-dark mb-1">Payments Management</h2>
+                        <h2 class="h4 fw-bold text-dark mb-1"><?= lang('payments_management') ?></h2>
                         <p class="text-muted mb-0">
-                            Monitor premium server payments
+                            <?= lang('monitor_payments') ?>
                         </p>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-light text-dark px-3 py-2">
-                        <i class="bi bi-shield-check me-1"></i>Admin Panel
+                        <i class="bi bi-shield-check me-1"></i><?= lang('admin_panel') ?>
                     </span>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-transparent border-0 py-3">
                     <h6 class="fw-semibold mb-0">
-                        <i class="bi bi-funnel text-primary me-2"></i>Search and Filters
+                        <i class="bi bi-funnel text-primary me-2"></i><?= lang('search_and_filters') ?>
                     </h6>
                 </div>
                 <div class="card-body">
@@ -42,10 +42,10 @@
                                     <input type="text"
                                            name="search"
                                            class="form-control border-start-0 ps-0"
-                                           placeholder="Search by username, email, or server name..."
+                                           placeholder="<?= lang('search_payments') ?>"
                                            value="<?= htmlspecialchars($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
-                                        <i class="bi bi-search me-1"></i>Search
+                                        <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
                                 </div>
                             </form>
@@ -55,7 +55,7 @@
                         <div class="col-md-4">
                             <?php if (!empty($search)): ?>
                                 <a href="/admin/payments" class="btn btn-outline-secondary">
-                                    <i class="bi bi-x-circle me-1"></i>Clear Filters
+                                    <i class="bi bi-x-circle me-1"></i><?= lang('clear_filters') ?>
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -68,11 +68,11 @@
                 <div class="card-header bg-transparent border-0 py-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <h6 class="fw-semibold mb-0">
-                            <i class="bi bi-table text-primary me-2"></i>Payments List
+                            <i class="bi bi-table text-primary me-2"></i><?= lang('payments_list') ?>
                         </h6>
                         <?php if (!empty($payments)): ?>
                             <small class="text-muted">
-                                <?= sprintf('Showing %d of %d total payments', count($payments), $totalPayments) ?>
+                                <?= sprintf(lang('showing_payments'), count($payments), $totalPayments) ?>
                             </small>
                         <?php endif; ?>
                     </div>
@@ -82,7 +82,7 @@
                     <?php if (empty($payments)): ?>
                         <div class="text-center py-5">
                             <i class="bi bi-credit-card text-muted" style="font-size: 3rem;"></i>
-                            <p class="text-muted mt-3 mb-0">No payments found</p>
+                            <p class="text-muted mt-3 mb-0"><?= lang('no_payments_found') ?></p>
                         </div>
                     <?php else: ?>
                         <div class="table-responsive">
@@ -143,12 +143,12 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-info">
-                                                    <i class="bi bi-calendar-event me-1"></i><?= $payment->highlighted_days ?> days
+                                                    <i class="bi bi-calendar-event me-1"></i><?= $payment->highlighted_days ?> <?= lang('days') ?>
                                                 </span>
                                             </td>
                                             <td>
                                                 <strong class="text-success">
-                                                    $<?= number_format($payment->revenue, 2) ?> USD
+                                                    <?= sprintf(lang('usd_revenue'), number_format($payment->revenue, 2)) ?>
                                                 </strong>
                                             </td>
                                             <td>
@@ -178,6 +178,6 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = 'Payments Management - ' . setting('title'); ?>
+<?php $title = lang('payments_management') . ' - ' . setting('title'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

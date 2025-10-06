@@ -30,33 +30,33 @@ class AuthController
         $ip = $_SERVER['REMOTE_ADDR'];
 
         if (empty($username) || empty($password)) {
-            flash('error', 'Please fill all fields');
+            flash('error', lang('please_fill_all_fields'));
             redirect('/login');
         }
 
         if (LoginSecurity::isLockedOut($username, 'username')) {
             $remaining = LoginSecurity::getLockoutTimeRemaining($username, 'username');
             $minutes = ceil($remaining / 60);
-            flash('error', "Account is temporarily locked due to too many failed login attempts. Please try again in {$minutes} minute(s).");
+            flash('error', sprintf(lang('account_locked_minutes'), $minutes));
             redirect('/login');
         }
 
         if (LoginSecurity::isLockedOut($ip, 'ip')) {
             $remaining = LoginSecurity::getLockoutTimeRemaining($ip, 'ip');
             $minutes = ceil($remaining / 60);
-            flash('error', "Too many login attempts from your IP address. Please try again in {$minutes} minute(s).");
+            flash('error', sprintf(lang('ip_locked_minutes'), $minutes));
             redirect('/login');
         }
 
         $user = Auth::attempt($username, $password);
         if ($user) {
             if (!User::isActive($username)) {
-                flash('error', 'Account is not active or blocked');
+                flash('error', lang('account_not_active'));
                 redirect('/login');
             }
 
             Auth::login($user, $remember);
-            flash('success', 'Welcome back!');
+            flash('success', lang('welcome_back'));
             redirect('/');
         }
 
@@ -65,9 +65,9 @@ class AuthController
 
         $remaining = LoginSecurity::getRemainingAttempts($username, 'username');
         if ($remaining > 0) {
-            flash('error', "Invalid username or password. {$remaining} attempt(s) remaining.");
+            flash('error', sprintf(lang('invalid_credentials_attempts'), $remaining));
         } else {
-            flash('error', 'Invalid username or password. Account temporarily locked due to too many failed attempts.');
+            flash('error', lang('invalid_credentials_locked'));
         }
 
         redirect('/login');
@@ -92,27 +92,27 @@ class AuthController
         $errors = [];
 
         if (strlen($username) < 3 || strlen($username) > 32) {
-            $errors[] = 'Username must be between 3 and 32 characters';
+            $errors[] = lang('username_length_validation');
         }
 
         if (User::findByUsername($username)) {
-            $errors[] = 'Username already exists';
+            $errors[] = lang('username_exists');
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Invalid email address';
+            $errors[] = lang('invalid_email');
         }
 
         if (User::findByEmail($email)) {
-            $errors[] = 'Email already registered';
+            $errors[] = lang('email_used');
         }
 
         if (strlen($password) < 6) {
-            $errors[] = 'Password must be at least 6 characters';
+            $errors[] = lang('password_too_short');
         }
 
         if (strlen($name) < 2 || strlen($name) > 32) {
-            $errors[] = 'Name must be between 2 and 32 characters';
+            $errors[] = lang('name_length_validation');
         }
 
         if (!empty($errors)) {
@@ -160,7 +160,7 @@ class AuthController
     public function logout()
     {
         Auth::logout();
-        flash('success', 'You have been logged out');
+        flash('success', lang('loggedout'));
         redirect('/');
     }
 
@@ -169,9 +169,9 @@ class AuthController
         $email = urldecode($email);
 
         if (User::activate($email, $code)) {
-            flash('success', 'Account activated successfully!');
+            flash('success', lang('account_activated'));
         } else {
-            flash('error', 'Invalid activation link');
+            flash('error', lang('invalid_activation_link'));
         }
 
         redirect('/login');

@@ -151,12 +151,12 @@ class UserController
             case 'activate':
                 User::update($id, ['active' => 1]);
                 AuditLog::log('activate', 'users', $id, $currentUser->id, 'Activated user: ' . $user->username);
-                flash('success', 'User activated');
+                flash('success', lang('user_activated'));
                 break;
             case 'deactivate':
                 User::update($id, ['active' => 0]);
                 AuditLog::log('deactivate', 'users', $id, $currentUser->id, 'Deactivated user: ' . $user->username);
-                flash('success', 'User deactivated');
+                flash('success', lang('user_deactivated'));
                 break;
             case 'delete':
                 if (User::delete($id)) {

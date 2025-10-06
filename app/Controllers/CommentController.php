@@ -15,7 +15,7 @@ class CommentController
                 echo json_encode(['success' => false, 'message' => 'Must be logged in']);
                 return;
             }
-            flash('error', 'You must be logged in to comment');
+            flash('error', lang('login_required_comment'));
             redirect($_SERVER['HTTP_REFERER'] ?? '/');
         }
 
@@ -66,7 +66,7 @@ class CommentController
             return;
         }
 
-        flash('success', 'Comment added successfully');
+        flash('success', lang('comment_added'));
         redirect($_SERVER['HTTP_REFERER'] ?? "/server/{$server->address}:{$server->port}");
     }
 

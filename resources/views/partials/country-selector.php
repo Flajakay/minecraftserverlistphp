@@ -1,5 +1,5 @@
 <div class="col-12">
-    <label for="country" class="form-label fw-semibold"><?= lang('server_country') ?></label>
+    <label for="country" class="form-label fw-semibold"><?= lang('server_country') ?> *</label>
     <div class="searchable-select-container">
         <div class="input-group">
             <span class="input-group-text bg-light border-end-0">
