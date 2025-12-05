@@ -1,12 +1,6 @@
 # Minecraft Server List (WiP)
 
-A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and PHP 8.0. This is a complete recreation of the original minecraftserverlistphp project with improved architecture and better design.
-
-
-
-
-**MANY FEATURES FROM THE LIST BELOW ARE YET TO BE IMPLEMENTED**
-
+A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and PHP 8.0. This is a complete recreation of the original project with improved architecture and, uhm, slightly better design.
 
 
 ## Features
