@@ -146,6 +146,21 @@ $isAdmin = $config['isAdmin'] ?? false;
                 </div>
                 <small class="text-muted"><?= lang('server_banner_help') ?></small>
             </div>
+
+            <div class="col-md-6">
+                <label for="icon" class="form-label fw-semibold"><?= lang('server_icon') ?></label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-box-seam text-muted"></i>
+                    </span>
+                    <input type="file" 
+                           class="form-control border-start-0" 
+                           id="icon" 
+                           name="icon" 
+                           accept="image/*">
+                </div>
+                <small class="text-muted"><?= lang('server_icon_help') ?></small>
+            </div>
         </div>
         
         <?php if ($server->image): ?>
@@ -155,6 +170,18 @@ $isAdmin = $config['isAdmin'] ?? false;
                     <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
                          alt="<?= lang('current_banner') ?>" 
                          style="max-width: 300px;" 
+                         class="border rounded shadow-sm">
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($server->icon): ?>
+            <div class="mt-3 p-3 bg-light rounded">
+                <label class="form-label fw-semibold mb-2"><?= lang('current_icon') ?>:</label>
+                <div>
+                    <img src="<?= url('/uploads/icons/' . $server->icon) ?>" 
+                         alt="<?= lang('current_icon') ?>" 
+                         style="width: 64px; height: 64px;" 
                          class="border rounded shadow-sm">
                 </div>
             </div>

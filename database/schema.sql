@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
   `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
   `image` varchar(38) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `icon` varchar(38) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `website` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `country` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT 'US',
   `youtube_id` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT '',

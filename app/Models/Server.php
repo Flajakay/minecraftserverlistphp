@@ -17,7 +17,7 @@ class Server
         $data['private'] = 1;
         $data['active'] = 1;
         $data['status'] = 1;
-        
+
         return Database::insert('servers', $data);
     }
 
@@ -32,7 +32,7 @@ class Server
             'SELECT s.*, u.username as owner_username 
              FROM servers s 
              LEFT JOIN users u ON s.user_id = u.id 
-             WHERE s.address = ? AND s.port = ?', 
+             WHERE s.address = ? AND s.port = ?',
             [$address, $port]
         );
     }
@@ -43,12 +43,12 @@ class Server
                 FROM servers s 
                 LEFT JOIN users u ON s.user_id = u.id 
                 WHERE s.active = 1 AND s.private = 0';
-        
+
         $params = [];
-        
+
         if (!empty($filters['categories'])) {
             $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
-            
+
             if (!empty($filters['include_subcategories'])) {
                 $allCategoryIds = $categoryIds;
                 foreach ($categoryIds as $categoryId) {
@@ -59,7 +59,7 @@ class Server
                 }
                 $categoryIds = array_unique($allCategoryIds);
             }
-            
+
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
             $sql .= " AND s.id IN (
                 SELECT DISTINCT sc.server_id 
@@ -68,7 +68,7 @@ class Server
             )";
             $params = array_merge($params, $categoryIds);
         }
-        
+
         if (!empty($filters['category_id'])) {
             $sql .= " AND s.id IN (
                 SELECT sc.server_id 
@@ -77,44 +77,49 @@ class Server
             )";
             $params[] = $filters['category_id'];
         }
-        
+
         if (isset($filters['status'])) {
             $sql .= ' AND s.status = ?';
             $params[] = $filters['status'];
         }
-        
+
         if (!empty($filters['country'])) {
             $sql .= ' AND s.country = ?';
             $params[] = $filters['country'];
         }
-        
+
         if (!empty($filters['version'])) {
             $sql .= ' AND s.version = ?';
             $params[] = $filters['version'];
         }
-        
+
         if (isset($filters['highlight'])) {
             $sql .= ' AND s.highlight = ?';
             $params[] = $filters['highlight'];
         }
-        
-        $orderBy = $filters['order_by'] ?? 'created_at';
-        $validOrders = ['votes', 'players', 'favorites', 'created_at'];
-        
-        if (!in_array($orderBy, $validOrders)) {
+
+        $orderBy = $filters['order_by'] ?? 'votes';
+
+        if ($orderBy === 'newest') {
             $orderBy = 'created_at';
         }
-        
+
+        $validOrders = ['votes', 'players', 'favorites', 'created_at'];
+
+        if (!in_array($orderBy, $validOrders)) {
+            $orderBy = 'votes';
+        }
+
         $sql .= ' ORDER BY s.highlight DESC, s.' . $orderBy . ' DESC';
-        
+
         if (isset($filters['limit'])) {
-            $sql .= ' LIMIT ' . (int)$filters['limit'];
+            $sql .= ' LIMIT ' . (int) $filters['limit'];
         }
-        
+
         if (isset($filters['offset'])) {
-            $sql .= ' OFFSET ' . (int)$filters['offset'];
+            $sql .= ' OFFSET ' . (int) $filters['offset'];
         }
-        
+
         return Database::fetchAll($sql, $params);
     }
 
@@ -124,7 +129,7 @@ class Server
             'SELECT s.* 
              FROM servers s 
              WHERE s.user_id = ? 
-             ORDER BY s.created_at DESC', 
+             ORDER BY s.created_at DESC',
             [$userId]
         );
     }
@@ -189,10 +194,10 @@ class Server
     {
         $sql = 'SELECT COUNT(DISTINCT s.id) as count FROM servers s WHERE s.active = 1 AND s.private = 0';
         $params = [];
-        
+
         if (!empty($filters['categories'])) {
             $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
-            
+
             if (!empty($filters['include_subcategories'])) {
                 $allCategoryIds = $categoryIds;
                 foreach ($categoryIds as $categoryId) {
@@ -203,7 +208,7 @@ class Server
                 }
                 $categoryIds = array_unique($allCategoryIds);
             }
-            
+
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
             $sql .= " AND s.id IN (
                 SELECT DISTINCT sc.server_id 
@@ -212,7 +217,7 @@ class Server
             )";
             $params = array_merge($params, $categoryIds);
         }
-        
+
         if (!empty($filters['category_id'])) {
             $sql .= " AND s.id IN (
                 SELECT sc.server_id 
@@ -221,12 +226,27 @@ class Server
             )";
             $params[] = $filters['category_id'];
         }
-        
+
         if (isset($filters['status'])) {
             $sql .= ' AND s.status = ?';
             $params[] = $filters['status'];
         }
-        
+
+        if (!empty($filters['country'])) {
+            $sql .= ' AND s.country = ?';
+            $params[] = $filters['country'];
+        }
+
+        if (!empty($filters['version'])) {
+            $sql .= ' AND s.version = ?';
+            $params[] = $filters['version'];
+        }
+
+        if (isset($filters['highlight'])) {
+            $sql .= ' AND s.highlight = ?';
+            $params[] = $filters['highlight'];
+        }
+
         $result = Database::fetch($sql, $params);
         return $result->count;
     }
@@ -283,7 +303,7 @@ class Server
             $params[] = $filters['private'];
         }
 
-        $sql .= ' ORDER BY s.created_at DESC LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
+        $sql .= ' ORDER BY s.created_at DESC LIMIT ' . (int) $limit . ' OFFSET ' . (int) $offset;
 
         return Database::fetchAll($sql, $params);
     }

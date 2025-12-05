@@ -21,8 +21,8 @@ class ServerController
     {
         SEO::setDescription(lang('seo.servers_description'));
         SEO::setKeywords(lang('seo.keywords_default'));
-        
-        $page = max(1, (int)$page);
+
+        $page = max(1, (int) $page);
         $perPage = Setting::getValue('servers_pagination', 15);
         $offset = ($page - 1) * $perPage;
 
@@ -47,11 +47,11 @@ class ServerController
             $filters['order_by'] = $_GET['order_by'];
         }
 
-        if (isset($_GET['country'])) {
+        if (isset($_GET['country']) && $_GET['country'] !== '') {
             $filters['country'] = $_GET['country'];
         }
 
-        if (isset($_GET['status'])) {
+        if (isset($_GET['status']) && $_GET['status'] !== '') {
             $filters['status'] = $_GET['status'];
         }
 
@@ -95,9 +95,9 @@ class ServerController
             flash('error', lang('server_not_found'));
             redirect('/servers');
         }
-		
-		
-        
+
+
+
         SEO::configureServerPage($server);
 
         Vote::recordHit($server->id, $_SERVER['REMOTE_ADDR']);
@@ -109,8 +109,8 @@ class ServerController
         $statistics = PlayerHistory::getStatistics($server->id, 7);
         $monthlyVotes = Vote::getServerVotes($server->id, 'month');
         $monthlyHits = Vote::getServerHits($server->id, 'month');
-        
-      
+
+
         $canVote = isLoggedIn() && Vote::canVote($server->id, $_SERVER['REMOTE_ADDR']);
         $isFavorite = isLoggedIn() && Favorite::exists(auth()->id, $server->id);
 
@@ -135,7 +135,7 @@ class ServerController
             flash('error', lang('login_required_submit'));
             redirect('/login');
         }
-        
+
         $categories = Category::getAllForSelect();
         $countries = getCountries();
 
@@ -152,10 +152,10 @@ class ServerController
         }
 
         $address = sanitize($_POST['address'] ?? '');
-        $port = (int)($_POST['port'] ?? 25565);
+        $port = (int) ($_POST['port'] ?? 25565);
         $name = sanitize($_POST['name'] ?? '');
         $categoryIds = $_POST['category_ids'] ?? [];
-        //$primaryCategoryId = (int)($_POST['primary_category_id'] ?? 0);
+        $primaryCategoryId = (int) ($_POST['primary_category_id'] ?? 0);
         $description = sanitize($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
         $country = sanitize($_POST['country'] ?? '');
@@ -186,7 +186,7 @@ class ServerController
             if (empty($categoryIds)) {
                 $errors[] = 'Invalid categories selected';
             }
-            
+
             if ($primaryCategoryId && !in_array($primaryCategoryId, $categoryIds)) {
                 $errors[] = 'Primary category must be one of the selected categories';
             }
@@ -217,11 +217,20 @@ class ServerController
             }
         }
 
+        $icon = '';
+        if (isset($_FILES['icon']) && $_FILES['icon']['error'] === UPLOAD_ERR_OK) {
+            $icon = uploadFile($_FILES['icon'], 'icons');
+            if (!$icon) {
+                flash('error', lang('icon_upload_failed'));
+                redirect('/submit');
+            }
+        }
+
         $customData = [];
         if (!empty($_POST['votifier_public_key'])) {
             $customData['votifier_public_key'] = $_POST['votifier_public_key'];
             $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $address;
-            $customData['votifier_port'] = (int)($_POST['votifier_port'] ?? 8192);
+            $customData['votifier_port'] = (int) ($_POST['votifier_port'] ?? 8192);
         }
 
         $serverId = Server::create([
@@ -232,6 +241,7 @@ class ServerController
             'name' => $name,
             'description' => $description,
             'image' => $image,
+            'icon' => $icon,
             'website' => $website,
             'country' => $country,
             'youtube_id' => $youtubeId,
@@ -386,13 +396,20 @@ class ServerController
             }
         }
 
+        if (isset($_FILES['icon']) && $_FILES['icon']['error'] === UPLOAD_ERR_OK) {
+            $icon = uploadFile($_FILES['icon'], 'icons');
+            if ($icon) {
+                $updateData['icon'] = $icon;
+            }
+        }
+
         $customData = [];
         if (!empty($_POST['votifier_public_key'])) {
             $customData['votifier_public_key'] = $_POST['votifier_public_key'];
             $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $server->address;
-            $customData['votifier_port'] = (int)($_POST['votifier_port'] ?? 8192);
+            $customData['votifier_port'] = (int) ($_POST['votifier_port'] ?? 8192);
         }
-        
+
         if (!empty($customData)) {
             $updateData['custom_data'] = json_encode($customData);
         }
@@ -423,18 +440,18 @@ class ServerController
                 Server::setPrivate($id, 0);
                 flash('success', lang('server_now_public'));
                 break;
-                
+
             case 'make_private':
                 Server::setPrivate($id, 1);
                 flash('success', lang('server_now_private'));
                 break;
-                
+
             case 'delete':
                 Server::delete($id);
                 flash('success', lang('server_deleted'));
                 redirect('/my-servers');
                 return;
-                
+
             default:
                 flash('error', lang('invalid_action'));
         }

@@ -27,9 +27,17 @@ body {
 }
 
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Navigation */
@@ -133,13 +141,15 @@ body {
 }
 
 /* Form Elements */
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: var(--border-radius);
     border: 1px solid #dee2e6;
     transition: var(--transition);
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: #86b7fe;
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
@@ -222,9 +232,6 @@ footer a:hover {
 }
 
 /* Utilities */
-.text-decoration-none:hover {
-    text-decoration: underline !important;
-}
 
 .shadow-sm {
     box-shadow: var(--card-shadow) !important;
@@ -339,7 +346,7 @@ footer a:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%);
+    background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.05) 50%, transparent 51%);
     pointer-events: none;
     z-index: 1;
 }
@@ -354,29 +361,29 @@ footer a:hover {
     .hero-section {
         padding: 3rem 1rem !important;
     }
-    
+
     .hero-section .display-4 {
         font-size: 2.5rem;
     }
-    
+
     .container-fluid {
         padding-left: 1rem;
         padding-right: 1rem;
     }
-    
+
     .card-body {
         padding: 1rem;
     }
-    
+
     .btn-lg {
         padding: 0.625rem 1.5rem;
         font-size: 1rem;
     }
-    
+
     .banner-container {
         height: 100px;
     }
-    
+
     .server-card .server-banner {
         padding: 8px;
     }
@@ -386,23 +393,23 @@ footer a:hover {
     .hero-section .display-4 {
         font-size: 2rem;
     }
-    
+
     .navbar-brand {
         font-size: 1.1rem;
     }
-    
+
     .card-body {
         padding: 0.75rem;
     }
-    
+
     .d-flex.flex-column.flex-sm-row {
         gap: 0.75rem;
     }
-    
+
     .banner-container {
         height: 90px;
     }
-    
+
     .server-card .server-banner {
         padding: 6px;
     }
@@ -415,13 +422,14 @@ footer a:hover {
 
 /* Print styles */
 @media print {
+
     .navbar,
     .footer,
     .btn,
     .dropdown {
         display: none !important;
     }
-    
+
     .card {
         box-shadow: none !important;
         border: 1px solid #dee2e6 !important;
@@ -438,6 +446,7 @@ footer a:hover {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -454,11 +463,11 @@ footer a:hover {
     #filterModal .modal-dialog {
         margin: 0.5rem;
     }
-    
+
     #filterModal .modal-lg {
         max-width: none;
     }
-    
+
     #filterModal .row {
         --bs-gutter-x: 1rem;
     }
@@ -476,6 +485,7 @@ footer a:hover {
         opacity: 0;
         transform: scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -588,9 +598,11 @@ footer a:hover {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }
@@ -699,11 +711,15 @@ footer a:hover {
 }
 
 .server-banner-row {
-    max-width: 468px;  /* Set to your banner width */
-    max-height: 60px;  /* Set to your banner height */
+    max-width: 468px;
+    /* Set to your banner width */
+    max-height: 60px;
+    /* Set to your banner height */
     width: auto;
     height: auto;
-    object-fit: none;  /* Don't scale - show at original size */n;
+    object-fit: none;
+    /* Don't scale - show at original size */
+    n;
     transition: all 0.3s ease;
 }
 
@@ -755,32 +771,32 @@ footer a:hover {
     .server-row-item {
         padding: 1rem !important;
     }
-    
+
     .server-banner-container {
         height: 60px;
         margin-bottom: 1rem;
     }
-    
+
     .server-banner-placeholder {
         height: 60px;
         min-height: 60px;
     }
-    
+
     .server-stats {
         margin-bottom: 1rem !important;
     }
-    
+
     .server-actions .d-flex {
         flex-direction: row !important;
         justify-content: center;
         gap: 0.5rem;
     }
-    
+
     .server-actions .btn-sm {
         flex: 1;
         max-width: 120px;
     }
-    
+
     .server-name {
         flex: 1;
         margin-right: 1rem;
@@ -791,20 +807,20 @@ footer a:hover {
     .server-banner-container {
         height: 50px;
     }
-    
+
     .server-banner-placeholder {
         height: 50px;
         min-height: 50px;
     }
-    
+
     .server-name {
         font-size: 1.1rem;
     }
-    
+
     .server-description {
         font-size: 0.85rem;
     }
-    
+
     .server-stats .fw-semibold {
         font-size: 1rem;
     }
@@ -820,6 +836,7 @@ footer a:hover {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -837,6 +854,7 @@ footer a:hover {
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -848,8 +866,9 @@ footer a:hover {
 
 .category-item:has(.category-checkbox:checked) {
     border-color: #007bff;
-/*     background-color: rgba(0, 123, 255, 0.03);
- */}
+    /*     background-color: rgba(0, 123, 255, 0.03);
+ */
+}
 
 .form-check-sm .form-check-input {
     width: 14px;
@@ -858,4 +877,78 @@ footer a:hover {
 
 .form-check-sm .form-check-label {
     font-size: 0.875rem;
+}
+
+/* Add to custom.css */
+
+/* --- Mobile Floating Filter Button (FAB) --- */
+.btn-fab-filter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    z-index: 1050;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: transform 0.2s;
+}
+
+.btn-fab-filter:active {
+    transform: scale(0.95);
+}
+
+/* --- Improved Server Row Layout --- */
+.server-row-item {
+    padding: 1rem !important;
+}
+
+/* Status Indicator (Dot on Icon) */
+.server-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    /* Creates a cut-out effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* CSS Line Clamping (Replaces PHP substr) */
+.text-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .server-icon-responsive {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    /* Hide description on very small screens to save space */
+    .server-description-mobile-hide {
+        display: none;
+    }
 }
