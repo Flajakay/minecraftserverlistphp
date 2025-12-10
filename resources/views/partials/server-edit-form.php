@@ -46,7 +46,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            <?= $isAdmin ? 'required' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>
-                    <small class="text-muted"><?= lang('server_address_readonly') ?></small>
+                        <small class="text-muted"><?= lang('server_address_readonly') ?></small>
                 <?php endif; ?>
             </div>
             
@@ -64,11 +64,11 @@ $isAdmin = $config['isAdmin'] ?? false;
                            <?= $isAdmin ? 'min="1" max="65535"' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>
-                    <small class="text-muted"><?= lang('port_readonly') ?></small>
+                        <small class="text-muted"><?= lang('port_readonly') ?></small>
                 <?php endif; ?>
             </div>
-			
-			<?php include __DIR__ . '/category-selection.php'; ?>
+            
+            <?php include __DIR__ . '/category-selection.php'; ?>
         </div>
     </div>
 
@@ -88,8 +88,8 @@ $isAdmin = $config['isAdmin'] ?? false;
             <small class="text-muted"><?= lang('description_help') ?></small>
         </div>
         
-		
-		
+        
+        
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="website" class="form-label fw-semibold"><?= lang('website') ?></label>
@@ -164,27 +164,27 @@ $isAdmin = $config['isAdmin'] ?? false;
         </div>
         
         <?php if ($server->image): ?>
-            <div class="mt-3 p-3 bg-light rounded">
-                <label class="form-label fw-semibold mb-2"><?= lang('current_banner') ?>:</label>
-                <div>
-                    <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
-                         alt="<?= lang('current_banner') ?>" 
-                         style="max-width: 300px;" 
-                         class="border rounded shadow-sm">
+                <div class="mt-3 p-3 bg-light rounded">
+                    <label class="form-label fw-semibold mb-2"><?= lang('current_banner') ?>:</label>
+                    <div>
+                        <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
+                             alt="<?= lang('current_banner') ?>" 
+                             style="max-width: 300px;" 
+                             class="border rounded shadow-sm">
+                    </div>
                 </div>
-            </div>
         <?php endif; ?>
 
         <?php if ($server->icon): ?>
-            <div class="mt-3 p-3 bg-light rounded">
-                <label class="form-label fw-semibold mb-2"><?= lang('current_icon') ?>:</label>
-                <div>
-                    <img src="<?= url('/uploads/icons/' . $server->icon) ?>" 
-                         alt="<?= lang('current_icon') ?>" 
-                         style="width: 64px; height: 64px;" 
-                         class="border rounded shadow-sm">
+                <div class="mt-3 p-3 bg-light rounded">
+                    <label class="form-label fw-semibold mb-2"><?= lang('current_icon') ?>:</label>
+                    <div>
+                        <img src="<?= url('/uploads/icons/' . $server->icon) ?>" 
+                             alt="<?= lang('current_icon') ?>" 
+                             style="width: 64px; height: 64px;" 
+                             class="border rounded shadow-sm">
+                    </div>
                 </div>
-            </div>
         <?php endif; ?>
     </div>
 
@@ -201,7 +201,7 @@ $isAdmin = $config['isAdmin'] ?? false;
             <?= lang('votifier_info') ?>
         </div>
         
-        <?php 
+        <?php
         $customData = json_decode($server->custom_data ?? '{}', true);
         ?>
         
@@ -259,5 +259,5 @@ $isAdmin = $config['isAdmin'] ?? false;
         <button type="submit" class="btn btn-primary px-4 fw-semibold">
             <i class="bi bi-<?= $isAdmin ? 'check-lg' : 'save' ?> me-2"></i><?= $isAdmin ? lang('submit') : lang('update_server') ?>
         </button>
-	</div>
+    </div>
 </form>

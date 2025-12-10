@@ -38,7 +38,7 @@ class CategoryCloud {
 
         Object.values(this.categories).forEach(category => {
             this.renderMainCategory(container, category);
-            
+
             if (this.expandedParents.has(category.id)) {
                 this.renderSubcategories(container, category.id);
             }
@@ -52,7 +52,7 @@ class CategoryCloud {
         tag.className = `category-tag main-category ${this.selectedCategories.has(category.id) ? 'selected' : ''}`;
         tag.dataset.categoryId = category.id;
         tag.dataset.categoryType = 'main';
-        
+
         tag.innerHTML = `
             ${category.name}
             <span class="checkmark">✓</span>
@@ -74,7 +74,7 @@ class CategoryCloud {
             tag.dataset.categoryId = subcat.id;
             tag.dataset.categoryType = 'sub';
             tag.dataset.parentId = parentId;
-            
+
             tag.innerHTML = `
                 ${subcat.name}
                 <span class="checkmark">✓</span>
@@ -105,11 +105,11 @@ class CategoryCloud {
 
     toggleMainCategory(categoryId) {
         const wasSelected = this.selectedCategories.has(categoryId);
-        
+
         if (wasSelected) {
             this.selectedCategories.delete(categoryId);
             this.expandedParents.delete(categoryId);
-            
+
             if (this.subcategories[categoryId]) {
                 this.subcategories[categoryId].forEach(subcat => {
                     this.selectedCategories.delete(subcat.id);
@@ -136,28 +136,30 @@ class CategoryCloud {
     }
 
     loadInitialSelections() {
-        const hiddenInputs = document.querySelectorAll('input[name="category_ids[]"]');
-        
-        hiddenInputs.forEach(input => {
-            const categoryId = parseInt(input.value);
-            if (input.checked) {
-                this.selectedCategories.add(categoryId);
-                
-                const category = this.categories[categoryId];
-                if (category) {
-                    if (this.subcategories[categoryId] && this.subcategories[categoryId].length > 0) {
-                        this.expandedParents.add(categoryId);
-                    }
-                } else {
-                    Object.values(this.categories).forEach(parentCat => {
-                        if (this.subcategories[parentCat.id]) {
-                            const found = this.subcategories[parentCat.id].find(sub => sub.id === categoryId);
-                            if (found && this.selectedCategories.has(parentCat.id)) {
-                                this.expandedParents.add(parentCat.id);
-                            }
-                        }
-                    });
+        // Load from PHP-provided selected categories (for edit mode)
+        const selectedIds = window.selectedCategoryIds || [];
+
+        selectedIds.forEach(categoryId => {
+            categoryId = parseInt(categoryId);
+            this.selectedCategories.add(categoryId);
+
+            const category = this.categories[categoryId];
+            if (category) {
+                // It's a main category
+                if (this.subcategories[categoryId] && this.subcategories[categoryId].length > 0) {
+                    this.expandedParents.add(categoryId);
                 }
+            } else {
+                // It's a subcategory - find and expand its parent
+                Object.values(this.categories).forEach(parentCat => {
+                    if (this.subcategories[parentCat.id]) {
+                        const found = this.subcategories[parentCat.id].find(sub => sub.id === categoryId);
+                        if (found) {
+                            // Expand the parent if this subcategory is selected
+                            this.expandedParents.add(parentCat.id);
+                        }
+                    }
+                });
             }
         });
 
@@ -181,7 +183,7 @@ class CategoryCloud {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('category-cloud')) {
         new CategoryCloud();
     }
