@@ -34,6 +34,17 @@
     </div>
 </div>
 
+<!-- Load Jodit Helper -->
+<?php joditAssets(); ?>
+
+<?php echo joditScript([
+    [
+        'selector' => '#description',
+        'type' => 'page',
+        'placeholder' => lang('description_placeholder')
+    ]
+]); ?>
+
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.edit_server') . ' - ' . setting('title'); ?>
 

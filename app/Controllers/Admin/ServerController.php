@@ -112,7 +112,7 @@ class ServerController
             'address' => sanitize($_POST['address'] ?? ''),
             'port' => (int)($_POST['port'] ?? 25565),
             'category_id' => $categoryIds[0],
-            'description' => sanitize($_POST['description'] ?? ''),
+            'description' => trim($_POST['description'] ?? ''),
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),

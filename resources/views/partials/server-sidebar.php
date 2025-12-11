@@ -86,7 +86,7 @@
     </div>
     <div class="card-body">
         <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" 
-           class="btn btn-outline-primary w-100 mb-2">
+           class="btn btn-primary w-100 mb-2">
             <i class="bi bi-eye me-2"></i><?= lang('view_server_page') ?>
         </a>
         
@@ -95,9 +95,18 @@
                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                 <input type="hidden" name="action" value="<?= $server->active ? 'deactivate' : 'activate' ?>">
                 <button type="submit" 
-                        class="btn btn-outline-<?= $server->active ? 'warning' : 'success' ?> w-100 mb-2" 
+                        class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= $server->active ? lang('confirm_deactivate') : lang('confirm_activate') ?>')">
                     <i class="bi bi-<?= $server->active ? 'pause' : 'play' ?> me-2"></i><?= $server->active ? lang('deactivate') : lang('activate') ?>
+                </button>
+            </form>
+            
+            <form method="POST" action="<?= url('/admin/servers/action/' . $server->id) ?>">
+                <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
+                <input type="hidden" name="action" value="<?= $server->highlight ? 'remove_highlight' : 'add_highlight' ?>">
+                <button type="submit" 
+                        class="btn btn-outline-warning w-100 mb-2">
+                    <i class="bi bi-<?= $server->highlight ? 'star-fill' : 'star' ?> me-2"></i><?= $server->highlight ? lang('server_remove_highlight') : lang('server_highlight') ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -107,7 +116,7 @@
                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                 <input type="hidden" name="action" value="make_public">
                 <button type="submit" 
-                        class="btn btn-outline-success w-100 mb-2" 
+                        class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= lang('confirm_make_public') ?>')">
                     <i class="bi bi-unlock me-2"></i><?= lang('make_public') ?>
                 </button>
@@ -117,7 +126,7 @@
                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                 <input type="hidden" name="action" value="make_private">
                 <button type="submit" 
-                        class="btn btn-outline-warning w-100 mb-2" 
+                        class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= lang('confirm_make_private') ?>')">
                     <i class="bi bi-lock me-2"></i><?= lang('make_private') ?>
                 </button>
@@ -130,7 +139,7 @@
             <button type="submit" 
                     class="btn btn-outline-danger w-100" 
                     onclick="return confirm('<?= lang('confirm_delete_server') ?>')">
-                <i class="bi bi-trash me-2"></i><?= lang('delete_server') ?>
+                <i class="bi bi-trash me-2"></i><?= lang('server_delete') ?>
             </button>
         </form>
     </div>

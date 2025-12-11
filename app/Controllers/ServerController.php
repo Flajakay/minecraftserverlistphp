@@ -156,7 +156,7 @@ class ServerController
         $name = sanitize($_POST['name'] ?? '');
         $categoryIds = $_POST['category_ids'] ?? [];
         $primaryCategoryId = (int) ($_POST['primary_category_id'] ?? 0);
-        $description = sanitize($_POST['description'] ?? '');
+        $description = trim($_POST['description'] ?? '');
         $website = sanitize($_POST['website'] ?? '');
         $country = sanitize($_POST['country'] ?? '');
         $youtubeId = sanitize($_POST['youtube_id'] ?? '');

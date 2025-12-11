@@ -73,7 +73,7 @@
                 <!-- Description (CSS Clamped & Hidden on Mobile) -->
                 <?php if ($server->description): ?>
                     <p class="text-muted small mb-0 text-clamp-2 server-description-mobile-hide d-none d-md-block" style="line-height: 1.4;">
-                        <?= strip_tags($server->description) ?>
+                        <?= strip_tags(displayHtml($server->description)) ?>
                     </p>
                 <?php endif; ?>
             </div>

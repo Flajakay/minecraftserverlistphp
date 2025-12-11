@@ -8,30 +8,10 @@ $isAdmin = $config['isAdmin'] ?? false;
     
     <div class="mb-4">
         <h5 class="fw-semibold text-dark mb-3">
-            <i class="bi bi-server text-primary me-2"></i><?= lang('basic_details') ?>
+            <i class="bi bi-server text-primary me-2"></i><?= lang('server_details') ?>
         </h5>
         
         <div class="row g-3">
-            <div class="col-md-6">
-                <label for="name" class="form-label fw-semibold"><?= lang('server_name') ?> *</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-card-text text-muted"></i>
-                    </span>
-                    <input type="text" 
-                           class="form-control border-start-0 ps-0" 
-                           id="name" 
-                           name="name" 
-                           value="<?= htmlspecialchars($server->name) ?>" 
-                           required 
-                           maxlength="64">
-                </div>
-            </div>
-            
-            
-        </div>
-        
-        <div class="row g-3 mt-2">
             <div class="col-md-8">
                 <label for="address" class="form-label fw-semibold"><?= lang('server_address') ?></label>
                 <div class="input-group">
@@ -67,8 +47,33 @@ $isAdmin = $config['isAdmin'] ?? false;
                         <small class="text-muted"><?= lang('port_readonly') ?></small>
                 <?php endif; ?>
             </div>
-            
+        </div>
+        
+        <div class="row g-3 mt-2">
+            <div class="col-12">
+                <label for="name" class="form-label fw-semibold"><?= lang('server_name') ?> *</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-card-text text-muted"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control border-start-0 ps-0" 
+                           id="name" 
+                           name="name" 
+                           value="<?= htmlspecialchars($server->name) ?>" 
+                           required 
+                           maxlength="64">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-3 mt-2">
             <?php include __DIR__ . '/category-selection.php'; ?>
+
+            <div class="col-md-6">
+                <?php $selectedCountry = $server->country; ?>
+                <?php include __DIR__ . '/country-selector.php'; ?>
+            </div>
         </div>
     </div>
 
@@ -82,14 +87,12 @@ $isAdmin = $config['isAdmin'] ?? false;
             <textarea class="form-control" 
                       id="description" 
                       name="description" 
-                      rows="6" 
+                      rows="5" 
                       maxlength="2560" 
-                      placeholder="<?= lang('description_placeholder') ?>"><?= htmlspecialchars($server->description) ?></textarea>
+                      placeholder="<?= lang('description_placeholder') ?>"><?= $server->description ?></textarea>
             <small class="text-muted"><?= lang('description_help') ?></small>
         </div>
-        
-        
-        
+
         <div class="row g-3">
             <div class="col-md-6">
                 <label for="website" class="form-label fw-semibold"><?= lang('website') ?></label>
@@ -105,16 +108,8 @@ $isAdmin = $config['isAdmin'] ?? false;
                            maxlength="128"
                            placeholder="https://yourserver.com">
                 </div>
-                <small class="text-muted"><?= lang('website_help') ?></small>
             </div>
             
-            <div class="col-md-6">
-                <?php $selectedCountry = $server->country; ?>
-                <?php include __DIR__ . '/country-selector.php'; ?>
-            </div>
-        </div>
-        
-        <div class="row g-3 mt-2">
             <div class="col-md-6">
                 <label for="youtube_id" class="form-label fw-semibold"><?= lang('youtube_video') ?></label>
                 <div class="input-group">
@@ -131,9 +126,24 @@ $isAdmin = $config['isAdmin'] ?? false;
                 </div>
                 <small class="text-muted"><?= lang('youtube_help') ?></small>
             </div>
-            
-            <div class="col-md-6">
-                <label for="image" class="form-label fw-semibold"><?= lang('server_banner') ?></label>
+        </div>
+
+        <div class="mt-3">
+            <label for="image" class="form-label fw-semibold"><?= lang('server_banner') ?></label>
+            <div class="upload-preview-container border rounded p-3 bg-white position-relative">
+                <div id="bannerPreviewBox" class="preview-box mb-3 <?= $server->image ? '' : 'd-none' ?>">
+                    <div class="position-relative d-inline-block">
+                        <img id="bannerPreview" 
+                             src="<?= $server->image ? url('/uploads/banners/' . $server->image) : '' ?>" 
+                             alt="Banner preview" 
+                             class="img-fluid rounded shadow-sm preview-image-banner">
+                        <button type="button" 
+                                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 preview-close-btn-banner" 
+                                onclick="clearImagePreview('image', 'bannerPreview', 'bannerPreviewBox')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-image text-muted"></i>
@@ -142,13 +152,29 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0" 
                            id="image" 
                            name="image" 
-                           accept="image/*">
+                           accept="image/*"
+                           onchange="previewImage(this, 'bannerPreview', 'bannerPreviewBox')">
                 </div>
-                <small class="text-muted"><?= lang('server_banner_help') ?></small>
+                <small class="text-muted d-block mt-2"><?= lang('server_banner_help') ?></small>
             </div>
+        </div>
 
-            <div class="col-md-6">
-                <label for="icon" class="form-label fw-semibold"><?= lang('server_icon') ?></label>
+        <div class="mt-3">
+            <label for="icon" class="form-label fw-semibold"><?= lang('server_icon') ?></label>
+            <div class="upload-preview-container border rounded p-3 bg-white position-relative">
+                <div id="iconPreviewBox" class="preview-box mb-3 <?= $server->icon ? '' : 'd-none' ?>">
+                    <div class="position-relative d-inline-block">
+                        <img id="iconPreview" 
+                             src="<?= $server->icon ? url('/uploads/icons/' . $server->icon) : '' ?>" 
+                             alt="Icon preview" 
+                             class="rounded shadow-sm preview-image-icon">
+                        <button type="button" 
+                                class="btn btn-sm btn-danger position-absolute preview-close-btn-icon" 
+                                onclick="clearImagePreview('icon', 'iconPreview', 'iconPreviewBox')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
                         <i class="bi bi-box-seam text-muted"></i>
@@ -157,35 +183,12 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0" 
                            id="icon" 
                            name="icon" 
-                           accept="image/*">
+                           accept="image/*"
+                           onchange="previewImage(this, 'iconPreview', 'iconPreviewBox')">
                 </div>
-                <small class="text-muted"><?= lang('server_icon_help') ?></small>
+                <small class="text-muted d-block mt-2"><?= lang('server_icon_help') ?></small>
             </div>
         </div>
-        
-        <?php if ($server->image): ?>
-                <div class="mt-3 p-3 bg-light rounded">
-                    <label class="form-label fw-semibold mb-2"><?= lang('current_banner') ?>:</label>
-                    <div>
-                        <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
-                             alt="<?= lang('current_banner') ?>" 
-                             style="max-width: 300px;" 
-                             class="border rounded shadow-sm">
-                    </div>
-                </div>
-        <?php endif; ?>
-
-        <?php if ($server->icon): ?>
-                <div class="mt-3 p-3 bg-light rounded">
-                    <label class="form-label fw-semibold mb-2"><?= lang('current_icon') ?>:</label>
-                    <div>
-                        <img src="<?= url('/uploads/icons/' . $server->icon) ?>" 
-                             alt="<?= lang('current_icon') ?>" 
-                             style="width: 64px; height: 64px;" 
-                             class="border rounded shadow-sm">
-                    </div>
-                </div>
-        <?php endif; ?>
     </div>
 
     <div class="mb-4">
@@ -196,17 +199,22 @@ $isAdmin = $config['isAdmin'] ?? false;
             <span class="badge bg-light text-dark"><?= lang('optional') ?></span>
         </div>
         
-        <div class="alert alert-info border-0 mb-3">
-            <i class="bi bi-info-circle me-2"></i>
-            <?= lang('votifier_info') ?>
-        </div>
-        
         <?php
         $customData = json_decode($server->custom_data ?? '{}', true);
         ?>
         
+        <div class="mb-3">
+            <label for="votifier_public_key" class="form-label fw-semibold"><?= lang('server_votifier_public_key') ?></label>
+            <textarea class="form-control" 
+                      id="votifier_public_key" 
+                      name="votifier_public_key" 
+                      rows="6"
+                      placeholder="<?= lang('votifier_key_placeholder') ?>"><?= htmlspecialchars($customData['votifier_public_key'] ?? '') ?></textarea>
+            <small class="text-muted"><?= lang('server_votifier_public_key_help') ?></small>
+        </div>
+        
         <div class="row g-3">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <label for="votifier_ip" class="form-label fw-semibold"><?= lang('server_votifier_ip') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
@@ -222,7 +230,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <small class="text-muted"><?= lang('server_votifier_ip_help') ?></small>
             </div>
             
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="votifier_port" class="form-label fw-semibold"><?= lang('server_votifier_port') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
@@ -237,18 +245,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            max="65535"
                            placeholder="8192">
                 </div>
-                <small class="text-muted"><?= lang('votifier_port_help') ?></small>
             </div>
-        </div>
-        
-        <div class="mt-3">
-            <label for="votifier_public_key" class="form-label fw-semibold"><?= lang('server_votifier_public_key') ?></label>
-            <textarea class="form-control" 
-                      id="votifier_public_key" 
-                      name="votifier_public_key" 
-                      rows="8"
-                      placeholder="<?= lang('votifier_key_placeholder') ?>"><?= htmlspecialchars($customData['votifier_public_key'] ?? '') ?></textarea>
-            <small class="text-muted"><?= lang('server_votifier_public_key_help') ?></small>
         </div>
     </div>
 
@@ -261,3 +258,48 @@ $isAdmin = $config['isAdmin'] ?? false;
         </button>
     </div>
 </form>
+
+<script>
+function previewImage(input, previewId, previewBoxId) {
+    const file = input.files[0];
+    const previewImg = document.getElementById(previewId);
+    const previewBox = document.getElementById(previewBoxId);
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewBox.classList.remove('d-none');
+            
+            // Update the info text to show it's a new upload
+            const infoText = previewBox.querySelector('.text-muted i').nextSibling;
+            if (previewId === 'bannerPreview') {
+                infoText.textContent = '<?= lang('new_banner_preview') ?? 'New banner preview' ?>';
+            } else {
+                infoText.textContent = '<?= lang('new_icon_preview') ?? 'New icon preview' ?>';
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+}
+
+function clearImagePreview(inputId, previewId, previewBoxId) {
+    const input = document.getElementById(inputId);
+    const previewBox = document.getElementById(previewBoxId);
+    
+    // Clear the file input
+    input.value = '';
+    
+    // Hide the preview box with animation
+    previewBox.style.opacity = '0';
+    previewBox.style.transform = 'translateY(-10px)';
+    
+    setTimeout(() => {
+        previewBox.classList.add('d-none');
+        previewBox.style.opacity = '';
+        previewBox.style.transform = '';
+    }, 300);
+}
+</script>

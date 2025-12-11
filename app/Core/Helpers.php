@@ -80,6 +80,22 @@ function sanitize($input)
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
+function displayHtml($input)
+{
+    if (empty($input)) {
+        return '';
+    }
+    
+    // Check if already escaped (contains &lt; or &gt;)
+    if (strpos($input, '&lt;') !== false || strpos($input, '&gt;') !== false) {
+        // Already escaped, decode it
+        return html_entity_decode($input, ENT_QUOTES, 'UTF-8');
+    }
+    
+    // Not escaped, return as-is
+    return $input;
+}
+
 function formatBytes($bytes, $precision = 2)
 {
     $units = ['B', 'KB', 'MB', 'GB'];

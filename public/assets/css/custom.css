@@ -931,6 +931,7 @@ footer a:hover {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .text-clamp-2 {
@@ -938,6 +939,70 @@ footer a:hover {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Server description text limit */
+p.text-clamp-2 {
+    max-height: 2.8em;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Jodit Content Display Styling */
+.jodit-content {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.jodit-content p {
+    margin-bottom: 1rem;
+}
+
+.jodit-content h1,
+.jodit-content h2,
+.jodit-content h3,
+.jodit-content h4,
+.jodit-content h5,
+.jodit-content h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.jodit-content ul,
+.jodit-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.jodit-content li {
+    margin-bottom: 0.5rem;
+}
+
+.jodit-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+.jodit-content a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.jodit-content a:hover {
+    text-decoration: underline;
+}
+
+.jodit-content blockquote {
+    border-left: 4px solid #dee2e6;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #6c757d;
+    font-style: italic;
 }
 
 /* Mobile Tweaks */
@@ -951,4 +1016,46 @@ footer a:hover {
     .server-description-mobile-hide {
         display: none;
     }
+}
+
+
+.preview-box {
+    text-align: center;
+}
+
+/* Banner image preview */
+.preview-image-banner {
+    max-width: 100%;
+    max-height: 300px;
+    border: 2px solid #e0e0e0;
+}
+
+/* Icon image preview */
+.preview-image-icon {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #e0e0e0;
+    object-fit: cover;
+}
+
+/* Close button for banner preview */
+.preview-close-btn-banner {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+/* Close button for icon preview */
+.preview-close-btn-icon {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    top: -8px;
+    right: -8px;
+    font-size: 10px;
+}
+
+/* Input field spacing after icon */
+.input-group .form-control.border-start-0.ps-0 {
+    padding-left: 0.3rem !important;
 }

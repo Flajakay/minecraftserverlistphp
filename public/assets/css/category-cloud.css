@@ -74,15 +74,15 @@
 }
 
 .category-tag .checkmark {
-    margin-left: 0.5rem;
+    display: none;
     font-size: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.2s ease;
     font-weight: 700;
+    transition: all 0.2s ease;
 }
 
 .category-tag.selected .checkmark {
-    opacity: 1;
+    display: inline-block;
+    margin-left: 0.5rem;
 }
 
 

@@ -281,8 +281,8 @@
                                     <div class="h6 fw-semibold text-dark mb-3">
                                         <i class="bi bi-file-text text-primary me-2"></i><?= lang('about_server') ?>
                                     </div>
-                                    <div class="p-3 bg-light rounded">
-                                        <?= nl2br(htmlspecialchars($server->description)) ?>
+                                    <div class="p-3 bg-light rounded jodit-content">
+                                        <?= displayHtml($server->description) ?>
                                     </div>
                                 </div>
                             <?php endif; ?>

@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-3" href="<?= url('/premium') ?>">
-                            <i class="bi bi-star me-1"></i><?= lang('menu.premium') ?>
+                            <i class="bi bi-star me-1"></i><?= lang('menu.purchase_highlight') ?>
                         </a>
                     </li>
                 <?php endif; ?>

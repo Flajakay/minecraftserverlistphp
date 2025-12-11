@@ -5,7 +5,7 @@ return [
     'url' => 'https://minecraftserverlistphp/',
     'timezone' => 'America/New_York',
     'db' => [
-        'host' => 'MySQL-8.0',
+        'host' => 'MYSQL-8.0',
         'username' => 'root',
         'password' => '',
         'database' => 'serverlist'

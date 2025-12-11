@@ -65,8 +65,8 @@
         </div>
         
         <p class="card-text text-muted small flex-grow-1">
-            <?= htmlspecialchars(substr(strip_tags($server->description), 0, 100)) ?>
-            <?php if (strlen(strip_tags($server->description)) > 100): ?>...<?php endif; ?>
+            <?= htmlspecialchars(substr(strip_tags(displayHtml($server->description)), 0, 100)) ?>
+            <?php if (strlen(strip_tags(displayHtml($server->description))) > 100): ?>...<?php endif; ?>
         </p>
         
         <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
