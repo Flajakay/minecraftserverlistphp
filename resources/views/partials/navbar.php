@@ -48,6 +48,7 @@
                                 <li><a class="dropdown-item" href="<?= url('/admin/categories') ?>"><i class="bi bi-tags me-2"></i><?= lang('menu.categories_management') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url('/admin/reports') ?>"><i class="bi bi-flag me-2"></i><?= lang('menu.reports_management') ?></a></li>
                                 <li><a class="dropdown-item" href="<?= url('/admin/payments') ?>"><i class="bi bi-credit-card me-2"></i><?= lang('menu.payments_management') ?></a></li>
+                                <li><a class="dropdown-item" href="<?= url('/admin/migrations') ?>"><i class="bi bi-database-gear me-2"></i><?= lang('menu.migrations') ?></a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?= url('/admin/settings') ?>"><i class="bi bi-sliders me-2"></i><?= lang('menu.settings') ?></a></li>
                             </ul>

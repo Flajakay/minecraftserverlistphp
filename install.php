@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $siteTitle = $_POST['site_title'] ?? 'Minecraft Server List';
 
     try {
+        if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+            require_once __DIR__ . '/vendor/autoload.php';
+        }
+
         $pdo = new PDO("mysql:host=$dbHost", $dbUser, $dbPass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
@@ -39,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $pdo->exec($statement);
             }
+        }
+
+        if (class_exists('App\\Core\\MigrationRunner')) {
+            $runner = new \App\Core\MigrationRunner($pdo, __DIR__ . '/database/migrations');
+            $runner->runAllPending();
         }
 
         $config = "<?php\n\nreturn [\n";

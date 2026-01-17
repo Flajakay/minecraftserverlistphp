@@ -88,6 +88,10 @@ $router->get('/admin/settings', 'Admin\SettingController@index');
 $router->post('/admin/settings', 'Admin\SettingController@update');
 $router->post('/admin/reset-votes', 'Admin\SettingController@resetVotes');
 
+$router->get('/admin/migrations', 'Admin\MigrationController@index');
+$router->post('/admin/migrations/run-all', 'Admin\MigrationController@runAll');
+$router->post('/admin/migrations/run-selected', 'Admin\MigrationController@runSelected');
+
 $router->get('/activate/{email}/{code}', 'AuthController@activate');
 $router->get('/reset-password/{email}/{code}', 'AuthController@resetPassword');
 
