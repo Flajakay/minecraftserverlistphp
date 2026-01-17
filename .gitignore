@@ -30,3 +30,9 @@ Thumbs.db
 /.osp/
 
 ngrok.txt
+
+.windsurf
+*.code-workspace
+
+docs
+installed.lock

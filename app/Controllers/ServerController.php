@@ -89,7 +89,8 @@ class ServerController
     public function show($address, $port)
     {
         $server = Server::findByAddress($address, $port);
-        $isOwner = isLoggedIn() && auth()->id == $server->user_id;
+        $effectiveOwnerId = Server::getEffectiveOwnerUserId($server);
+        $isOwner = isLoggedIn() && $effectiveOwnerId && auth()->id == $effectiveOwnerId;
 
         if (!$server || !$server->active || ($server->private && (!$isOwner || !isAdmin()))) {
             flash('error', lang('server_not_found'));
@@ -124,6 +125,8 @@ class ServerController
             'monthly_votes' => $monthlyVotes,
             'monthly_hits' => $monthlyHits,
             'is_owner' => $isOwner,
+            'effective_owner_id' => $effectiveOwnerId,
+            'is_verified' => (int) ($server->verification_status ?? 0) === 2,
             'can_vote' => $canVote,
             'is_favorite' => $isFavorite
         ]);
@@ -314,7 +317,7 @@ class ServerController
         }
 
         $server = Server::find($id);
-        if (!$server || $server->user_id != auth()->id) {
+        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
             flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }
@@ -338,7 +341,7 @@ class ServerController
         }
 
         $server = Server::find($id);
-        if (!$server || $server->user_id != auth()->id) {
+        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
             flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }
@@ -428,7 +431,7 @@ class ServerController
         }
 
         $server = Server::find($id);
-        if (!$server || $server->user_id != auth()->id) {
+        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
             flash('error', lang('server_not_found_access_denied'));
             redirect('/my-servers');
         }

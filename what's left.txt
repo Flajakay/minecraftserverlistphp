@@ -1,4 +1,0 @@
-Overall design improvements
-Profiles (fixes)
-Votifier
-

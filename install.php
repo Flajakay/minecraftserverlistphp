@@ -1,5 +1,12 @@
 <?php
 
+$installLockPath = __DIR__ . '/storage/installed.lock';
+
+if (file_exists($installLockPath)) {
+    header('Location: index.php');
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbHost = $_POST['db_host'] ?? 'localhost';
     $dbName = $_POST['db_name'] ?? '';
@@ -47,6 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config .= "];\n";
 
         file_put_contents(__DIR__ . '/config/app.php', $config);
+
+        if (!is_dir(__DIR__ . '/storage')) {
+            mkdir(__DIR__ . '/storage', 0755, true);
+        }
+        file_put_contents($installLockPath, 'installed');
 
         $pdo->exec("UPDATE settings SET title = '" . addslashes($siteTitle) . "', url = '" . addslashes($siteUrl) . "' WHERE id = 1");
 
@@ -378,9 +390,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <div class="col-md-6">
                                         <div class="d-flex align-items-start">
                                             <div>
-                                                <h6 class="fw-semibold mb-1">Remove Installation File</h6>
+                                                <h6 class="fw-semibold mb-1">Installer Locked</h6>
                                                 <p class="mb-0 text-muted small">
-                                                    Please delete or rename <code class="bg-danger bg-opacity-10 text-danger px-2 py-1 rounded">install.php</code> from your server to complete the setup and ensure security.
+                                                    The installer is now automatically disabled after setup using
+                                                    <code class="bg-secondary bg-opacity-10 text-secondary px-2 py-1 rounded">storage/installed.lock</code>.
+                                                    To run the installer again, remove the lock file.
                                                 </p>
                                             </div>
                                         </div>

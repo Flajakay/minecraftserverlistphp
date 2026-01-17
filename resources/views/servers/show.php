@@ -20,6 +20,11 @@
                                     <i class="bi bi-star-fill me-1"></i><?= lang('premium_server') ?>
                                     </span>
                                 <?php endif; ?>
+                                <?php if (!empty($is_verified)): ?>
+                                    <span class="badge bg-success ms-2">
+                                        <i class="bi bi-patch-check-fill me-1"></i><?= lang('server_claim_badge_verified') ?>
+                                    </span>
+                                <?php endif; ?>
                             </div>
                             <p class="mb-2 text-white-50">
                                 <i class="bi bi-globe me-1"></i>
@@ -48,6 +53,11 @@
                                     <?php if ($server->highlight): ?>
                                         <span class="badge bg-warning text-dark">
                                         <i class="bi bi-star-fill me-1"></i><?= lang('premium_server') ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <?php if (!empty($is_verified)): ?>
+                                        <span class="badge bg-success ms-2">
+                                            <i class="bi bi-patch-check-fill me-1"></i><?= lang('server_claim_badge_verified') ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
@@ -526,6 +536,12 @@
                             <button type="button" class="btn btn-light w-100 mb-3 py-2" disabled>
                                 <i class="bi bi-check-circle me-2"></i><?= lang('already_voted') ?>
                             </button>
+                        <?php endif; ?>
+
+                        <?php if (empty($is_verified)): ?>
+                            <a class="btn btn-outline-primary w-100 mb-3 py-2" href="<?= url('/server-claim/' . $server->id) ?>">
+                                <i class="bi bi-shield-lock me-2"></i><?= $is_owner ? lang('server_verify_cta') : lang('server_claim_cta') ?>
+                            </a>
                         <?php endif; ?>
                         
                         <button type="button" 

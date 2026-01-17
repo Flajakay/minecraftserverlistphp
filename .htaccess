@@ -2,6 +2,7 @@ RewriteEngine On
 
 # Installation redirect - if install.php exists and we're not accessing it
 RewriteCond %{DOCUMENT_ROOT}/install.php -f
+RewriteCond %{DOCUMENT_ROOT}/storage/installed.lock !-f
 RewriteCond %{SCRIPT_FILENAME} !install.php
 RewriteRule ^(index\.php|/|)$ install.php [L]
 

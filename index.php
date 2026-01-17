@@ -2,10 +2,21 @@
 
 use App\Core\Router;
 
-if (!file_exists(__DIR__ . '/config/app.php') || filesize(__DIR__ . '/config/app.php') < 100) {
-    // If the main config is missing or clearly incomplete (tiny file),
-    // prefer redirecting to the installer when available so the user
-    // can set up the app. Otherwise show a clear error to avoid
+$installLockPath = __DIR__ . '/storage/installed.lock';
+
+$hasValidConfig = file_exists(__DIR__ . '/config/app.php') && filesize(__DIR__ . '/config/app.php') >= 100;
+
+if ($hasValidConfig && !file_exists($installLockPath)) {
+    if (!is_dir(__DIR__ . '/storage')) {
+        mkdir(__DIR__ . '/storage', 0755, true);
+    }
+    @file_put_contents($installLockPath, 'installed');
+}
+
+if (!$hasValidConfig || !file_exists($installLockPath)) {
+    // If the app is not installed (no install lock) or the main config is
+    // missing/incomplete, redirect to the installer when available so the
+    // user can set up the app. Otherwise show a clear error to avoid
     // obscure failures later in the request lifecycle.
     if (file_exists(__DIR__ . '/install.php')) {
         header('Location: install.php');

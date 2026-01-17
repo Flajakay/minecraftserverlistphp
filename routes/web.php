@@ -5,6 +5,11 @@ $router->get('/servers', 'ServerController@index');
 $router->get('/servers/{page}', 'ServerController@index');
 $router->get('/server/{address}:{port}', 'ServerController@show');
 
+ $router->get('/server-claim/{id}', 'ServerClaimController@show');
+ $router->post('/server-claim/{id}/start', 'ServerClaimController@start');
+ $router->post('/server-claim/{id}/verify', 'ServerClaimController@verify');
+ $router->post('/server-claim/{id}/cancel', 'ServerClaimController@cancel');
+
 $router->get('/login', 'AuthController@showLogin');
 $router->post('/login', 'AuthController@login');
 $router->get('/register', 'AuthController@showRegister');

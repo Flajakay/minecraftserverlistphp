@@ -8,6 +8,25 @@ use App\Core\Database;
 
 class Server
 {
+    public static function getEffectiveOwnerUserId($server)
+    {
+        if (!$server) {
+            return null;
+        }
+
+        if (!empty($server->verified_owner_user_id)) {
+            return (int) $server->verified_owner_user_id;
+        }
+
+        return !empty($server->user_id) ? (int) $server->user_id : null;
+    }
+
+    public static function isEffectiveOwner($server, $userId)
+    {
+        $effectiveOwnerId = self::getEffectiveOwnerUserId($server);
+        return $effectiveOwnerId && (int) $effectiveOwnerId === (int) $userId;
+    }
+
     public static function create($data)
     {
         $data['created_at'] = date('Y-m-d H:i:s');
@@ -31,7 +50,7 @@ class Server
         return Database::fetch(
             'SELECT s.*, u.username as owner_username 
              FROM servers s 
-             LEFT JOIN users u ON s.user_id = u.id 
+             LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
              WHERE s.address = ? AND s.port = ?',
             [$address, $port]
         );
@@ -41,7 +60,7 @@ class Server
     {
         $sql = 'SELECT s.*, u.username as owner_username 
                 FROM servers s 
-                LEFT JOIN users u ON s.user_id = u.id 
+                LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
                 WHERE s.active = 1 AND s.private = 0';
 
         $params = [];
@@ -256,7 +275,7 @@ class Server
         $offset = ($page - 1) * $limit;
         $sql = 'SELECT DISTINCT s.*, u.username as owner_username 
                 FROM servers s 
-                LEFT JOIN users u ON s.user_id = u.id 
+                LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
                 WHERE 1=1';
         $params = [];
 
@@ -311,7 +330,7 @@ class Server
     public static function countAllAdmin($search = '', $filters = [])
     {
         $sql = 'SELECT COUNT(DISTINCT s.id) as count FROM servers s 
-                LEFT JOIN users u ON s.user_id = u.id 
+                LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
                 WHERE 1=1';
         $params = [];
 
@@ -365,6 +384,63 @@ class Server
     public static function update($id, $data)
     {
         return Database::update('servers', $data, 'id = ?', [$id]);
+    }
+
+    public static function startClaim($serverId, $userId, $token, $expiresAt)
+    {
+        return Database::update('servers', [
+            'verification_status' => 1,
+            'verification_requested_by_user_id' => $userId,
+            'verification_token' => $token,
+            'verification_token_expires_at' => $expiresAt,
+            'verified_owner_user_id' => null,
+            'verified_at' => null
+        ], 'id = ?', [$serverId]);
+    }
+
+    public static function cancelClaim($serverId)
+    {
+        return Database::update('servers', [
+            'verification_status' => 0,
+            'verification_requested_by_user_id' => null,
+            'verification_token' => null,
+            'verification_token_expires_at' => null,
+            'last_verification_attempt_at' => null
+        ], 'id = ?', [$serverId]);
+    }
+
+    public static function markVerificationAttempt($serverId)
+    {
+        return Database::update('servers', [
+            'last_verification_attempt_at' => date('Y-m-d H:i:s')
+        ], 'id = ?', [$serverId]);
+    }
+
+    public static function canAttemptVerification($serverId, $cooldownSeconds = 30)
+    {
+        $row = Database::fetch('SELECT last_verification_attempt_at FROM servers WHERE id = ?', [$serverId]);
+        if (!$row || empty($row->last_verification_attempt_at)) {
+            return true;
+        }
+
+        $last = strtotime($row->last_verification_attempt_at);
+        if (!$last) {
+            return true;
+        }
+
+        return (time() - $last) >= (int) $cooldownSeconds;
+    }
+
+    public static function markVerified($serverId, $userId)
+    {
+        return Database::update('servers', [
+            'verification_status' => 2,
+            'verified_owner_user_id' => $userId,
+            'verified_at' => date('Y-m-d H:i:s'),
+            'verification_requested_by_user_id' => null,
+            'verification_token' => null,
+            'verification_token_expires_at' => null
+        ], 'id = ?', [$serverId]);
     }
 
     public static function resetAllVotes()
