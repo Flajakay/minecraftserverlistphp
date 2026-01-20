@@ -2,6 +2,11 @@
 
 namespace App\Core;
 
+/**
+ * Minecraft server status ping (handshake + status request).
+ *
+ * Returns the decoded JSON status response, or false on any network/protocol failure.
+ */
 class MinecraftPing
 {
     private $socket;
@@ -22,30 +27,25 @@ class MinecraftPing
             return false;
         }
 
-        // Use the shared static method to build the handshake packet
-        // We extracted this so the AsyncBatchPinger can also build packets
-        // without duplicating this binary protocol logic.
+        // Shared packet builder allows the async implementation to reuse protocol logic.
         $handshake = self::buildHandshakePacket($this->address, $this->port);
 
         fwrite($this->socket, $handshake);
-        // Send status request packet
+        // Status request packet.
         fwrite($this->socket, "\x01\x00");
 
-        // Read response packet length and validate it
-        // We pass $this->socket to the static method because in the async version,
-        // we will be passing a different socket resource.
+        // Read response packet length.
         $length = self::readVarInt($this->socket);
         if ($length < 10) {
             return false;
         }
 
-        // Skip packet ID byte, then read JSON data length
+        // Skip packet ID, then read JSON payload length.
         self::readVarInt($this->socket);
         $length = self::readVarInt($this->socket);
 
         $data = "";
         while (strlen($data) < $length) {
-            // Loop until all JSON response bytes are read (accounts for partial reads)
             $data .= fread($this->socket, $length - strlen($data));
         }
 
@@ -58,14 +58,14 @@ class MinecraftPing
 
     private function connect()
     {
-        // Suppress fsockopen warnings with @ operator; errors handled via return value
+        // Suppress warnings; the caller treats any failure as "offline".
         $this->socket = @fsockopen($this->address, $this->port, $errno, $errstr, $this->timeout);
 
         if (!$this->socket) {
             return false;
         }
 
-        // Set socket timeout to prevent indefinite hangs on slow/unresponsive servers
+        // Prevent indefinite hangs on slow/unresponsive servers.
         stream_set_timeout($this->socket, $this->timeout);
         return true;
     }
@@ -79,11 +79,13 @@ class MinecraftPing
     }
 
     /**
-     * Reads a VarInt from the socket.
+     * Read a VarInt from a socket.
+     *
+     * Minecraft uses VarInt encoding (7 bits per byte + continuation bit). Returns 0 on
+     * read/protocol failure.
      */
     public static function readVarInt($socket)
     {
-        // Minecraft uses variable-length integers: each byte contains 7 data bits + 1 continuation bit
         $i = 0;  // Accumulated value
         $j = 0;  // Bit position counter
 
@@ -94,15 +96,13 @@ class MinecraftPing
             }
 
             $k = ord($k);
-            // Shift 7-bit segment into position and accumulate
             $i |= ($k & 0x7F) << $j++ * 7;
 
-            // Sanity check: if we've read more than 5 bytes, the data is invalid
+            // VarInt is at most 5 bytes for 32-bit values.
             if ($j > 5) {
                 return 0;
             }
 
-            // Check continuation bit (MSB); if not set, we're done reading
             if (($k & 0x80) != 128) {
                 break;
             }
@@ -112,7 +112,7 @@ class MinecraftPing
     }
 
     /**
-     * Builds the initial Handshake + Status Request packet.
+     * Build the handshake packet for a status request.
      */
     public static function buildHandshakePacket($address, $port)
     {
@@ -131,7 +131,7 @@ class MinecraftPing
         $ping = new self($address, $port);
         $result = $ping->query();
 
-        // Provide consistent response format whether server is online or offline
+        // Normalize response for callers.
         if (!$result) {
             return [
                 'online' => false,
@@ -141,7 +141,6 @@ class MinecraftPing
             ];
         }
 
-        // Extract and safely default nested values to prevent missing key errors
         return [
             'online' => true,
             'players' => $result['players']['online'] ?? 0,

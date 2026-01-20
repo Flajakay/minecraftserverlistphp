@@ -1,5 +1,7 @@
 <?php
 
+// Helper functions for integrating the Jodit editor in PHP views.
+
 if (!function_exists('joditAssets')) {
 
     function joditAssets() {
@@ -10,7 +12,7 @@ if (!function_exists('joditAssets')) {
         echo '<script src="' . asset('js/jodit-helper.js') . '"></script>' . "\n";
         echo '<script>' . "\n";
         echo 'document.addEventListener("DOMContentLoaded", function() {' . "\n";
-        echo '    // Set language from PHP' . "\n";
+        echo '    // Set editor language from PHP.' . "\n";
         echo '    window.joditHelper.setLanguage("' . lang('_jodit_code', 'en') . '");' . "\n";
         echo '});' . "\n";
         echo '</script>' . "\n";

@@ -5,13 +5,26 @@ namespace App\Controllers;
 use App\Core\Mail;
 use Exception;
 
+/**
+ * Contact form controller.
+ *
+ * Renders the contact page and sends a templated email to the configured contact address.
+ */
 class ContactController
 {
+    /**
+     * Render the contact form page.
+     */
     public function show()
     {
         view('static.contact');
     }
 
+    /**
+     * Validate and send a contact form submission.
+     *
+     * Uses PRG (flash + redirect) to avoid duplicate submissions on refresh.
+     */
     public function send()
     {
         $name = sanitize($_POST['name'] ?? '');

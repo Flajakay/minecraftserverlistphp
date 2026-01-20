@@ -6,8 +6,21 @@ use App\Models\Server;
 use App\Models\BlogPost;
 use App\Core\Auth;
 
+/**
+ * Server blog posts controller.
+ *
+ * Handles create/update/delete operations for blog posts attached to a server.
+ * Most actions support both full-page flows (flash + redirect) and AJAX calls (JSON responses).
+ */
 class BlogController
 {
+    /**
+     * Create a blog post for a server.
+     *
+     * Authorization:
+     * - server owner (or admin/moderator) can post
+     * - supports AJAX via `$_POST['ajax']`
+     */
     public function store()
     {
         if (!isLoggedIn()) {
@@ -81,6 +94,9 @@ class BlogController
         redirect($_SERVER['HTTP_REFERER'] ?? "/server/{$server->address}:{$server->port}");
     }
 
+    /**
+     * Render the blog post edit form.
+     */
     public function edit($id)
     {
         if (!isLoggedIn()) {
@@ -112,6 +128,9 @@ class BlogController
         ]);
     }
 
+    /**
+     * Persist edits to an existing blog post.
+     */
     public function update($id)
     {
         if (!isLoggedIn()) {
@@ -159,6 +178,11 @@ class BlogController
         redirect("/server/{$server->address}:{$server->port}");
     }
 
+    /**
+     * Delete a blog post.
+     *
+     * This endpoint is intended for AJAX usage and always returns JSON.
+     */
     public function delete()
     {
         if (!isLoggedIn()) {
@@ -186,6 +210,11 @@ class BlogController
         echo json_encode(['success' => true, 'message' => lang('blog_post_deleted')]);
     }
 
+    /**
+     * Paginated "load more" endpoint used by the server page.
+     *
+     * Returns rendered HTML for the next chunk plus pagination metadata.
+     */
     public function loadMore()
     {
         $serverId = (int)($_GET['server_id'] ?? 0);

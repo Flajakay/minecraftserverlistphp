@@ -4,6 +4,12 @@ namespace App\Core;
 
 use App\Core\CookieManager;
 
+/**
+ * Lightweight translation loader.
+ *
+ * Loads a single language file from `resources/languages/*.php` into memory and provides
+ * dot-notation lookups via `Language::get()`.
+ */
 class Language
 {
     private static $currentLanguage = 'english';
@@ -83,6 +89,7 @@ class Language
         $language = self::$defaultLanguage;
 
         if (isset($_GET['language'])) {
+            // Explicit language switch (persisted via cookie).
             $requested = self::sanitizeLanguage($_GET['language']);
             if ($requested && in_array($requested, self::$availableLanguages)) {
                 $language = $requested;
@@ -91,6 +98,7 @@ class Language
         }
 
         else {
+            // Fallback to previously selected language.
             $cookieLanguage = CookieManager::get('language');
             if ($cookieLanguage && in_array($cookieLanguage, self::$availableLanguages)) {
                 $language = $cookieLanguage;

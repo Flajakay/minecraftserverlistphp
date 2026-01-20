@@ -11,8 +11,17 @@ use App\Core\SEO;
 use App\Core\LoginSecurity;
 use Exception;
 
+/**
+ * Authentication controller.
+ *
+ * Handles login/registration, email activation, logout, and password reset flows.
+ * Lockout/anti-bruteforce behavior is delegated to `LoginSecurity`.
+ */
 class AuthController
 {
+    /**
+     * Render the login page.
+     */
     public function showLogin()
     {
         if (isLoggedIn()) {
@@ -22,6 +31,11 @@ class AuthController
         view('auth.login');
     }
 
+    /**
+     * Attempt to authenticate a user.
+     *
+     * Enforces lockout both by username and by IP to reduce brute-force attempts.
+     */
     public function login()
     {
         $username = sanitize($_POST['username'] ?? '');
@@ -73,6 +87,9 @@ class AuthController
         redirect('/login');
     }
 
+    /**
+     * Render the registration page.
+     */
     public function showRegister()
     {
         if (isLoggedIn()) {
@@ -82,6 +99,11 @@ class AuthController
         view('auth.register');
     }
 
+    /**
+     * Create a new user account.
+     *
+     * Depending on settings, the user is either activated immediately or must confirm via email.
+     */
     public function register()
     {
         $username = sanitize($_POST['username'] ?? '');
@@ -157,6 +179,9 @@ class AuthController
         redirect('/login');
     }
 
+    /**
+     * Logout the current user and clear session/cookies.
+     */
     public function logout()
     {
         Auth::logout();
@@ -164,6 +189,9 @@ class AuthController
         redirect('/');
     }
 
+    /**
+     * Activate a user account using an emailed activation link.
+     */
     public function activate($email, $code)
     {
         $email = urldecode($email);
@@ -177,11 +205,17 @@ class AuthController
         redirect('/login');
     }
 
+    /**
+     * Render the "lost password" page.
+     */
     public function showLostPassword()
     {
         view('auth.lost-password');
     }
 
+    /**
+     * Email a password reset link.
+     */
     public function sendResetLink()
     {
         $email = sanitize($_POST['email'] ?? '');
@@ -219,6 +253,9 @@ class AuthController
         redirect('/lost-password');
     }
 
+    /**
+     * Render and handle the reset password form.
+     */
     public function resetPassword($email, $code)
     {
         $user = Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);

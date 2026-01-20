@@ -6,8 +6,16 @@ use App\Models\BlogPost;
 use App\Models\Server;
 use App\Models\User;
 
+/**
+ * Admin blog posts controller.
+ *
+ * Allows admins to browse and delete blog posts across all servers/users.
+ */
 class BlogController
 {
+    /**
+     * List blog posts with optional filters.
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -43,6 +51,11 @@ class BlogController
         ]);
     }
 
+    /**
+     * Delete a blog post.
+     *
+     * Supports both AJAX (JSON) and standard form submissions (flash + redirect).
+     */
     public function delete($id)
     {
         if (!isAdmin()) {

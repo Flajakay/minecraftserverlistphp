@@ -5,8 +5,16 @@ namespace App\Controllers\Admin;
 use App\Models\Report;
 use App\Models\AuditLog;
 
+/**
+ * Admin reports controller.
+ *
+ * Allows admins to browse reports, view report details, and delete/resolve reports.
+ */
 class ReportController
 {
+    /**
+     * List reports with optional filters.
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -35,6 +43,9 @@ class ReportController
         ]);
     }
 
+    /**
+     * Show a single report with related details.
+     */
     public function view($id)
     {
         if (!isAdmin()) {
@@ -51,6 +62,9 @@ class ReportController
         view('admin.reports-view', ['report' => $report]);
     }
 
+    /**
+     * Delete a report.
+     */
     public function delete($id)
     {
         if (!isAdmin()) {
@@ -75,6 +89,9 @@ class ReportController
         redirect('/admin/reports');
     }
 
+    /**
+     * Perform a report moderation action.
+     */
     public function action($id)
     {
         if (!isAdmin()) {

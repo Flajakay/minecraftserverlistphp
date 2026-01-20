@@ -2,6 +2,12 @@
 
 namespace App\Core;
 
+/**
+ * Simple per-request SEO metadata store.
+ *
+ * Controllers/helpers populate values; views call `renderMetaTags()` to output standard
+ * meta/OG/Twitter tags with sensible defaults.
+ */
 class SEO
 {
     private static $title = '';
@@ -44,6 +50,7 @@ class SEO
     public static function getTitle()
     {
         $siteTitle = setting('title', 'Minecraft Server List');
+        // If a page title is set, append the site title for consistency.
         return self::$title ? self::$title . ' - ' . $siteTitle : $siteTitle;
     }
 
@@ -76,6 +83,7 @@ class SEO
     {
         $output = '';
         
+        // Escape all values to prevent injection through settings/user content.
         $output .= '<title>' . htmlspecialchars(self::getTitle()) . '</title>' . "\n";
         $output .= '<meta name="description" content="' . htmlspecialchars(self::getDescription()) . '">' . "\n";
         

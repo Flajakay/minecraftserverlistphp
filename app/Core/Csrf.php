@@ -2,6 +2,11 @@
 
 namespace App\Core;
 
+/**
+ * CSRF verification helper.
+ *
+ * The router calls `check()` for state-changing HTTP methods.
+ */
 class Csrf
 {
     private static $whitelist = [
@@ -16,6 +21,7 @@ class Csrf
 
     public static function isWhitelisted($uri)
     {
+        // Exact match or prefix match (e.g., '/vote/...' ) are treated as whitelisted.
         foreach (self::$whitelist as $whitelistedUri) {
             if ($uri === $whitelistedUri || strpos($uri, $whitelistedUri) === 0) {
                 return true;
@@ -26,6 +32,7 @@ class Csrf
 
     public static function check($method, $uri)
     {
+        // Only enforce CSRF on state-changing methods.
         if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             return true;
         }

@@ -1,0 +1,446 @@
+/* Server Status */
+.server-status-online {
+    color: #198754;
+}
+
+.server-status-offline {
+    color: #dc3545;
+}
+
+/* Server list hover effects */
+.server-list-item {
+    transition: var(--transition);
+    border-radius: var(--border-radius);
+}
+
+.server-list-item:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Server Banner Styling - Optimized for 468x60px banners */
+.banner-container {
+    height: 120px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.server-banner {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    transition: var(--transition);
+    border-radius: 4px;
+}
+
+/* Ensure 468x60 banners are properly displayed */
+.server-card .server-banner {
+    /* Allow banners to show at their natural size within container */
+    min-height: 60px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.server-card:hover .server-banner {
+    transform: scale(1.05);
+}
+
+/* Banner container styling */
+.banner-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.05) 50%, transparent 51%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Status badge positioning */
+.banner-container .badge {
+    z-index: 2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .banner-container {
+        height: 100px;
+    }
+
+    .server-card .server-banner {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .banner-container {
+        height: 90px;
+    }
+
+    .server-card .server-banner {
+        padding: 6px;
+    }
+}
+
+/* Server Row Layout Styles */
+
+/* Server Row Item */
+.server-row-item {
+    transition: var(--transition, all 0.3s ease);
+    border: 1px solid #e9ecef;
+    background-color: #fff;
+}
+
+.server-row-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    border-color: #dee2e6;
+}
+
+/* Server Banner in Row Layout */
+.server-banner-container {
+    height: 60px;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.server-banner-row {
+    max-width: 468px;
+    /* Set to your banner width */
+    max-height: 60px;
+    /* Set to your banner height */
+    width: auto;
+    height: auto;
+    object-fit: none;
+    /* Don't scale - show at original size */
+    transition: all 0.3s ease;
+}
+
+.server-banner-placeholder {
+    height: 80px;
+    min-height: 80px;
+    width: 100%;
+    border: 2px dashed #dee2e6;
+}
+
+/* Server Row Info */
+.server-name a:hover {
+    color: #0d6efd !important;
+}
+
+.server-description {
+    line-height: 1.4;
+}
+
+/* Server Row Stats */
+.server-stats .fw-semibold {
+    font-size: 1.1em;
+}
+
+/* Server Row Actions */
+.server-actions .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Premium Server Highlight */
+.server-row-item.premium {
+    border-left: 4px solid #ffc107;
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+}
+
+.server-row-item.premium:hover {
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+}
+
+/* Status Badge in Row */
+.server-banner-container .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Responsive Design for Server Rows */
+@media (max-width: 768px) {
+    .server-row-item {
+        padding: 1rem !important;
+    }
+
+    .server-banner-container {
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .server-banner-placeholder {
+        height: 60px;
+        min-height: 60px;
+    }
+
+    .server-stats {
+        margin-bottom: 1rem !important;
+    }
+
+    .server-actions .d-flex {
+        flex-direction: row !important;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .server-actions .btn-sm {
+        flex: 1;
+        max-width: 120px;
+    }
+
+    .server-name {
+        flex: 1;
+        margin-right: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .server-banner-container {
+        height: 50px;
+    }
+
+    .server-banner-placeholder {
+        height: 50px;
+        min-height: 50px;
+    }
+
+    .server-name {
+        font-size: 1.1rem;
+    }
+
+    .server-description {
+        font-size: 0.85rem;
+    }
+
+    .server-stats .fw-semibold {
+        font-size: 1rem;
+    }
+}
+
+/* Animation for server rows */
+.server-row-item {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading skeleton for server rows */
+.server-row-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* --- Mobile Floating Filter Button (FAB) --- */
+.btn-fab-filter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    z-index: 1050;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: transform 0.2s;
+}
+
+.btn-fab-filter:active {
+    transform: scale(0.95);
+}
+
+/* --- Improved Server Row Layout --- */
+.server-row-item {
+    padding: 1rem !important;
+}
+
+/* Status Indicator (Dot on Icon) */
+.server-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.status-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    /* Creates a cut-out effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* CSS Line Clamping (Replaces PHP substr) */
+.text-clamp-1 {
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-clamp-2 {
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Server description text limit */
+p.text-clamp-2 {
+    max-height: 2.8em;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .server-icon-responsive {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    /* Hide description on very small screens to save space */
+    .server-description-mobile-hide {
+        display: none;
+    }
+}
+
+.preview-box {
+    text-align: center;
+}
+
+/* Banner image preview */
+.preview-image-banner {
+    max-width: 100%;
+    max-height: 300px;
+    border: 2px solid #e0e0e0;
+}
+
+/* Icon image preview */
+.preview-image-icon {
+    width: 64px;
+    height: 64px;
+    border: 2px solid #e0e0e0;
+    object-fit: cover;
+}
+
+/* Close button for banner preview */
+.preview-close-btn-banner {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+/* Close button for icon preview */
+.preview-close-btn-icon {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    top: -8px;
+    right: -8px;
+    font-size: 10px;
+}
+
+/* Input field spacing after icon */
+.input-group .form-control.border-start-0.ps-0 {
+    padding-left: 0.3rem !important;
+}
+
+/* Jodit Content Display Styling */
+.jodit-content {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.jodit-content p {
+    margin-bottom: 1rem;
+}
+
+.jodit-content h1,
+.jodit-content h2,
+.jodit-content h3,
+.jodit-content h4,
+.jodit-content h5,
+.jodit-content h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.jodit-content ul,
+.jodit-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.jodit-content li {
+    margin-bottom: 0.5rem;
+}
+
+.jodit-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+}
+
+.jodit-content a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.jodit-content a:hover {
+    text-decoration: underline;
+}
+
+.jodit-content blockquote {
+    border-left: 4px solid #dee2e6;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #6c757d;
+    font-style: italic;
+}

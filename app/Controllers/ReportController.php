@@ -5,8 +5,20 @@ namespace App\Controllers;
 use App\Models\Report;
 use App\Core\Auth;
 
+/**
+ * Reports controller.
+ *
+ * Provides an authenticated AJAX endpoint for submitting reports against different entity types.
+ */
 class ReportController
 {
+    /**
+     * Create a new report.
+     *
+     * Notes:
+     * - JSON-only response
+     * - enforces a single report per user/type/reported_id tuple
+     */
     public function store()
     {
         if (!isLoggedIn()) {

@@ -4,6 +4,12 @@ namespace App\Core;
 
 use App\Models\Setting;
 
+/**
+ * Minimal mail sender.
+ *
+ * Chooses between PHP's `mail()` and a basic SMTP implementation depending on settings.
+ * Intended for low-volume transactional emails.
+ */
 class Mail
 {
     private $to = [];
@@ -46,6 +52,7 @@ class Mail
             throw new \Exception("Email template {$template} not found");
         }
 
+        // Render the PHP email template into a string.
         ob_start();
         extract($data);
         require $templatePath;
@@ -59,6 +66,7 @@ class Mail
     {
         $settings = Setting::get();
         
+        // If SMTP is not configured, fall back to PHP's mail().
         if (empty($settings->smtp_host)) {
             return $this->sendWithPhpMail();
         }
@@ -88,12 +96,14 @@ class Mail
         $this->sendCommand($socket, "EHLO " . $_SERVER['SERVER_NAME']);
         
         if ($settings->smtp_secure === 'tls') {
+            // STARTTLS upgrade.
             $this->sendCommand($socket, "STARTTLS");
             stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
             $this->sendCommand($socket, "EHLO " . $_SERVER['SERVER_NAME']);
         }
 
         if (!empty($settings->smtp_user) && !empty($settings->smtp_pass)) {
+            // AUTH LOGIN with base64-encoded credentials.
             $this->sendCommand($socket, "AUTH LOGIN");
             $this->sendCommand($socket, base64_encode($settings->smtp_user));
             $this->sendCommand($socket, base64_encode($settings->smtp_pass));

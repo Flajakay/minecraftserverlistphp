@@ -7,8 +7,18 @@ use App\Models\Payment;
 use App\Core\PayPalService;
 use App\Models\Setting;
 
+/**
+ * Premium purchase/payment controller.
+ *
+ * Renders the purchase page and exposes JSON endpoints used by the PayPal client integration.
+ */
 class PaymentController
 {
+    /**
+     * Render the premium purchase UI.
+     *
+     * Availability is controlled by settings (per-day cost > 0).
+     */
     public function showPurchase()
     {
         if (!isLoggedIn()) {
@@ -34,6 +44,11 @@ class PaymentController
         ]);
     }
 
+    /**
+     * Create a PayPal order.
+     *
+     * JSON-only endpoint used by the PayPal JS SDK.
+     */
     public function createOrder()
     {
         header('Content-Type: application/json');
@@ -79,6 +94,11 @@ class PaymentController
         }
     }
 
+    /**
+     * Capture a PayPal payment after approval.
+     *
+     * JSON-only endpoint. On success it records the payment and enables server highlighting.
+     */
     public function capturePayment()
     {
         header('Content-Type: application/json');
@@ -134,6 +154,9 @@ class PaymentController
         }
     }
 
+    /**
+     * Handle a canceled PayPal checkout and return the user to the premium page.
+     */
     public function cancelPayment()
     {
         if (!isLoggedIn()) {

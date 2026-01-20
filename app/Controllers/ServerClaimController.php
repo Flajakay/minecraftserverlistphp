@@ -6,8 +6,19 @@ use App\Models\Server;
 use App\Core\MinecraftPing;
 use App\Core\Database;
 
+/**
+ * Server claim/verification controller.
+ *
+ * Implements a lightweight ownership proof flow:
+ * - user starts a claim to receive a short-lived token
+ * - user places the token in the server MOTD
+ * - the app pings the server and verifies the token appears in the MOTD text
+ */
 class ServerClaimController
 {
+    /**
+     * Render the claim page for a server.
+     */
     public function show($id)
     {
         if (!isLoggedIn()) {
@@ -41,6 +52,9 @@ class ServerClaimController
         ]);
     }
 
+    /**
+     * Start a new claim by generating a short-lived verification token.
+     */
     public function start($id)
     {
         if (!isLoggedIn()) {
@@ -72,6 +86,9 @@ class ServerClaimController
         redirect(url("/server-claim/{$server->id}"));
     }
 
+    /**
+     * Verify ownership by pinging the server and checking the token in the MOTD.
+     */
     public function verify($id)
     {
         if (!isLoggedIn()) {
@@ -120,6 +137,9 @@ class ServerClaimController
         redirect(url("/server/{$server->address}:{$server->port}"));
     }
 
+    /**
+     * Cancel an in-progress claim.
+     */
     public function cancel($id)
     {
         if (!isLoggedIn()) {
@@ -143,6 +163,9 @@ class ServerClaimController
         redirect(url("/server/{$server->address}:{$server->port}"));
     }
 
+    /**
+     * Extract plain text from different MOTD description formats returned by ping.
+     */
     private function extractMotdText($description): string
     {
         if (is_string($description)) {
@@ -160,6 +183,9 @@ class ServerClaimController
         return '';
     }
 
+    /**
+     * Recursively extract text from a Minecraft chat component structure.
+     */
     private function extractFromChatComponent(array $component): string
     {
         $text = '';

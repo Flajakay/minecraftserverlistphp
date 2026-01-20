@@ -5,6 +5,12 @@ namespace App\Core;
 use App\Core\CookieManager;
 use App\Core\LoginSecurity;
 
+/**
+ * Authentication facade.
+ *
+ * Stores the logged-in user id in the session and optionally supports a simple
+ * "remember me" flow via cookies + a DB token.
+ */
 class Auth
 {
     public static function user()
@@ -23,6 +29,7 @@ class Auth
 
     public static function check()
     {
+        // Consider a user authenticated if they have an active session OR a remember-me cookie.
         return isset($_SESSION['user_id']) || 
                (CookieManager::has('user_id') && CookieManager::has('remember_token'));
     }
@@ -32,6 +39,7 @@ class Auth
         $_SESSION['user_id'] = $user->id;
         
         if ($remember) {
+            // Store a random token in both cookie + DB so the cookie alone is not sufficient.
             $token = bin2hex(random_bytes(32));
             CookieManager::set('user_id', $user->id, 30);
             CookieManager::set('remember_token', $token, 30);
@@ -42,6 +50,7 @@ class Auth
 
     public static function logout()
     {
+        // Destroy session and clear remember-me cookies.
         session_destroy();
         CookieManager::delete('user_id');
         CookieManager::delete('remember_token');
@@ -52,6 +61,7 @@ class Auth
         $user = Database::fetch('SELECT * FROM users WHERE username = ?', [$username]);
 
         if ($user && self::verifyPassword($password, $user->password)) {
+            // Successful login resets lockouts for both username and IP.
             LoginSecurity::clearFailedAttempts($username, 'username');
             LoginSecurity::clearFailedAttempts($_SERVER['REMOTE_ADDR'], 'ip');
             return $user;

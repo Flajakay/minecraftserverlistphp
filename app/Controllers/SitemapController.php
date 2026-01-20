@@ -5,8 +5,16 @@ namespace App\Controllers;
 use App\Models\Server;
 use App\Models\Category;
 
+/**
+ * Sitemap controller.
+ *
+ * Generates a basic XML sitemap for public routes, category pages, and active server detail pages.
+ */
 class SitemapController
 {
+    /**
+     * Output sitemap.xml.
+     */
     public function xml()
     {
         header('Content-Type: application/xml; charset=utf-8');
@@ -35,6 +43,9 @@ class SitemapController
         echo $sitemap;
     }
 
+    /**
+     * Format a single sitemap <url> entry.
+     */
     private function addUrl($url, $priority = '0.5', $changefreq = 'weekly', $lastmod = null)
     {
         $xml = "  <url>\n";
@@ -51,6 +62,9 @@ class SitemapController
         return $xml;
     }
 
+    /**
+     * Fetch servers that should be included in the sitemap.
+     */
     private function getActiveServers()
     {
         return Server::getAll(['limit' => 1000]);

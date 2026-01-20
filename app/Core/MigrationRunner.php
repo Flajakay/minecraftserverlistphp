@@ -4,6 +4,12 @@ namespace App\Core;
 
 use PDO;
 
+/**
+ * Database migration runner for `database/migrations/*.sql`.
+ *
+ * Discovers migrations by filename, executes pending `.up.sql` (and `.down.sql` if used)
+ * via `PDO::exec()`, and tracks applied migrations in `schema_migrations`.
+ */
 class MigrationRunner
 {
     private PDO $pdo;
@@ -74,6 +80,7 @@ class MigrationRunner
 
         $selected = [];
         foreach ($selectedMigrationNames as $name) {
+            // Prevent path traversal: only allow selecting by basename.
             $name = basename((string)$name);
             if ($name !== '') {
                 $selected[$name] = true;
@@ -98,11 +105,13 @@ class MigrationRunner
             try {
                 $sql = trim((string)file_get_contents($migration['path']));
                 if ($sql === '') {
+                    // Empty migration files are treated as no-ops but still recorded.
                     $this->markApplied($migration['name'], $migration['direction']);
                     $executed[] = ['name' => $migration['name'], 'status' => 'skipped_empty'];
                     continue;
                 }
 
+                // Migration files are executed as-is; prefer single-statement migrations.
                 $this->pdo->exec($sql);
                 $this->markApplied($migration['name'], $migration['direction']);
                 $executed[] = ['name' => $migration['name'], 'status' => 'applied'];

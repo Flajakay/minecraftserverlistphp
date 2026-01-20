@@ -2,6 +2,12 @@
 
 namespace App\Core;
 
+/**
+ * Minimal Votifier client.
+ *
+ * Sends an RSA-encrypted VOTE payload to a Votifier-compatible listener.
+ * This implementation is intentionally simple and returns false on any failure.
+ */
 class Votifier
 {
     public static function sendVote($publicKey, $host, $port, $username)
@@ -24,6 +30,7 @@ class Votifier
             }
             
             $voteString = "VOTE\n";
+            // Service/site identifier expected by many Votifier implementations.
             $voteString .= "test\n";
             $voteString .= $username . "\n";
             $voteString .= $_SERVER['HTTP_HOST'] . "\n";

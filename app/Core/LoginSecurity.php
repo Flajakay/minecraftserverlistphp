@@ -2,6 +2,12 @@
 
 namespace App\Core;
 
+/**
+ * Login attempt tracking and lockouts.
+ *
+ * Tracks failed attempts by a configurable identifier (e.g., username or IP) and sets a
+ * temporary lockout timestamp when thresholds are exceeded.
+ */
 class LoginSecurity
 {
     const MAX_ATTEMPTS = 5;
@@ -20,6 +26,7 @@ class LoginSecurity
             return false;
         }
 
+        // Lockout is active if the timestamp is still in the future.
         if ($attempt->lockout_until > date('Y-m-d H:i:s')) {
             return true;
         }

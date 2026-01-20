@@ -5,8 +5,16 @@ namespace App\Controllers\Admin;
 use App\Models\User;
 use App\Models\AuditLog;
 
+/**
+ * Admin users controller.
+ *
+ * Allows admins to search, edit, activate/deactivate, and delete user accounts.
+ */
 class UserController
 {
+    /**
+     * List users with filters.
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -36,6 +44,9 @@ class UserController
         ]);
     }
 
+    /**
+     * Render the edit form for a user.
+     */
     public function edit($id)
     {
         if (!isAdmin()) {
@@ -56,6 +67,11 @@ class UserController
         view('admin.users-edit', ['user' => $user]);
     }
 
+    /**
+     * Persist edits to a user.
+     *
+     * Safety: admins cannot modify their own status/role via this endpoint.
+     */
     public function update($id)
     {
         if (!isAdmin()) {
@@ -97,6 +113,11 @@ class UserController
         redirect('/admin/users');
     }
 
+    /**
+     * Delete a user.
+     *
+     * Safety: admins cannot delete themselves.
+     */
     public function delete($id)
     {
         if (!isAdmin()) {
@@ -126,6 +147,9 @@ class UserController
         redirect('/admin/users');
     }
 
+    /**
+     * Perform a bulk action on a user (activate/deactivate/delete).
+     */
     public function action($id)
     {
         if (!isAdmin()) {

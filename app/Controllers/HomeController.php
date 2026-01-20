@@ -7,8 +7,20 @@ use App\Models\Category;
 use App\Models\Favorite;
 use App\Core\SEO;
 
+/**
+ * Home page controller.
+ *
+ * Keeps the controller focused on orchestration: fetch a few server collections for the landing page,
+ * enrich them with categories for display, and pass everything to the view.
+ */
 class HomeController
 {
+    /**
+     * Render the home page.
+     *
+     * Note: We fetch multiple short lists (featured/recent/top-voted) and then compute favorites for
+     * the union so the UI can mark items consistently.
+     */
     public function index()
     {
         SEO::configureHomePage();
@@ -31,7 +43,6 @@ class HomeController
         $allServers = array_merge($featuredServers, $recentServers, $topVotedServers);
         foreach ($allServers as $server) {
             $server->categories = Server::getCategories($server->id);
-            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         $userFavorites = [];

@@ -6,8 +6,17 @@ use App\Models\Server;
 use App\Models\Comment;
 use App\Core\Auth;
 
+/**
+ * Server comments controller.
+ *
+ * Supports both standard form submissions (flash + redirect) and AJAX calls (JSON) depending on
+ * the presence of `$_POST['ajax']`.
+ */
 class CommentController
 {
+    /**
+     * Create a comment for a server.
+     */
     public function store()
     {
         if (!isLoggedIn()) {
@@ -70,6 +79,11 @@ class CommentController
         redirect($_SERVER['HTTP_REFERER'] ?? "/server/{$server->address}:{$server->port}");
     }
 
+    /**
+     * Delete a comment.
+     *
+     * Authorization: comment author, server owner, or privileged user.
+     */
     public function delete()
     {
         if (!isLoggedIn()) {
@@ -97,6 +111,11 @@ class CommentController
         echo json_encode(['success' => true, 'message' => 'Comment deleted successfully']);
     }
 
+    /**
+     * Paginated "load more" endpoint used by the server page.
+     *
+     * Returns rendered HTML for the next chunk plus pagination metadata.
+     */
     public function loadMore()
     {
         $serverId = (int)($_GET['server_id'] ?? 0);

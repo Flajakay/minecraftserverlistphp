@@ -6,8 +6,16 @@ use App\Models\Server;
 use App\Models\Category;
 use App\Models\AuditLog;
 
+/**
+ * Admin servers controller.
+ *
+ * Provides moderation and management tools for server listings (search/filter/edit/actions).
+ */
 class ServerController
 {
+    /**
+     * List servers with admin-only filters.
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -29,7 +37,6 @@ class ServerController
         
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
         
         $totalServers = Server::countAllAdmin($search, $filters);
@@ -47,6 +54,9 @@ class ServerController
         ]);
     }
 
+    /**
+     * Render the edit form for a server.
+     */
     public function edit($id)
     {
         if (!isAdmin()) {
@@ -76,6 +86,9 @@ class ServerController
         ]);
     }
 
+    /**
+     * Persist changes to a server.
+     */
     public function update($id)
     {
         if (!isAdmin()) {
@@ -150,6 +163,9 @@ class ServerController
         redirect("/admin/servers/edit/{$id}");
     }
 
+    /**
+     * Delete a server listing.
+     */
     public function delete($id)
     {
         if (!isAdmin()) {
@@ -174,6 +190,9 @@ class ServerController
         redirect('/admin/servers');
     }
 
+    /**
+     * Perform a server moderation action (activate/deactivate/privacy/highlight/delete).
+     */
     public function action($id)
     {
         if (!isAdmin()) {

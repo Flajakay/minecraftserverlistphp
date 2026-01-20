@@ -4,8 +4,16 @@ namespace App\Controllers\Admin;
 
 use App\Models\Payment;
 
+/**
+ * Admin payments controller.
+ *
+ * Provides a searchable, paginated list of recorded payments.
+ */
 class PaymentController
 {
+    /**
+     * List payments.
+     */
     public function index()
     {
         if (!isAdmin()) {

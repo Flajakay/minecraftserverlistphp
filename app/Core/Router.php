@@ -2,6 +2,12 @@
 
 namespace App\Core;
 
+/**
+ * Minimal HTTP router.
+ *
+ * Maps HTTP method + URI patterns (with `{param}` placeholders) to controller actions.
+ * The dispatcher also enforces CSRF checks for state-changing requests.
+ */
 class Router
 {
     private $routes = [];
@@ -19,9 +25,8 @@ class Router
     public function dispatch($method, $uri)
     {
         $uri = rtrim($uri, '/') ?: '/';
-        
-        // Apply rate limiting before CSRF check
-        // RateLimit::getInstance()->middleware($uri, $method); // TEMPORARILY DISABLED
+
+        // Rate limiting (when enabled) should run before CSRF so abusive traffic is rejected early.
         
         if (!\App\Core\Csrf::check($method, $uri)) {
             flash('error', 'Invalid security token');

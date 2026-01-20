@@ -86,13 +86,12 @@ function displayHtml($input)
         return '';
     }
     
-    // Check if already escaped (contains &lt; or &gt;)
+    // If content appears HTML-escaped already, decode it for rendering.
     if (strpos($input, '&lt;') !== false || strpos($input, '&gt;') !== false) {
-        // Already escaped, decode it
         return html_entity_decode($input, ENT_QUOTES, 'UTF-8');
     }
     
-    // Not escaped, return as-is
+    // Otherwise, return as-is (caller is responsible for ensuring safety).
     return $input;
 }
 
@@ -109,15 +108,14 @@ function formatBytes($bytes, $precision = 2)
 
 function timeAgo($timestamp)
 {
-    // Handle null or empty timestamps
+    // Gracefully handle missing/invalid timestamps from legacy data.
     if (empty($timestamp)) {
         return 'unknown';
     }
     
-    // Convert to timestamp if it's a string
+    // Accept unix timestamps or date strings.
     $timestampValue = is_numeric($timestamp) ? $timestamp : strtotime($timestamp);
     
-    // Handle invalid timestamps
     if ($timestampValue === false || $timestampValue === null) {
         return 'unknown';
     }
@@ -284,7 +282,6 @@ function resizeImage($source, $destination, $width, $height)
     return $result;
 }
 
-// Authentication helpers
 function auth()
 {
     return \App\Core\Auth::user();

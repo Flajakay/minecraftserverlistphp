@@ -11,6 +11,11 @@ use PaypalServerSdkLib\Models\Builders\PurchaseUnitRequestBuilder;
 use PaypalServerSdkLib\Models\Builders\AmountWithBreakdownBuilder;
 use App\Models\Setting;
 
+/**
+ * PayPal integration wrapper.
+ *
+ * Encapsulates client initialization from settings and provides order creation/capture.
+ */
 class PayPalService
 {
     private $client;
@@ -24,9 +29,6 @@ class PayPalService
 
     private function getClient()
     {
-
-        
-
         $clientId = Setting::getValue('paypal_client_id');
         $clientSecret = Setting::getValue('paypal_client_secret');
         $isSandbox = Setting::getValue('paypal_sandbox', 1);

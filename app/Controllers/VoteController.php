@@ -8,8 +8,19 @@ use App\Core\Auth;
 use App\Core\Votifier;
 use App\Core\Database;
 
+/**
+ * Voting controller.
+ *
+ * Records daily votes for a server. Optionally forwards the vote to the server via Votifier
+ * when a public key and username are provided.
+ */
 class VoteController
 {
+    /**
+     * Cast a vote.
+     *
+     * JSON-only endpoint.
+     */
     public function vote()
     {
         if (!isLoggedIn()) {

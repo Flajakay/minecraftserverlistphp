@@ -6,6 +6,12 @@ use Stiphle\Throttle\LeakyBucket;
 use Stiphle\Storage\Apcu;
 use Exception;
 
+/**
+ * Request rate limiting.
+ *
+ * Uses Stiphle's LeakyBucket throttler. This implementation relies on APCu for shared
+ * counters; without APCu it intentionally fails open (allows requests) but logs the issue.
+ */
 class RateLimit
 {
     private static $instance;
@@ -16,7 +22,7 @@ class RateLimit
     {
         $this->config = require __DIR__ . '/../../config/ratelimit.php';
         
-        // Simple APCu setup - perfect for single-server applications
+        // APCu provides a fast in-memory counter store for single-server deployments.
         if (extension_loaded('apcu') && apcu_enabled()) {
             $storage = new Apcu();
             $this->throttle = new LeakyBucket();
@@ -24,7 +30,7 @@ class RateLimit
             
             $this->logDebug("Rate limiting initialized with APCu storage");
         } else {
-            // Fallback - log the issue clearly
+            // Without APCu, buckets cannot be shared/persisted reliably.
             $this->throttle = new LeakyBucket();
             $this->logError("APCu not available - rate limiting will NOT work. Enable APCu extension in PHP.");
         }
@@ -40,7 +46,7 @@ class RateLimit
 
     public function checkRequest($route, $method = 'GET')
     {
-        // Always check if we should bypass first
+        // Bypass checks must run first so trusted callers aren't throttled.
         if ($this->shouldBypass()) {
             $this->logDebug("Request bypassed", ['route' => $route, 'reason' => 'user_in_bypass_list']);
             return true;
@@ -56,7 +62,7 @@ class RateLimit
         $key = $this->generateKey($rule, $route);
         
         try {
-            // Stiphle expects milliseconds for the window
+            // Stiphle expects a window duration in milliseconds.
             $waitTime = $this->throttle->throttle($key, $rule['limit'], $rule['window'] * 1000);
             $allowed = $waitTime === 0;
             
@@ -81,7 +87,7 @@ class RateLimit
                 'key' => $key,
                 'exception' => get_class($e)
             ]);
-            // Fail open - allow request if there's an error
+            // Fail open: rate limiting should not take the site down if storage breaks.
             return true;
         }
     }
@@ -134,7 +140,7 @@ class RateLimit
 
     private function routeMatches($route, $pattern)
     {
-        // Handle wildcard patterns
+        // Simple wildcard support ("*") for route patterns.
         if ($pattern === '*') {
             return true;
         }

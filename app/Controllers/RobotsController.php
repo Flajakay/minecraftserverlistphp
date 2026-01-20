@@ -2,8 +2,16 @@
 
 namespace App\Controllers;
 
+/**
+ * robots.txt controller.
+ *
+ * Emits a simple robots.txt allowing public pages while discouraging indexing of user/admin areas.
+ */
 class RobotsController
 {
+    /**
+     * Output robots.txt.
+     */
     public function txt()
     {
         header('Content-Type: text/plain; charset=utf-8');

@@ -5,8 +5,16 @@ namespace App\Controllers\Admin;
 use App\Core\MigrationRunner;
 use App\Models\AuditLog;
 
+/**
+ * Admin migrations controller.
+ *
+ * Exposes migration status and execution from the admin panel.
+ */
 class MigrationController
 {
+    /**
+     * Show migration status (applied vs pending).
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -22,6 +30,9 @@ class MigrationController
         ]);
     }
 
+    /**
+     * Run all pending migrations.
+     */
     public function runAll()
     {
         if (!isAdmin()) {
@@ -51,6 +62,9 @@ class MigrationController
         redirect('/admin/migrations');
     }
 
+    /**
+     * Run only the selected migrations.
+     */
     public function runSelected()
     {
         if (!isAdmin()) {

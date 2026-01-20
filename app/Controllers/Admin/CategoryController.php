@@ -5,8 +5,18 @@ namespace App\Controllers\Admin;
 use App\Models\Category;
 use App\Models\AuditLog;
 
+/**
+ * Admin categories controller.
+ *
+ * Allows admins to manage category taxonomy used for server classification.
+ */
 class CategoryController
 {
+    /**
+     * List categories and render the create form.
+     *
+     * Note: POST requests to this route create a category (handled by `create()`).
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -38,6 +48,9 @@ class CategoryController
         ]);
     }
 
+    /**
+     * Create a new category.
+     */
     public function create()
     {
         if (!isAdmin()) {
@@ -74,6 +87,9 @@ class CategoryController
         redirect('/admin/categories');
     }
 
+    /**
+     * Render the edit form for a category.
+     */
     public function edit($id)
     {
         if (!isAdmin()) {
@@ -99,6 +115,9 @@ class CategoryController
         ]);
     }
 
+    /**
+     * Persist changes to a category.
+     */
     public function update($id)
     {
         if (!isAdmin()) {
@@ -142,6 +161,11 @@ class CategoryController
         redirect('/admin/categories');
     }
 
+    /**
+     * Delete a category.
+     *
+     * The default/root category cannot be deleted.
+     */
     public function delete($id)
     {
         if (!isAdmin()) {
@@ -171,6 +195,9 @@ class CategoryController
         redirect('/admin/categories');
     }
 
+    /**
+     * Generate a URL-safe slug for category URLs.
+     */
     private function generateSlug($string)
     {
         $string = strtolower($string);

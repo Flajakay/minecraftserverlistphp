@@ -6,8 +6,16 @@ use App\Models\Setting;
 use App\Models\Server;
 use App\Models\AuditLog;
 
+/**
+ * Admin settings controller.
+ *
+ * Allows updating site-wide settings and running privileged maintenance actions.
+ */
 class SettingController
 {
+    /**
+     * Render settings form.
+     */
     public function index()
     {
         if (!isAdmin()) {
@@ -20,6 +28,9 @@ class SettingController
         view('admin.settings', ['settings' => $settings]);
     }
 
+    /**
+     * Persist settings changes.
+     */
     public function update()
     {
         if (!isAdmin()) {
@@ -57,6 +68,9 @@ class SettingController
         redirect('/admin/settings');
     }
 
+    /**
+     * Reset votes for all servers.
+     */
     public function resetVotes()
     {
         if (!isAdmin()) {

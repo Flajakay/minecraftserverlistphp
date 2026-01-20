@@ -4,6 +4,12 @@ namespace App\Core;
 
 use PDO;
 
+/**
+ * PDO wrapper used across the app.
+ *
+ * Values are parameterized via prepared statements. Callers should ensure any dynamic
+ * table/column names are trusted or properly whitelisted.
+ */
 class Database
 {
     private static $pdo;
@@ -45,6 +51,7 @@ class Database
 
     public static function insert($table, $data)
     {
+        // $table and keys are interpolated into SQL; callers must not pass untrusted names.
         $keys = implode(',', array_keys($data));
         $placeholders = implode(',', array_fill(0, count($data), '?'));
         

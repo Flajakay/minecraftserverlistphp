@@ -6,8 +6,18 @@ use App\Models\Server;
 use App\Models\Favorite;
 use App\Core\Auth;
 
+/**
+ * Favorites controller.
+ *
+ * Provides an AJAX endpoint to toggle a server favorite for the current user.
+ */
 class FavoriteController
 {
+    /**
+     * Toggle the favorite state for a server.
+     *
+     * Returns JSON including the performed action and the updated favorites count.
+     */
     public function toggle()
     {
         if (!isLoggedIn()) {

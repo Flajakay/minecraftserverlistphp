@@ -4,8 +4,16 @@ namespace App\Controllers\Admin;
 
 use App\Models\AuditLog;
 
+/**
+ * Admin audit log controller.
+ *
+ * Provides a searchable, paginated view of recorded audit events.
+ */
 class AuditController
 {
+    /**
+     * List audit log entries.
+     */
     public function index()
     {
         if (!isAdmin()) {
