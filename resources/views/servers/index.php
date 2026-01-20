@@ -24,8 +24,8 @@
                 <div class="d-flex gap-2">
                     <!-- Mobile Filter Toggle -->
                     <button type="button" class="btn btn-primary d-md-none" data-bs-toggle="modal"
-                        data-bs-target="#filterModal">
-                        <i class="bi bi-funnel me-1"></i><?= lang('filters') ?>
+                        data-bs-target="#filterModal" aria-label="<?= lang('filters') ?>">
+                        <i class="bi bi-funnel"></i>
                     </button>
 
                     <!-- Hide Add Server button on mobile -->

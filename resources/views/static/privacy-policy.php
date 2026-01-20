@@ -12,7 +12,7 @@
             </div>
 
             <div class="card border-0 shadow-sm">
-                <div class="card-body p-5">
+                <div class="card-body p-4">
                     <div class="prose">
                         <h3 class="h5 fw-bold mb-3">Information We Collect</h3>
                         <p class="mb-4">

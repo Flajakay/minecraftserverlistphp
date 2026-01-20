@@ -13,7 +13,7 @@
     <?php include __DIR__ . '/../partials/navbar.php'; ?>
     
     <main class="flex-grow-1">
-        <div class="container-fluid px-4 py-3">
+        <div class="container-fluid px-2 px-md-4 py-3">
             <?php include __DIR__ . '/../partials/alerts.php'; ?>
             <?= $content ?? '' ?>
         </div>

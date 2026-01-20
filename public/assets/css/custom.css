@@ -719,7 +719,6 @@ footer a:hover {
     height: auto;
     object-fit: none;
     /* Don't scale - show at original size */
-    n;
     transition: all 0.3s ease;
 }
 
@@ -1058,4 +1057,75 @@ p.text-clamp-2 {
 /* Input field spacing after icon */
 .input-group .form-control.border-start-0.ps-0 {
     padding-left: 0.3rem !important;
+}
+
+/* ===== Mobile Navbar Dropdown Fixes ===== */
+@media (max-width: 991.98px) {
+
+    /* Make dropdowns appear inline within the mobile menu */
+    .navbar-collapse .dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        margin-top: 0;
+        border: none;
+        box-shadow: none;
+        padding: 0.25rem 0;
+    }
+
+    /* Dark theme for dropdown menus in mobile navbar */
+    .navbar-dark .dropdown-menu {
+        background-color: rgba(33, 37, 41, 0.2);
+        border-radius: 0.5rem;
+        margin: 0.25rem 0;
+    }
+
+    .navbar-dark .dropdown-item {
+        color: rgba(255, 255, 255, 0.85);
+        padding: 0.5rem 1rem 0.5rem 2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .navbar-dark .dropdown-item:hover,
+    .navbar-dark .dropdown-item:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .navbar-dark .dropdown-item:active {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .navbar-dark .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.1);
+        margin: 0.25rem 1rem;
+    }
+
+    .navbar-dark .dropdown-item.text-danger {
+        color: #f87171 !important;
+    }
+
+    .navbar-dark .dropdown-item.text-danger:hover {
+        color: #fca5a5 !important;
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Visual separation between nav sections */
+    .navbar-nav+.navbar-nav {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+    }
+
+    /* Ensure nav links have consistent padding on mobile */
+    .navbar-nav .nav-link {
+        padding: 0.5rem 1rem;
+    }
+
+    /* Style the dropdown toggle on mobile */
+    .navbar-nav .dropdown-toggle::after {
+        float: right;
+        margin-top: 0.5rem;
+    }
 }
