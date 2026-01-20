@@ -46,13 +46,9 @@
                 </div>
                 
                 <div class="d-flex align-items-center text-muted small">
-                    <span class="me-3">
+                    <span>
                         <i class="bi bi-arrow-up text-success me-1"></i>
                         <?= number_format($server->votes) ?>
-                    </span>
-                    <span>
-                        <i class="bi bi-heart text-danger me-1"></i>
-                        <?= number_format($server->favorites) ?>
                     </span>
                 </div>
             </div>

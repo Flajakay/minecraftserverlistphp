@@ -170,7 +170,6 @@
                                                 'login' => ['class' => 'primary', 'icon' => 'box-arrow-in-right'],
                                                 'logout' => ['class' => 'dark', 'icon' => 'box-arrow-right'],
                                                 'vote' => ['class' => 'info', 'icon' => 'hand-thumbs-up'],
-                                                'favorite' => ['class' => 'danger', 'icon' => 'heart'],
                                                 'submit' => ['class' => 'success', 'icon' => 'upload']
                                             ];
                                             $config = $actionConfig[$log->action] ?? ['class' => 'secondary', 'icon' => 'circle'];

@@ -264,12 +264,6 @@
                                         </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                             <span class="text-muted">
-                                                <i class="bi bi-heart me-2"></i><?= lang('favorites') ?>
-                                            </span>
-                                            <span class="text-danger fw-semibold"><?= number_format($server->favorites) ?></span>
-                                        </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                                            <span class="text-muted">
                                                 <i class="bi bi-eye me-2"></i><?= lang('monthly_views') ?>
                                             </span>
                                             <span><?= number_format($monthly_hits) ?></span>
@@ -331,21 +325,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="card border-0 bg-success text-white">
                                         <div class="card-body text-center">
                                             <i class="bi bi-eye fs-2 mb-2"></i>
                                             <h3 class="mb-1"><?= number_format($monthly_hits) ?></h3>
                                             <small><?= lang('monthly_views') ?></small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="card border-0 bg-danger text-white">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-heart fs-2 mb-2"></i>
-                                            <h3 class="mb-1"><?= number_format($server->favorites) ?></h3>
-                                            <small><?= lang('total_favorites') ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -543,13 +528,6 @@
                                 <i class="bi bi-shield-lock me-2"></i><?= $is_owner ? lang('server_verify_cta') : lang('server_claim_cta') ?>
                             </a>
                         <?php endif; ?>
-                        
-                        <button type="button" 
-                                class="btn btn-<?= $is_favorite ? 'danger' : 'outline-danger' ?> w-100 mb-3 py-2" 
-                                onclick="toggleFavorite(<?= $server->id ?>)">
-                            <i class="bi bi-heart<?= $is_favorite ? '-fill' : '' ?> me-2"></i>
-                            <?= $is_favorite ? lang('remove_from_favorites') : lang('add_to_favorites') ?>
-                        </button>
                         
                         <button type="button" 
                                 class="btn btn-outline-warning w-100 mb-3 py-2" 

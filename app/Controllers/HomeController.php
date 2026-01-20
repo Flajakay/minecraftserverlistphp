@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Server;
 use App\Models\Category;
-use App\Models\Favorite;
 use App\Core\SEO;
 
 /**
@@ -44,13 +43,6 @@ class HomeController
         foreach ($allServers as $server) {
             $server->categories = Server::getCategories($server->id);
         }
-
-        $userFavorites = [];
-        if (isLoggedIn()) {
-            $serverIds = array_map(fn($s) => $s->id, $allServers);
-            $serverIds = array_unique($serverIds);
-            $userFavorites = Favorite::getForUserByServerIds(auth()->id, $serverIds);
-        }
         
         $categories = Category::getWithServerCount();
         
@@ -58,8 +50,7 @@ class HomeController
             'featured_servers' => $featuredServers,
             'recent_servers' => $recentServers,
             'top_voted_servers' => $topVotedServers,
-            'categories' => $categories,
-            'user_favorites' => $userFavorites
+            'categories' => $categories
         ]);
     }
 }

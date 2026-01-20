@@ -59,10 +59,6 @@
                             <i class="bi bi-person-circle me-1"></i><?= auth()->username ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="<?= url('/my-servers') ?>"><i class="bi bi-server me-2"></i><?= lang('menu.my_servers') ?></a></li>
-                        <li><a class="dropdown-item" href="<?= url('/my-favorites') ?>"><i class="bi bi-heart me-2"></i><?= lang('menu.my_favorites') ?></a></li>
-                        <li><a class="dropdown-item" href="<?= url('/premium') ?>"><i class="bi bi-star me-2"></i><?= lang('menu.purchase_highlight') ?></a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?= url('/profile/' . auth()->username) ?>"><i class="bi bi-person me-2"></i><?= lang('menu.my_profile') ?></a></li>
                         <li><a class="dropdown-item" href="<?= url('/settings/profile') ?>"><i class="bi bi-gear me-2"></i><?= lang('menu.settings') ?></a></li>
                         <li><a class="dropdown-item" href="<?= url('/settings/password') ?>"><i class="bi bi-key me-2"></i><?= lang('menu.change_password') ?></a></li>

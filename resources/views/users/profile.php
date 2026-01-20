@@ -131,7 +131,7 @@
                                             <?php if ($server->status): ?>
                                                 <div class="d-flex justify-content-between text-sm">
                                                     <span><i class="bi bi-people"></i> <?= $server->players ?>/<?= $server->max_players ?></span>
-                                                    <span><i class="bi bi-heart"></i> <?= $server->votes ?></span>
+                                                    <span><i class="bi bi-arrow-up"></i> <?= $server->votes ?></span>
                                                 </div>
                                             <?php endif; ?>
                                         </div>

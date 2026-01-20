@@ -12,7 +12,7 @@ class ServerShow {
         this.statisticsChart = null;
         this.blogEditor = null;
         this.blogEditorInitialized = false;
-        
+
         this.init();
     }
 
@@ -41,7 +41,7 @@ class ServerShow {
             blogModal.addEventListener('shown.bs.modal', () => {
                 this.initializeBlogEditor();
             });
-            
+
             blogModal.addEventListener('hidden.bs.modal', () => {
                 this.resetBlogForm();
             });
@@ -49,7 +49,7 @@ class ServerShow {
 
         // Form submissions
         this.initFormHandlers();
-        
+
         // Load more buttons
         this.initLoadMoreButtons();
     }
@@ -137,7 +137,7 @@ class ServerShow {
         if (blogForm) {
             blogForm.reset();
         }
-        
+
         if (this.blogEditor) {
             this.blogEditor.value = '';
         }
@@ -189,7 +189,7 @@ class ServerShow {
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 let label = context.dataset.label || '';
                                 if (label) {
                                     label += ': ';
@@ -232,10 +232,10 @@ class ServerShow {
 
     async handleBlogSubmit(e) {
         e.preventDefault();
-        
+
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        
+
         if (this.blogEditor) {
             const content = this.blogEditor.value.trim();
             if (content.length < 10) {
@@ -243,9 +243,9 @@ class ServerShow {
                 return;
             }
         }
-        
+
         this.setButtonLoading(submitBtn, 'Creating...');
-        
+
         try {
             const formData = new FormData();
             formData.append('server_id', this.serverId);
@@ -253,14 +253,14 @@ class ServerShow {
             formData.append('content', this.blogEditor ? this.blogEditor.value : document.getElementById('blogContent').value);
             formData.append('ajax', '1');
             formData.append('csrf_token', this.csrfToken);
-            
+
             const response = await this.makeRequest('/blog', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('blogModal'));
                 modal.hide();
@@ -279,25 +279,25 @@ class ServerShow {
 
     async handleCommentSubmit(e) {
         e.preventDefault();
-        
+
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         this.setButtonLoading(submitBtn, 'Posting...');
-        
+
         try {
             const formData = new FormData();
             formData.append('server_id', this.serverId);
             formData.append('comment', document.getElementById('comment').value);
             formData.append('ajax', '1');
             formData.append('csrf_token', this.csrfToken);
-            
+
             const response = await this.makeRequest('/comment', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 document.getElementById('comment').value = '';
                 await this.refreshComments();
@@ -315,25 +315,25 @@ class ServerShow {
 
     async handleReportSubmit(e) {
         e.preventDefault();
-        
+
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         this.setButtonLoading(submitBtn, 'Submitting...');
-        
+
         try {
             const formData = new FormData();
             formData.append('type', 2);
             formData.append('reported_id', this.serverId);
             formData.append('message', document.getElementById('reportReason').value);
             formData.append('csrf_token', this.csrfToken);
-            
+
             const response = await this.makeRequest('/report', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 alert('Report submitted successfully. Our moderators will review it shortly.');
                 const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
@@ -354,18 +354,18 @@ class ServerShow {
         const button = e.target;
         const offset = parseInt(button.dataset.offset);
         const originalText = button.innerHTML;
-        
+
         this.setButtonLoading(button, 'Loading...');
-        
+
         try {
             const response = await this.makeRequest(`/blog/load-more?server_id=${this.serverId}&offset=${offset}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const blogContainer = document.getElementById('blogPostsList');
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = data.html;
-                
+
                 Array.from(tempDiv.children).forEach(post => {
                     const cardWrapper = document.createElement('div');
                     cardWrapper.className = 'card border-0 shadow-sm mb-3';
@@ -375,7 +375,7 @@ class ServerShow {
                     cardWrapper.appendChild(cardBody);
                     blogContainer.appendChild(cardWrapper);
                 });
-                
+
                 if (data.has_more) {
                     button.dataset.offset = data.next_offset;
                     this.resetButtonLoading(button, originalText);
@@ -397,18 +397,18 @@ class ServerShow {
         const button = e.target;
         const offset = parseInt(button.dataset.offset);
         const originalText = button.innerHTML;
-        
+
         this.setButtonLoading(button, 'Loading...');
-        
+
         try {
             const response = await this.makeRequest(`/comment/load-more?server_id=${this.serverId}&offset=${offset}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const commentsContainer = document.getElementById('commentsList');
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = data.html;
-                
+
                 Array.from(tempDiv.children).forEach(comment => {
                     const cardWrapper = document.createElement('div');
                     cardWrapper.className = 'card border-0 shadow-sm mb-3';
@@ -418,7 +418,7 @@ class ServerShow {
                     cardWrapper.appendChild(cardBody);
                     commentsContainer.appendChild(cardWrapper);
                 });
-                
+
                 if (data.has_more) {
                     button.dataset.offset = data.next_offset;
                     this.resetButtonLoading(button, originalText);
@@ -439,7 +439,7 @@ class ServerShow {
     // Action methods
     async voteForServer() {
         const username = prompt('Enter your Minecraft username (optional):');
-        
+
         try {
             const response = await this.makeRequest('/vote', {
                 method: 'POST',
@@ -452,9 +452,9 @@ class ServerShow {
                     csrf_token: this.csrfToken
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 alert('Vote recorded successfully! Thank you for supporting this server.');
                 location.reload();
@@ -467,35 +467,10 @@ class ServerShow {
         }
     }
 
-    async toggleFavorite() {
-        try {
-            const response = await this.makeRequest('/favorite', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    server_id: this.serverId,
-                    csrf_token: this.csrfToken
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                location.reload();
-            } else {
-                alert(data.message || 'Error occurred');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred');
-        }
-    }
 
     copyServerAddress() {
         const address = `${this.serverAddress}${this.serverPort !== 25565 ? ':' + this.serverPort : ''}`;
-        
+
         navigator.clipboard.writeText(address).then(() => {
             this.showToast('Server address copied to clipboard!', 'success');
         }).catch(err => {
@@ -510,7 +485,7 @@ class ServerShow {
 
     async deleteBlogPost(id) {
         if (!confirm(window.lang?.confirm_delete || 'Are you sure you want to delete this blog post?')) return;
-        
+
         try {
             const response = await this.makeRequest('/blog/delete', {
                 method: 'POST',
@@ -522,9 +497,9 @@ class ServerShow {
                     csrf_token: this.csrfToken
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 await this.refreshBlogPosts();
                 this.showToast('Blog post deleted successfully!', 'success');
@@ -541,15 +516,15 @@ class ServerShow {
         try {
             const response = await this.makeRequest(`/comment/load-more?server_id=${this.serverId}&offset=0&limit=10`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const commentsContainer = document.getElementById('commentsList');
                 commentsContainer.innerHTML = '';
-                
+
                 if (data.html.trim()) {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = data.html;
-                    
+
                     Array.from(tempDiv.children).forEach(comment => {
                         const cardWrapper = document.createElement('div');
                         cardWrapper.className = 'card border-0 shadow-sm mb-3';
@@ -567,7 +542,7 @@ class ServerShow {
                         </div>
                     `;
                 }
-                
+
                 const loadMoreBtn = document.getElementById('loadMoreComments');
                 if (loadMoreBtn) {
                     if (data.has_more) {
@@ -577,7 +552,7 @@ class ServerShow {
                         loadMoreBtn.style.display = 'none';
                     }
                 }
-                
+
                 this.updateCommentCount();
             }
         } catch (error) {
@@ -589,15 +564,15 @@ class ServerShow {
         try {
             const response = await this.makeRequest(`/blog/load-more?server_id=${this.serverId}&offset=0&limit=5`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const blogContainer = document.getElementById('blogPostsList');
                 blogContainer.innerHTML = '';
-                
+
                 if (data.html.trim()) {
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = data.html;
-                    
+
                     Array.from(tempDiv.children).forEach(post => {
                         const cardWrapper = document.createElement('div');
                         cardWrapper.className = 'card border-0 shadow-sm mb-3';
@@ -615,7 +590,7 @@ class ServerShow {
                         </div>
                     `;
                 }
-                
+
                 const loadMoreBtn = document.getElementById('loadMoreBlogPosts');
                 if (loadMoreBtn) {
                     if (data.has_more) {
@@ -625,7 +600,7 @@ class ServerShow {
                         loadMoreBtn.style.display = 'none';
                     }
                 }
-                
+
                 this.updateBlogPostCount();
             }
         } catch (error) {
@@ -638,7 +613,7 @@ class ServerShow {
             const commentsList = document.getElementById('commentsList');
             const commentCards = commentsList.querySelectorAll('.card');
             const count = commentCards.length;
-            
+
             const commentTab = document.querySelector('#comments-tab');
             if (commentTab) {
                 const iconAndText = commentTab.innerHTML.split('(')[0];
@@ -654,7 +629,7 @@ class ServerShow {
             const blogList = document.getElementById('blogPostsList');
             const blogCards = blogList.querySelectorAll('.card');
             const count = blogCards.length;
-            
+
             const blogTab = document.querySelector('#blog-tab');
             if (blogTab) {
                 const iconAndText = blogTab.innerHTML.split('(')[0];
@@ -668,12 +643,12 @@ class ServerShow {
     generateBanner() {
         const form = document.getElementById('bannerForm');
         const formData = new FormData(form);
-        
+
         const textColor = formData.get('text_color') || '#ffffff';
         const fontSize = formData.get('font_size') || '12';
         const message = formData.get('message') || 'Vote for this server on our website!';
         const background = formData.get('background') || 'default';
-        
+
         const params = new URLSearchParams({
             server_id: this.serverId,
             background: background,
@@ -681,10 +656,10 @@ class ServerShow {
             text_color: textColor.replace('#', ''),
             font_size: fontSize
         });
-        
+
         const bannerUrl = `/banner?${params.toString()}`;
         document.getElementById('bannerPreview').src = bannerUrl + '&t=' + Date.now();
-        
+
         const serverUrl = `/server/${this.serverAddress}:${this.serverPort}`;
         const htmlCode = `<a href="${serverUrl}" target="_blank"><img src="${bannerUrl}" alt="${this.serverAddress} Banner"></a>`;
         document.getElementById('bannerCode').value = htmlCode;
@@ -731,7 +706,7 @@ class ServerShow {
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             if (toast.parentNode) {
                 toast.parentNode.removeChild(toast);
@@ -742,7 +717,7 @@ class ServerShow {
     async makeRequest(url, options = {}) {
         const baseUrl = window.location.origin;
         const fullUrl = url.startsWith('http') ? url : baseUrl + url;
-        
+
         return fetch(fullUrl, {
             ...options,
             credentials: 'same-origin'
@@ -751,41 +726,35 @@ class ServerShow {
 }
 
 // Global functions that need to be accessible from HTML onclick handlers
-window.voteForServer = function(serverId) {
+window.voteForServer = function (serverId) {
     if (window.serverShowInstance) {
         window.serverShowInstance.voteForServer();
     }
 };
 
-window.toggleFavorite = function(serverId) {
-    if (window.serverShowInstance) {
-        window.serverShowInstance.toggleFavorite();
-    }
-};
-
-window.copyServerAddress = function() {
+window.copyServerAddress = function () {
     if (window.serverShowInstance) {
         window.serverShowInstance.copyServerAddress();
     }
 };
 
-window.reportServer = function(serverId) {
+window.reportServer = function (serverId) {
     if (window.serverShowInstance) {
         window.serverShowInstance.reportServer();
     }
 };
 
-window.deleteBlogPost = function(id) {
+window.deleteBlogPost = function (id) {
     if (window.serverShowInstance) {
         window.serverShowInstance.deleteBlogPost(id);
     }
 };
 
-window.editServer = function(serverId) {
+window.editServer = function (serverId) {
     window.location.href = `${window.location.origin}/edit-server/${serverId}`;
 };
 
-window.generateBanner = function() {
+window.generateBanner = function () {
     if (window.serverShowInstance) {
         window.serverShowInstance.generateBanner();
     }

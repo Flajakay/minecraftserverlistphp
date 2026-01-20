@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Setting;
 use App\Models\Vote;
 use App\Models\Comment;
-use App\Models\Favorite;
 use App\Models\BlogPost;
 use App\Models\PlayerHistory;
 use App\Core\Auth;
@@ -63,17 +62,10 @@ class ServerController
         $totalServers = Server::count($filters);
         $totalPages = ceil($totalServers / $perPage);
 
-        $userFavorites = [];
-        if (isLoggedIn()) {
-            $serverIds = array_map(fn($s) => $s->id, $servers);
-            $userFavorites = Favorite::getForUserByServerIds(auth()->id, $serverIds);
-        }
-
         $categories = Category::getAllWithHierarchy();
 
         foreach ($servers as $server) {
             $server->categories = Server::getCategories($server->id);
-            //$server->primary_category = Server::getPrimaryCategory($server->id);
         }
 
         view('servers.index', [
@@ -81,8 +73,7 @@ class ServerController
             'categories' => $categories,
             'current_page' => $page,
             'total_pages' => $totalPages,
-            'filters' => $filters,
-            'user_favorites' => $userFavorites
+            'filters' => $filters
         ]);
     }
 
@@ -111,9 +102,7 @@ class ServerController
         $monthlyVotes = Vote::getServerVotes($server->id, 'month');
         $monthlyHits = Vote::getServerHits($server->id, 'month');
 
-
         $canVote = isLoggedIn() && Vote::canVote($server->id, $_SERVER['REMOTE_ADDR']);
-        $isFavorite = isLoggedIn() && Favorite::exists(auth()->id, $server->id);
 
         view('servers.show', [
             'server' => $server,
@@ -127,8 +116,7 @@ class ServerController
             'is_owner' => $isOwner,
             'effective_owner_id' => $effectiveOwnerId,
             'is_verified' => (int) ($server->verification_status ?? 0) === 2,
-            'can_vote' => $canVote,
-            'is_favorite' => $isFavorite
+            'can_vote' => $canVote
         ]);
     }
 
@@ -257,58 +245,11 @@ class ServerController
         Server::setCategories($serverId, $categoryIds, $primaryCategoryId ?: $categoryIds[0]);
 
         flash('success', lang('server_added_review'));
-        redirect('/my-servers');
+        redirect('/profile/' . auth()->username);
     }
 
-    public function userServers()
-    {
-        if (!isLoggedIn()) {
-            redirect('/login');
-        }
 
-        $servers = Server::getUserServers(auth()->id);
 
-        foreach ($servers as $server) {
-            $server->categories = Server::getCategories($server->id);
-            //$server->primary_category = Server::getPrimaryCategory($server->id);
-        }
-
-        $userFavorites = [];
-        if (isLoggedIn()) {
-            $serverIds = array_map(fn($s) => $s->id, $servers);
-            $userFavorites = Favorite::getForUserByServerIds(auth()->id, $serverIds);
-        }
-
-        view('servers.user-servers', [
-            'servers' => $servers,
-            'user_favorites' => $userFavorites
-        ]);
-    }
-
-    public function userFavorites()
-    {
-        if (!isLoggedIn()) {
-            redirect('/login');
-        }
-
-        $servers = Favorite::getUserFavorites(auth()->id);
-
-        foreach ($servers as $server) {
-            $server->categories = Server::getCategories($server->id);
-            //$server->primary_category = Server::getPrimaryCategory($server->id);
-        }
-
-        $userFavorites = [];
-        if (isLoggedIn()) {
-            $serverIds = array_map(fn($s) => $s->id, $servers);
-            $userFavorites = Favorite::getForUserByServerIds(auth()->id, $serverIds);
-        }
-
-        view('servers.user-favorites', [
-            'servers' => $servers,
-            'user_favorites' => $userFavorites
-        ]);
-    }
 
     public function edit($id)
     {
@@ -319,7 +260,7 @@ class ServerController
         $server = Server::find($id);
         if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
             flash('error', lang('server_not_found_access_denied'));
-            redirect('/my-servers');
+            redirect('/profile/' . auth()->username);
         }
 
         $categories = Category::getAllForSelect();
@@ -343,7 +284,7 @@ class ServerController
         $server = Server::find($id);
         if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
             flash('error', lang('server_not_found_access_denied'));
-            redirect('/my-servers');
+            redirect('/profile/' . auth()->username);
         }
 
         $name = sanitize($_POST['name'] ?? '');
@@ -452,7 +393,7 @@ class ServerController
             case 'delete':
                 Server::delete($id);
                 flash('success', lang('server_deleted'));
-                redirect('/my-servers');
+                redirect('/profile/' . auth()->username);
                 return;
 
             default:

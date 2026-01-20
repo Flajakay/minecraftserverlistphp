@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     showMessage('<?= lang('payment_successful') ?>', 'success');
                     setTimeout(() => {
-                        window.location.href = '<?= url('/my-servers') ?>';
+                        window.location.href = '<?= url('/profile/' . auth()->username) ?>';
                     }, 2000);
                 })
                 .catch(error => {

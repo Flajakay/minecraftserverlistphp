@@ -21,8 +21,13 @@ $router->get('/profile/{username}', 'UserController@show');
 $router->get('/submit', 'ServerController@showSubmit');
 $router->post('/submit', 'ServerController@submit');
 
-$router->get('/my-servers', 'ServerController@userServers');
-$router->get('/my-favorites', 'ServerController@userFavorites');
+$router->get('/my-servers', function() {
+    if (!isLoggedIn()) {
+        redirect('/login');
+    }
+    redirect('/profile/' . auth()->username);
+});
+
 
 $router->get('/edit-server/{id}', 'ServerController@edit');
 $router->post('/edit-server/{id}', 'ServerController@update');
@@ -35,7 +40,6 @@ $router->get('/settings/password', 'UserController@changePassword');
 $router->post('/settings/password', 'UserController@updatePassword');
 
 $router->post('/vote', 'VoteController@vote');
-$router->post('/favorite', 'FavoriteController@toggle');
 $router->post('/comment', 'CommentController@store');
 $router->post('/comment/delete', 'CommentController@delete');
 $router->get('/comment/load-more', 'CommentController@loadMore');

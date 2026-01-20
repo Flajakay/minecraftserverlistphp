@@ -11,7 +11,6 @@
     <link href="<?= asset('css/filter-modal.css') ?>" rel="stylesheet">
     <link href="<?= asset('css/server.css') ?>" rel="stylesheet">
     <link href="<?= asset('css/navbar-mobile.css') ?>" rel="stylesheet">
-    <link href="<?= asset('css/profile.css') ?>" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
     <?php include __DIR__ . '/../partials/navbar.php'; ?>

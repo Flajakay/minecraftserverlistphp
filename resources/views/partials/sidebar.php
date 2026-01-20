@@ -21,7 +21,6 @@
             <option value=""><?= lang('order_by_latest') ?></option>
             <option value="votes"><?= lang('order_by_votes') ?></option>
             <option value="players"><?= lang('order_by_players') ?></option>
-            <option value="favorites"><?= lang('order_by_favorites') ?></option>
         </select>
     </div>
 

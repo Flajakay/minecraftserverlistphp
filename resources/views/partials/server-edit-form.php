@@ -250,8 +250,8 @@ $isAdmin = $config['isAdmin'] ?? false;
     </div>
 
     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 pt-3 border-top">
-        <a href="<?= $isAdmin ? '/admin/servers' : url('/my-servers') ?>" class="btn btn-outline-secondary px-4">
-            <i class="bi bi-arrow-left me-2"></i><?= $isAdmin ? lang('back_to_servers') : lang('back_to_my_servers') ?>
+        <a href="<?= $isAdmin ? '/admin/servers' : url('/profile/' . auth()->username) ?>" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left me-2"></i><?= $isAdmin ? lang('back_to_servers') : lang('back_to_my_profile') ?>
         </a>
         <button type="submit" class="btn btn-primary px-4 fw-semibold">
             <i class="bi bi-<?= $isAdmin ? 'check-lg' : 'save' ?> me-2"></i><?= $isAdmin ? lang('submit') : lang('update_server') ?>

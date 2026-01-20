@@ -71,13 +71,9 @@
         
         <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
             <div class="d-flex align-items-center">
-                <span class="text-success me-3">
+                <span class="text-success">
                     <i class="bi bi-arrow-up me-1"></i>
                     <small><?= number_format($server->votes) ?></small>
-                </span>
-                <span class="text-danger">
-                    <i class="bi bi-heart me-1"></i>
-                    <small><?= number_format($server->favorites) ?></small>
                 </span>
             </div>
             <small class="text-muted">

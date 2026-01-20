@@ -24,6 +24,13 @@ class UserController
 
         $servers = Server::getUserServers($user->id);
 
+        $isOwnProfile = isLoggedIn() && auth()->id == $user->id;
+        if (!$isOwnProfile) {
+            $servers = array_filter($servers, function($server) {
+                return $server->private == 0;
+            });
+        }
+
         view('users.profile', [
             'user' => $user,
             'servers' => $servers

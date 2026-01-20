@@ -16,19 +16,13 @@
         </div>
         
         <div class="row text-center g-3">
-            <div class="col-4">
+            <div class="col-6">
                 <div class="p-3 bg-light rounded">
                     <div class="h5 text-success mb-0"><?= number_format($server->votes) ?></div>
                     <small class="text-muted"><?= lang('votes') ?></small>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="p-3 bg-light rounded">
-                    <div class="h5 text-danger mb-0"><?= number_format($server->favorites) ?></div>
-                    <small class="text-muted"><?= lang('favorites') ?></small>
-                </div>
-            </div>
-            <div class="col-4">
+            <div class="col-6">
                 <div class="p-3 bg-light rounded">
                     <div class="h5 text-<?= $server->active ? 'success' : 'warning' ?> mb-0">
                         <?= $server->active ? lang('active') : lang('inactive') ?>
