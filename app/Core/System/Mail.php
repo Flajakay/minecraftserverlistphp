@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\System;
 
 use App\Models\Setting;
 
@@ -46,7 +46,7 @@ class Mail
 
     public function template($template, $data = [])
     {
-        $templatePath = __DIR__ . '/../../resources/views/emails/' . $template . '.php';
+        $templatePath = __DIR__ . '/../../../resources/views/emails/' . $template . '.php';
         
         if (!file_exists($templatePath)) {
             throw new \Exception("Email template {$template} not found");

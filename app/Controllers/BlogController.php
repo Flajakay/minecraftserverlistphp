@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
-use App\Core\Blog;
+use App\Core\Security\Auth;
+use App\Core\Features\Blog;
 
 /**
  * Server blog posts controller.

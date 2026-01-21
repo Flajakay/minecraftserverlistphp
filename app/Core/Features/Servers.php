@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Features;
 
 use App\Models\Server;
 use App\Models\Category;
 use App\Models\Setting;
+use App\Core\Integrations\MinecraftPing;
 
 class Servers
 {

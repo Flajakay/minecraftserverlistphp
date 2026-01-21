@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Report;
-use App\Core\Auth;
+use App\Core\Security\Auth;
 
 /**
  * Reports controller.

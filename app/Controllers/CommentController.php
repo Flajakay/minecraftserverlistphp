@@ -3,8 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\Comment;
-use App\Core\Auth;
-use App\Core\Comments;
+use App\Core\Security\Auth;
+use App\Core\Features\Comments;
 
 /**
  * Server comments controller.

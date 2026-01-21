@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\System;
 
 use PDO;
 
@@ -18,7 +18,7 @@ class MigrationRunner
     public function __construct(?PDO $pdo = null, ?string $migrationsPath = null)
     {
         $this->pdo = $pdo ?: Database::pdo();
-        $this->migrationsPath = $migrationsPath ?: dirname(__DIR__, 2) . '/database/migrations';
+        $this->migrationsPath = $migrationsPath ?: dirname(__DIR__, 3) . '/database/migrations';
     }
 
     public function status(): array

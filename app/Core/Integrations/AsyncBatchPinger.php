@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Integrations;
 
-use App\Core\MinecraftPing;
+
 
 /**
  * Concurrent Minecraft status pings using non-blocking sockets.

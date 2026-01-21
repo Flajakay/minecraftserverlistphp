@@ -1,6 +1,6 @@
 <?php
 
-use App\Core\Router;
+use App\Core\System\Router;
 
 $installLockPath = __DIR__ . '/storage/installed.lock';
 

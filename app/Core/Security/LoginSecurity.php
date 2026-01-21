@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Security;
+use App\Core\System\Database;
 
 /**
  * Login attempt tracking and lockouts.

@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Core\Users;
+use App\Core\Features\Users;
 
 class UserController
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Support;
 
 /**
  * Cookie helpers.
@@ -16,7 +16,7 @@ class CookieManager
             return false;
         }
 
-        $config = require __DIR__ . '/../../config/app.php';
+        $config = require __DIR__ . '/../../../config/app.php';
         $domain = parse_url($config['url'], PHP_URL_HOST);
         $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 
@@ -48,7 +48,7 @@ class CookieManager
             return false;
         }
 
-        $config = require __DIR__ . '/../../config/app.php';
+        $config = require __DIR__ . '/../../../config/app.php';
         $domain = parse_url($config['url'], PHP_URL_HOST);
         $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 

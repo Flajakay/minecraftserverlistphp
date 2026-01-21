@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Admin;
 
-use App\Core\MigrationRunner;
+use App\Core\System\MigrationRunner;
 use App\Models\AuditLog;
 
 /**

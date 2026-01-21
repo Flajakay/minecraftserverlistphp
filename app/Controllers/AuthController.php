@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Core\Auth;
-use App\Core\Database;
+use App\Core\Security\Auth;
+use App\Core\System\Database;
 
 /**
  * Authentication controller.

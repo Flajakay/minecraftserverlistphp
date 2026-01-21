@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Server;
-use App\Core\ServerClaim;
+use App\Core\Features\ServerClaim;
 
 /**
  * Server claim/verification controller.

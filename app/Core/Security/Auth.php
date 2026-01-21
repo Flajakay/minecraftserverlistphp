@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Security;
 
-use App\Core\CookieManager;
-use App\Core\LoginSecurity;
-use App\Core\Mail;
+use App\Core\Support\CookieManager;
+
+use App\Core\System\Mail;
+use App\Core\System\Database;
 
 /**
  * Authentication facade.

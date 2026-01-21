@@ -9,8 +9,8 @@ use App\Models\Vote;
 use App\Models\Comment;
 use App\Models\BlogPost;
 use App\Models\PlayerHistory;
-use App\Core\SEO;
-use App\Core\Servers;
+use App\Core\Support\SEO;
+use App\Core\Features\Servers;
 
 class ServerController
 {

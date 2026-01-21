@@ -10,8 +10,8 @@ require_once __DIR__ . '/bootstrap.php';
 use App\Models\Server;
 use App\Models\Payment;
 use App\Models\PlayerHistory;
-use App\Core\AsyncBatchPinger;
-use App\Core\Database;
+use App\Core\Integrations\AsyncBatchPinger;
+use App\Core\System\Database;
 
 echo "Starting server status update...\n";
 

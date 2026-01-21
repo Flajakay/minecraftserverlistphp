@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\System;
 
 /**
  * Minimal HTTP router.
@@ -28,7 +28,7 @@ class Router
 
         // Rate limiting (when enabled) should run before CSRF so abusive traffic is rejected early.
         
-        if (!\App\Core\Csrf::check($method, $uri)) {
+        if (!\App\Core\Security\Csrf::check($method, $uri)) {
             flash('error', 'Invalid security token');
             $referer = $_SERVER['HTTP_REFERER'] ?? '/';
             header('Location: ' . $referer);

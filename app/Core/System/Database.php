@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\System;
 
 use PDO;
 
@@ -16,7 +16,7 @@ class Database
 
     public static function connect()
     {
-        $config = require __DIR__ . '/../../config/app.php';
+        $config = require __DIR__ . '/../../../config/app.php';
         $db = $config['db'];
         
         $dsn = "mysql:host={$db['host']};dbname={$db['database']};charset=utf8mb4";

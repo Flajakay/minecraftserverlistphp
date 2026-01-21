@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Integrations;
 
 /**
  * Minecraft server status ping (handshake + status request).

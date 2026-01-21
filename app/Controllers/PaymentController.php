@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Server;
 use App\Models\Payment;
-use App\Core\PayPalService;
+use App\Core\Integrations\PayPalService;
 use App\Models\Setting;
 
 /**

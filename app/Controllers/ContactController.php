@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Core\Mail;
+use App\Core\System\Mail;
 use Exception;
 
 /**

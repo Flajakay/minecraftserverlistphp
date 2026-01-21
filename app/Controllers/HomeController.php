@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Server;
 use App\Models\Category;
-use App\Core\SEO;
+use App\Core\Support\SEO;
 
 /**
  * Home page controller.

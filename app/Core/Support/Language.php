@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Core;
-
-use App\Core\CookieManager;
+namespace App\Core\Support;
 
 /**
  * Lightweight translation loader.
@@ -25,7 +23,7 @@ class Language
             return;
         }
 
-        self::$languagesPath = dirname(__DIR__, 2) . '/resources/languages/';
+        self::$languagesPath = dirname(__DIR__, 3) . '/resources/languages/';
         self::loadAvailableLanguages();
         self::detectAndSetLanguage();
         self::loadCurrentLanguageTranslations();

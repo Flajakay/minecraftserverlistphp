@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Security;
 
 use Stiphle\Throttle\LeakyBucket;
 use Stiphle\Storage\Apcu;
@@ -20,7 +20,7 @@ class RateLimit
 
     private function __construct()
     {
-        $this->config = require __DIR__ . '/../../config/ratelimit.php';
+        $this->config = require __DIR__ . '/../../../config/ratelimit.php';
         
         // APCu provides a fast in-memory counter store for single-server deployments.
         if (extension_loaded('apcu') && apcu_enabled()) {

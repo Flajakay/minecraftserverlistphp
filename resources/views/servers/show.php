@@ -315,26 +315,7 @@
                                 <canvas id="statisticsChart" height="400"></canvas>
                             </div>
                             
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="card border-0 bg-primary text-white">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-arrow-up fs-2 mb-2"></i>
-                                            <h3 class="mb-1"><?= number_format($monthly_votes) ?></h3>
-                                            <small><?= lang('monthly_votes') ?></small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card border-0 bg-success text-white">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-eye fs-2 mb-2"></i>
-                                            <h3 class="mb-1"><?= number_format($monthly_hits) ?></h3>
-                                            <small><?= lang('monthly_views') ?></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                         
                         <!-- Comments Tab -->

@@ -4,7 +4,7 @@ function view($name, $data = [])
 {
     extract($data);
     
-    $viewFile = __DIR__ . '/../../resources/views/' . str_replace('.', '/', $name) . '.php';
+    $viewFile = __DIR__ . '/../../../resources/views/' . str_replace('.', '/', $name) . '.php';
     
     if (file_exists($viewFile)) {
         require $viewFile;
@@ -56,18 +56,18 @@ function csrf()
 
 function verifyCsrf($token)
 {
-    return \App\Core\Csrf::verify($token);
+    return \App\Core\Security\Csrf::verify($token);
 }
 
 function asset($path)
 {
-    $config = require __DIR__ . '/../../config/app.php';
+    $config = require __DIR__ . '/../../../config/app.php';
     return $config['url'] . 'assets/' . ltrim($path, '/');
 }
 
 function url($path = '')
 {
-    $config = require __DIR__ . '/../../config/app.php';
+    $config = require __DIR__ . '/../../../config/app.php';
     return rtrim($config['url'], '/') . '/' . ltrim($path, '/');
 }
 
@@ -147,7 +147,7 @@ function getCountryName($code)
 
 function lang($key, $default = null)
 {
-    return \App\Core\Language::get($key, $default);
+    return \App\Core\Support\Language::get($key, $default);
 }
 
 function setting($key, $default = null)
@@ -157,12 +157,12 @@ function setting($key, $default = null)
 
 function getAvailableLanguages()
 {
-    return \App\Core\Language::getAvailableLanguages();
+    return \App\Core\Support\Language::getAvailableLanguages();
 }
 
 function getCurrentLanguage()
 {
-    return \App\Core\Language::getCurrentLanguage();
+    return \App\Core\Support\Language::getCurrentLanguage();
 }
 
 function uploadFile($file, $directory, $resize = null)
@@ -183,7 +183,7 @@ function uploadFile($file, $directory, $resize = null)
     
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
     $filename = uniqid() . '.' . $extension;
-    $path = __DIR__ . '/../../public/uploads/' . $directory;
+    $path = __DIR__ . '/../../../public/uploads/' . $directory;
     
     if (!is_dir($path)) {
         mkdir($path, 0755, true);
@@ -284,32 +284,32 @@ function resizeImage($source, $destination, $width, $height)
 
 function auth()
 {
-    return \App\Core\Auth::user();
+    return \App\Core\Security\Auth::user();
 }
 
 function isLoggedIn()
 {
-    return \App\Core\Auth::check();
+    return \App\Core\Security\Auth::check();
 }
 
 function isAdmin()
 {
-    return \App\Core\Auth::isAdmin();
+    return \App\Core\Security\Auth::isAdmin();
 }
 
 function isOwner()
 {
-    return \App\Core\Auth::isOwner();
+    return \App\Core\Security\Auth::isOwner();
 }
 
 function rateLimitCheck($route, $method = 'GET')
 {
-    return \App\Core\RateLimit::getInstance()->checkRequest($route, $method);
+    return \App\Core\Security\RateLimit::getInstance()->checkRequest($route, $method);
 }
 
 function rateLimitRetryAfter($route, $method = 'GET')
 {
-    return \App\Core\RateLimit::getInstance()->getRetryAfter($route, $method);
+    return \App\Core\Security\RateLimit::getInstance()->getRetryAfter($route, $method);
 }
 
 function ensureDirectoryExists($path, $permissions = 0755)
@@ -321,35 +321,35 @@ function ensureDirectoryExists($path, $permissions = 0755)
 
 function seo()
 {
-    return \App\Core\SEO::class;
+    return \App\Core\Support\SEO::class;
 }
 
 function setTitle($title)
 {
-    \App\Core\SEO::setTitle($title);
+    \App\Core\Support\SEO::setTitle($title);
 }
 
 function setDescription($description)
 {
-    \App\Core\SEO::setDescription($description);
+    \App\Core\Support\SEO::setDescription($description);
 }
 
 function setKeywords($keywords)
 {
-    \App\Core\SEO::setKeywords($keywords);
+    \App\Core\Support\SEO::setKeywords($keywords);
 }
 
 function setCanonical($url)
 {
-    \App\Core\SEO::setCanonical($url);
+    \App\Core\Support\SEO::setCanonical($url);
 }
 
 function setRobots($robots)
 {
-    \App\Core\SEO::setRobots($robots);
+    \App\Core\Support\SEO::setRobots($robots);
 }
 
 function renderMetaTags()
 {
-    return \App\Core\SEO::renderMetaTags();
+    return \App\Core\Support\SEO::renderMetaTags();
 }

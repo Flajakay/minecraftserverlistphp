@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Integrations;
 
 use PaypalServerSdkLib\PaypalServerSdkClientBuilder;
 use PaypalServerSdkLib\Authentication\ClientCredentialsAuthCredentialsBuilder;

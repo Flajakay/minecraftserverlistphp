@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\Features;
 
 use App\Models\User;
 use App\Models\Server;
@@ -71,7 +71,7 @@ class Users
             $avatar = uploadFile($files['avatar'], 'avatars', ['width' => 200, 'height' => 200]);
             if ($avatar) {
                 if ($currentUser->avatar) {
-                    @unlink(__DIR__ . '/../../public/uploads/avatars/' . $currentUser->avatar);
+                    @unlink(__DIR__ . '/../../../public/uploads/avatars/' . $currentUser->avatar);
                 }
                 $result['data']['avatar'] = $avatar;
             } else {
@@ -84,7 +84,7 @@ class Users
             $cover = uploadFile($files['cover'], 'covers', ['width' => 1200, 'height' => 300]);
             if ($cover) {
                 if ($currentUser->cover) {
-                    @unlink(__DIR__ . '/../../public/uploads/covers/' . $currentUser->cover);
+                    @unlink(__DIR__ . '/../../../public/uploads/covers/' . $currentUser->cover);
                 }
                 $result['data']['cover'] = $cover;
             } else {

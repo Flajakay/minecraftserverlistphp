@@ -4,9 +4,9 @@ namespace App\Controllers;
 
 use App\Models\Server;
 use App\Models\Vote;
-use App\Core\Auth;
-use App\Core\Votifier;
-use App\Core\Database;
+use App\Core\Security\Auth;
+use App\Core\Integrations\Votifier;
+use App\Core\System\Database;
 
 /**
  * Voting controller.

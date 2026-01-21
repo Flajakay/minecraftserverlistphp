@@ -15,14 +15,14 @@ session_start();
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Manually load global functions
-require_once __DIR__ . '/app/Core/Helpers.php';
-require_once __DIR__ . '/app/Core/JoditHelper.php';
+require_once __DIR__ . '/app/Core/Support/Helpers.php';
+require_once __DIR__ . '/app/Core/Support/JoditHelper.php';
 
 // Initialize Language system
-\App\Core\Language::initialize();
+\App\Core\Support\Language::initialize();
 
 // Initialize Database connection
-\App\Core\Database::connect();
+\App\Core\System\Database::connect();
 
 // Initialize Rate Limiting logs directory
 ensureDirectoryExists(__DIR__ . '/storage/logs');
