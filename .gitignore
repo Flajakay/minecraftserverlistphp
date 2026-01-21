@@ -36,3 +36,6 @@ ngrok.txt
 
 docs
 installed.lock
+
+scripts/
+language_templates/
