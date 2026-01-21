@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS `servers` (
   `youtube_id` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `highlight` int(11) NOT NULL DEFAULT '0',
   `votes` int(11) NOT NULL DEFAULT '0',
-  `favorites` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '1',
   `players` int(11) NOT NULL DEFAULT '0',
   `max_players` int(11) NOT NULL DEFAULT '0',
@@ -87,15 +86,6 @@ CREATE TABLE IF NOT EXISTS `points` (
   PRIMARY KEY (`id`),
   KEY `idx_server_type` (`server_id`, `type`),
   KEY `idx_timestamp` (`timestamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `favorites` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `server_id` int(11) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_favorite` (`user_id`, `server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `comments` (
