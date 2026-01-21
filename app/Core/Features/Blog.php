@@ -29,6 +29,7 @@ class Blog
             return false;
         }
 
+        // Server owner and admins can create blog posts
         return $server->user_id == $user->id || $user->type >= 1;
     }
 
@@ -38,14 +39,17 @@ class Blog
             return false;
         }
 
+        // Post author can always manage their own posts
         if ($blogPost->user_id == $user->id) {
             return true;
         }
 
+        // Server owner can manage all posts on their server
         if ($server && $server->user_id == $user->id) {
             return true;
         }
 
+        // Admins can manage any post
         return $user->type >= 1;
     }
 

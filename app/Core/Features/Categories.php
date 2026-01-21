@@ -18,6 +18,7 @@ class Categories
 
         $slug = self::generateSlug($data['url']);
         
+        // Enforce unique URL slugs to prevent routing conflicts
         if (Category::findByUrl($slug)) {
             return [
                 'success' => false,
@@ -67,6 +68,7 @@ class Categories
 
         $slug = self::generateSlug($data['url']);
         
+        // Allow same slug for current category, but not if another category already uses it
         $existingCategory = Category::findByUrl($slug);
         if ($existingCategory && $existingCategory->id != $id) {
             return [
@@ -108,6 +110,7 @@ class Categories
             ];
         }
 
+        // Category ID 1 is the default/fallback category and must be preserved
         if ($id == 1) {
             return [
                 'success' => false,
@@ -130,6 +133,10 @@ class Categories
         ];
     }
 
+    /**
+     * Generate URL-safe slug from string.
+     * Removes special characters and normalizes whitespace to hyphens.
+     */
     private static function generateSlug($string)
     {
         $string = strtolower($string);

@@ -49,8 +49,10 @@ class ServerController
         $server = Server::findByAddress($address, $port);
         $effectiveOwnerId = Server::getEffectiveOwnerUserId($server);
         $isOwner = isLoggedIn() && $effectiveOwnerId && auth()->id == $effectiveOwnerId;
+        $isAdmin = isLoggedIn() && isAdmin();
 
-        if (!$server || !$server->active || ($server->private && (!$isOwner || !isAdmin()))) {
+        // Block access if: server doesn't exist, is inactive, or is private and user is neither owner nor admin
+        if (!$server || !$server->active || ($server->private && !$isOwner && !$isAdmin)) {
             flash('error', lang('server_not_found'));
             redirect('/servers');
         }

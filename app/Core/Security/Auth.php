@@ -345,9 +345,18 @@ class Auth
         }
     }
 
+    /**
+     * Validate that a password reset link is valid.
+     * Returns user object if valid, null otherwise.
+     */
+    public static function validateResetLink($email, $code)
+    {
+        return Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+    }
+
     public static function resetPassword($email, $code, $newPassword, $confirmPassword)
     {
-        $user = Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+        $user = self::validateResetLink($email, $code);
         
         if (!$user) {
             return [

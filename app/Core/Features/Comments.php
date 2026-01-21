@@ -29,14 +29,17 @@ class Comments
             return false;
         }
 
+        // Comment author can delete their own comment
         if ($comment->user_id == $user->id) {
             return true;
         }
 
+        // Server owner can moderate comments on their server
         if ($server && $server->user_id == $user->id) {
             return true;
         }
 
+        // Admins can delete any comment
         return $user->type >= 1;
     }
 

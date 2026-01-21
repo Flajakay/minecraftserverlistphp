@@ -16,10 +16,12 @@ class Servers
             return false;
         }
 
+        // Check effective ownership (original owner or verified claim owner)
         if (Server::isEffectiveOwner($server, $user->id)) {
             return true;
         }
 
+        // Admins can manage any server
         return $user->type >= 1;
     }
 
@@ -62,6 +64,7 @@ class Servers
             return $errors;
         }
 
+        // Primary category must be one of the selected categories to avoid inconsistency
         if ($primaryCategoryId && !in_array($primaryCategoryId, $categoryIds)) {
             $errors[] = 'Primary category must be one of the selected categories';
         }
@@ -122,6 +125,7 @@ class Servers
             }
         }
 
+        // Enable searching within subcategories when flag is set
         if (isset($request['include_subcategories']) && $request['include_subcategories'] == '1') {
             $filters['include_subcategories'] = true;
         }
@@ -173,6 +177,7 @@ class Servers
         }
 
         $categoryIds = array_filter(array_map('intval', $data['category_ids']));
+        // Use first selected category as primary if none specified
         $primaryCategoryId = (int) ($data['primary_category_id'] ?? 0) ?: $categoryIds[0];
         $customData = self::prepareCustomData($data, $data['address']);
 

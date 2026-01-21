@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Core\Security\Auth;
-use App\Core\System\Database;
 
 /**
  * Authentication controller.
@@ -164,7 +163,7 @@ class AuthController
             redirect('/login');
         }
 
-        $user = Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+        $user = Auth::validateResetLink($email, $code);
         
         if (!$user) {
             flash('error', lang('invalid_reset_link'));

@@ -14,6 +14,7 @@ class Users
             return ['allowed' => false, 'error' => lang('user_not_found')];
         }
 
+        // Private profiles are only visible to the profile owner
         if ($profileUser->private) {
             if (!$viewer || $viewer->id != $profileUser->id) {
                 return ['allowed' => false, 'error' => lang('profile_private')];
@@ -71,6 +72,7 @@ class Users
         if (isset($files['avatar']) && $files['avatar']['error'] === UPLOAD_ERR_OK) {
             $avatar = uploadFile($files['avatar'], 'avatars', ['width' => 200, 'height' => 200]);
             if ($avatar) {
+                // Clean up old avatar file to save disk space
                 if ($currentUser->avatar) {
                     @unlink(__DIR__ . '/../../../public/uploads/avatars/' . $currentUser->avatar);
                 }
@@ -84,6 +86,7 @@ class Users
         if (isset($files['cover']) && $files['cover']['error'] === UPLOAD_ERR_OK) {
             $cover = uploadFile($files['cover'], 'covers', ['width' => 1200, 'height' => 300]);
             if ($cover) {
+                // Clean up old cover file to save disk space
                 if ($currentUser->cover) {
                     @unlink(__DIR__ . '/../../../public/uploads/covers/' . $currentUser->cover);
                 }
@@ -195,6 +198,7 @@ class Users
         }
 
         $currentUser = User::find($adminId);
+        // Prevent admins from accidentally changing their own permissions/status
         if ($user->id == $currentUser->id) {
             return [
                 'success' => false,
@@ -241,6 +245,7 @@ class Users
         }
 
         $currentUser = User::find($adminId);
+        // Prevent admins from deactivating/deleting themselves
         if ($user->id == $currentUser->id) {
             return [
                 'success' => false,

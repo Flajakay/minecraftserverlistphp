@@ -18,13 +18,16 @@ class Votes
             return ['success' => false, 'message' => 'Server not found'];
         }
 
+        // Enforce one vote per IP per 24 hours to prevent abuse
         if (!Vote::canVote($serverId, $ip)) {
             return ['success' => false, 'message' => 'You can only vote once per day'];
         }
 
         $customData = json_decode($server->custom_data ?? '{}', true);
         
+        // Send vote notification to game server via Votifier protocol if configured
         if (!empty($customData['votifier_public_key']) && !empty($username)) {
+            // Use custom votifier IP if set, otherwise default to server address
             $votifierIp = $customData['votifier_ip'] ?? $server->address;
             $votifierPort = $customData['votifier_port'] ?? 8192;
             

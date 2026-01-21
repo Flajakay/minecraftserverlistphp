@@ -6,6 +6,10 @@ use App\Models\Server;
 
 class ServerClaim
 {
+    /**
+     * Check if server was already verified by a different user.
+     * Prevents ownership transfers without admin intervention.
+     */
     public static function isAlreadyVerifiedByOther($user, $server)
     {
         return (int) $server->verification_status === 2 
@@ -62,6 +66,10 @@ class ServerClaim
             || strtotime($server->verification_token_expires_at) < time();
     }
 
+    /**
+     * Generate unique verification token with MSL prefix.
+     * Format: MSL-[16 random hex characters]
+     */
     public static function generateVerificationToken()
     {
         return 'MSL-' . bin2hex(random_bytes(8));
@@ -82,6 +90,7 @@ class ServerClaim
         }
 
         $token = self::generateVerificationToken();
+        // Token expires after 30 minutes for security
         $expiresAt = date('Y-m-d H:i:s', time() + 30 * 60);
 
         Server::startClaim($serverId, $userId, $token, $expiresAt);
@@ -115,6 +124,7 @@ class ServerClaim
             ];
         }
 
+        // Rate limit verification attempts to prevent spam pinging the Minecraft server
         if (!Server::canAttemptVerification($serverId, 30)) {
             return [
                 'success' => false,
@@ -125,6 +135,7 @@ class ServerClaim
 
         Server::markVerificationAttempt($serverId);
 
+        // Ping the Minecraft server to retrieve MOTD for token verification
         $response = (new MinecraftPing($server->address, $server->port, 2))->query();
         if (!$response) {
             return [
@@ -136,6 +147,7 @@ class ServerClaim
 
         $motdText = self::extractMotdText($response['description'] ?? '');
 
+        // Verify token appears in MOTD (case-insensitive)
         if (stripos($motdText, (string) $server->verification_token) === false) {
             return [
                 'success' => false,
@@ -176,6 +188,10 @@ class ServerClaim
         ];
     }
 
+    /**
+     * Extract plain text from Minecraft MOTD description.
+     * Handles legacy strings, modern chat components, and nested extra components.
+     */
     public static function extractMotdText($description): string
     {
         if (is_string($description)) {
@@ -193,6 +209,10 @@ class ServerClaim
         return '';
     }
 
+    /**
+     * Recursively extract text from Minecraft's chat component format.
+     * Reference: https://wiki.vg/Chat#Current_system_.28JSON_Chat.29
+     */
     private static function extractFromChatComponent(array $component): string
     {
         $text = '';
@@ -201,6 +221,7 @@ class ServerClaim
             $text .= $component['text'];
         }
 
+        // Process extra components that may contain additional text
         if (isset($component['extra']) && is_array($component['extra'])) {
             foreach ($component['extra'] as $extra) {
                 if (is_string($extra)) {

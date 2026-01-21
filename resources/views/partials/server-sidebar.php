@@ -106,7 +106,7 @@
         <?php endif; ?>
         
         <?php if ($server->private): ?>
-            <form method="POST" action="<?= url('/server-action/' . $server->id) ?>">
+            <form method="POST" action="<?= url((isset($isAdmin) && $isAdmin ? '/admin/servers/action/' : '/server-action/') . $server->id) ?>">
                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                 <input type="hidden" name="action" value="make_public">
                 <button type="submit" 
@@ -116,7 +116,7 @@
                 </button>
             </form>
         <?php else: ?>
-            <form method="POST" action="<?= url('/server-action/' . $server->id) ?>">
+            <form method="POST" action="<?= url((isset($isAdmin) && $isAdmin ? '/admin/servers/action/' : '/server-action/') . $server->id) ?>">
                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                 <input type="hidden" name="action" value="make_private">
                 <button type="submit" 
@@ -127,7 +127,7 @@
             </form>
         <?php endif; ?>
         
-        <form method="POST" action="<?= url('/server-action/' . $server->id) ?>">
+        <form method="POST" action="<?= url((isset($isAdmin) && $isAdmin ? '/admin/servers/action/' : '/server-action/') . $server->id) ?>">
             <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
             <input type="hidden" name="action" value="delete">
             <button type="submit" 
