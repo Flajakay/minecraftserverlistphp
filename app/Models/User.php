@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\System\Database;
+use App\Core\Security\Auth;
 
 class User
 {

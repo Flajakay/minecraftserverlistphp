@@ -5,6 +5,7 @@ namespace App\Core\Features;
 use App\Models\User;
 use App\Models\Server;
 use App\Models\AuditLog;
+use App\Core\Security\Auth;
 
 class Users
 {
