@@ -6,7 +6,7 @@ use App\Models\Server;
 use App\Models\Payment;
 use App\Core\Integrations\PayPalService;
 use App\Models\Setting;
-
+use App\Core\Features\Payments;
 /**
  * Premium purchase/payment controller.
  *
@@ -60,32 +60,11 @@ class PaymentController
         }
 
         try {
-            $paypalService = new PayPalService();
-
-
             $serverId = (int)($_POST['server_id'] ?? 0);
             $days = (int)($_POST['days'] ?? 0);
 
-            $server = Server::find($serverId);
-            if (!$server || $server->user_id != auth()->id) {
-                throw new \Exception('Invalid server selection');
-            }
-
-            if (!$paypalService->validateDays($days)) {
-                throw new \Exception('Invalid number of days');
-            }
-
-            $amount = $paypalService->calculateAmount($days);
-            $currency = Setting::getValue('payment_currency', 'USD');
-            $description = "Server highlight for {$server->name} - {$days} days";
-
-            $order = $paypalService->createOrder($amount, $currency, $description);
-            echo json_encode([
-                'order_id' => $order->getResult()->getId(),
-                'server_id' => $serverId,
-                'days' => $days,
-                'amount' => $amount
-            ]);
+            $result = Payments::initiateOrder(auth()->id, $serverId, $days);
+            echo json_encode($result);
 
         } catch (\Exception $e) {
             error_log('PayPal order creation error: ' . $e->getMessage());
@@ -110,39 +89,11 @@ class PaymentController
         }
 
         try {
-            $paypalService = new PayPalService();
-
             $orderId = $_POST['order_id'] ?? '';
             $serverId = (int)($_POST['server_id'] ?? 0);
             $days = (int)($_POST['days'] ?? 0);
 
-            if (empty($orderId) || !$serverId || !$days) {
-                throw new \Exception('Missing payment data');
-            }
-
-            $server = Server::find($serverId);
-            if (!$server || $server->user_id != auth()->id) {
-                throw new \Exception('Invalid server');
-            }
-            $capture = $paypalService->capturePayment($orderId);
-            if ($capture->getResult()->getStatus() !== 'COMPLETED') {
-                throw new \Exception('Payment not completed');
-            }
-
-            $amount = $paypalService->calculateAmount($days);
-            $currency = Setting::getValue('payment_currency', 'USD');
-
-            $paymentId = Payment::create([
-                'user_id' => auth()->id,
-                'server_id' => $serverId,
-                'highlighted_days' => $days,
-                'revenue' => $amount,
-                'email' => auth()->email,
-                'status' => 'completed',
-                'paypal_order_id' => $orderId
-            ]);
-
-            Server::updateHighlight($serverId, 1);
+            Payments::completePayment(auth()->id, $orderId, $serverId, $days);
 
             flash('success', lang('payment_successful_highlight'));
             echo json_encode(['success' => true]);
