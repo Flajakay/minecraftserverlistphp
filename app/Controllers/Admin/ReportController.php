@@ -3,8 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Report;
-use App\Models\AuditLog;
-
+use App\Core\Features\Reports;
 /**
  * Admin reports controller.
  *
@@ -72,18 +71,13 @@ class ReportController
             redirect('/');
         }
 
-        $report = Report::find($id);
-        if (!$report) {
-            flash('error', lang('report_not_found'));
-            redirect('/admin/reports');
-        }
+        $currentUser = auth();
+        $result = Reports::delete($id, $currentUser->id);
 
-        if (Report::delete($id)) {
-            $currentUser = auth();
-            AuditLog::log('delete', 'reports', $id, $currentUser->id, 'Deleted report #' . $id);
-            flash('success', lang('report_deleted'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('report_delete_failed'));
+            flash('error', $result['error']);
         }
 
         redirect('/admin/reports');
@@ -108,22 +102,24 @@ class ReportController
         }
 
         $currentUser = auth();
+        $result = null;
 
         switch ($action) {
             case 'delete':
-                if (Report::delete($id)) {
-                    AuditLog::log('delete', 'reports', $id, $currentUser->id, 'Deleted report #' . $id);
-                    flash('success', lang('report_deleted'));
-                }
+                $result = Reports::delete($id, $currentUser->id);
                 break;
             case 'resolve':
-                AuditLog::log('resolve', 'reports', $id, $currentUser->id, 'Resolved report #' . $id);
-                if (Report::delete($id)) {
-                    flash('success', 'Report resolved');
-                }
+                $result = Reports::resolve($id, $currentUser->id);
                 break;
             default:
                 flash('error', 'Invalid action');
+                redirect('/admin/reports');
+        }
+
+        if ($result && $result['success']) {
+            flash('success', $result['message']);
+        } elseif ($result) {
+            flash('error', $result['error']);
         }
 
         redirect('/admin/reports');

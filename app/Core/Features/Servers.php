@@ -5,6 +5,7 @@ namespace App\Core\Features;
 use App\Models\Server;
 use App\Models\Category;
 use App\Models\Setting;
+use App\Models\AuditLog;
 use App\Core\Integrations\MinecraftPing;
 
 class Servers
@@ -306,4 +307,136 @@ class Servers
             'server_categories' => Server::getCategories($serverId)
         ];
     }
+
+    public static function updateAdmin($serverId, $userId, $data, $files)
+    {
+        $server = Server::find($serverId);
+        if (!$server) {
+            return [
+                'success' => false,
+                'error' => lang('server_not_found_admin')
+            ];
+        }
+
+        $categoryIds = $data['category_ids'] ?? [];
+        
+        if (empty($categoryIds) || !is_array($categoryIds)) {
+            return [
+                'success' => false,
+                'error' => lang('category_required')
+            ];
+        }
+        
+        $categoryIds = array_filter(array_map('intval', $categoryIds));
+        if (empty($categoryIds)) {
+            return [
+                'success' => false,
+                'error' => lang('invalid_categories')
+            ];
+        }
+
+        if (empty($data['country'] ?? '')) {
+            return [
+                'success' => false,
+                'error' => 'Country is required'
+            ];
+        }
+
+        $customData = self::prepareCustomData($data, $server->address);
+
+        $updateData = [
+            'name' => sanitize($data['name'] ?? ''),
+            'address' => sanitize($data['address'] ?? ''),
+            'port' => (int)($data['port'] ?? 25565),
+            'category_id' => $categoryIds[0],
+            'description' => trim($data['description'] ?? ''),
+            'website' => sanitize($data['website'] ?? ''),
+            'country' => sanitize($data['country'] ?? ''),
+            'youtube_id' => sanitize($data['youtube_id'] ?? ''),
+            'active' => isset($data['active']) ? 1 : 0,
+            'private' => isset($data['private']) ? 1 : 0,
+            'highlight' => isset($data['highlight']) ? 1 : 0
+        ];
+
+        if (isset($files['image']) && $files['image']['error'] === UPLOAD_ERR_OK) {
+            $image = uploadFile($files['image'], 'banners');
+            if ($image) {
+                $updateData['image'] = $image;
+            }
+        }
+
+        if (!empty($customData)) {
+            $updateData['custom_data'] = json_encode($customData);
+        }
+
+        if (Server::update($serverId, $updateData)) {
+            Server::setCategories($serverId, $categoryIds, $categoryIds[0]);
+            AuditLog::log('update', 'servers', $serverId, $userId, 'Updated server: ' . $server->name);
+            
+            return [
+                'success' => true,
+                'message' => lang('server_updated')
+            ];
+        }
+
+        return [
+            'success' => false,
+            'error' => lang('server_update_failed')
+        ];
+    }
+
+    public static function performAdminAction($serverId, $userId, $action)
+    {
+        $server = Server::find($serverId);
+        
+        if (!$server) {
+            return [
+                'success' => false,
+                'error' => lang('server_not_found_admin')
+            ];
+        }
+
+        switch ($action) {
+            case 'activate':
+                Server::update($serverId, ['active' => 1]);
+                AuditLog::log('activate', 'servers', $serverId, $userId, 'Activated server: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_activated'), 'redirect' => 'edit'];
+
+            case 'deactivate':
+                Server::update($serverId, ['active' => 0]);
+                AuditLog::log('deactivate', 'servers', $serverId, $userId, 'Deactivated server: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_deactivated'), 'redirect' => 'edit'];
+
+            case 'make_private':
+                Server::update($serverId, ['private' => 1]);
+                AuditLog::log('make_private', 'servers', $serverId, $userId, 'Made server private: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_made_private'), 'redirect' => 'edit'];
+
+            case 'make_public':
+                Server::update($serverId, ['private' => 0]);
+                AuditLog::log('make_public', 'servers', $serverId, $userId, 'Made server public: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_made_public'), 'redirect' => 'edit'];
+
+            case 'add_highlight':
+                Server::update($serverId, ['highlight' => 1]);
+                AuditLog::log('add_highlight', 'servers', $serverId, $userId, 'Added highlight to server: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_highlighted'), 'redirect' => 'edit'];
+
+            case 'remove_highlight':
+                Server::update($serverId, ['highlight' => 0]);
+                AuditLog::log('remove_highlight', 'servers', $serverId, $userId, 'Removed highlight from server: ' . $server->name);
+                return ['success' => true, 'message' => lang('server_highlight_removed'), 'redirect' => 'edit'];
+
+            case 'delete':
+                if (Server::delete($serverId)) {
+                    AuditLog::log('delete', 'servers', $serverId, $userId, 'Deleted server: ' . $server->name);
+                    return ['success' => true, 'message' => lang('server_deleted'), 'redirect' => 'list'];
+                }
+                return ['success' => false, 'error' => lang('server_delete_failed'), 'redirect' => 'edit'];
+
+            default:
+                return ['success' => false, 'error' => 'Invalid action', 'redirect' => 'edit'];
+        }
+    }
+
 }

@@ -64,7 +64,7 @@ class Payments
             'server_id' => $serverId,
             'highlighted_days' => $days,
             'revenue' => $amount,
-            'email' => auth()->email, // Assuming auth() helper is available as in controller
+            'email' => auth()->email, 
             'status' => 'completed',
             'paypal_order_id' => $orderId
         ]);

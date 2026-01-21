@@ -3,9 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Setting;
-use App\Models\Server;
-use App\Models\AuditLog;
-
+use App\Core\System\SiteSettings;
 /**
  * Admin settings controller.
  *
@@ -38,33 +36,9 @@ class SettingController
             redirect('/');
         }
 
-        $data = [
-            'title' => sanitize($_POST['title'] ?? ''),
-            'url' => sanitize($_POST['url'] ?? ''),
-            'meta_description' => sanitize($_POST['meta_description'] ?? ''),
-            'contact_email' => sanitize($_POST['contact_email'] ?? ''),
-            'servers_pagination' => (int)($_POST['servers_pagination'] ?? 15),
-            'display_offline_servers' => isset($_POST['display_offline_servers']) ? 1 : 0,
-            'new_servers_visibility' => isset($_POST['new_servers_visibility']) ? 1 : 0,
-            'email_confirmation' => isset($_POST['email_confirmation']) ? 1 : 0,
-            'smtp_host' => sanitize($_POST['smtp_host'] ?? ''),
-            'smtp_port' => sanitize($_POST['smtp_port'] ?? ''),
-            'smtp_user' => sanitize($_POST['smtp_user'] ?? ''),
-            'smtp_pass' => sanitize($_POST['smtp_pass'] ?? ''),
-            'smtp_secure' => sanitize($_POST['smtp_secure'] ?? ''),
-            'paypal_email' => sanitize($_POST['paypal_email'] ?? ''),
-            'paypal_client_id' => sanitize($_POST['paypal_client_id'] ?? ''),
-            'paypal_client_secret' => sanitize($_POST['paypal_client_secret'] ?? ''),
-            'paypal_sandbox' => isset($_POST['paypal_sandbox']) ? 1 : 0,
-            'payment_currency' => sanitize($_POST['payment_currency'] ?? 'USD'),
-            'per_day_cost' => (float)($_POST['per_day_cost'] ?? 0.00),
-            'minimum_days' => (int)($_POST['minimum_days'] ?? 1),
-            'maximum_days' => (int)($_POST['maximum_days'] ?? 30)
-        ];
+        $result = SiteSettings::update($_POST);
 
-        Setting::update($data);
-
-        flash('success', lang('settings_updated_successfully'));
+        flash('success', $result['message']);
         redirect('/admin/settings');
     }
 
@@ -79,12 +53,13 @@ class SettingController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (Server::resetAllVotes()) {
-                $currentUser = auth();
-                AuditLog::log('reset_votes', 'servers', 0, $currentUser->id, 'Reset all server votes');
-                flash('success', lang('votes_reset_success'));
+            $currentUser = auth();
+            $result = SiteSettings::resetVotes($currentUser->id);
+
+            if ($result['success']) {
+                flash('success', $result['message']);
             } else {
-                flash('error', lang('votes_reset_failed'));
+                flash('error', $result['error']);
             }
         }
 

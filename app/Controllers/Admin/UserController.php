@@ -3,8 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\User;
-use App\Models\AuditLog;
-
+use App\Core\Features\Users;
 /**
  * Admin users controller.
  *
@@ -85,29 +84,25 @@ class UserController
             redirect('/admin/users');
         }
 
-        $currentUser = auth();
-        if ($user->id == $currentUser->id) {
-            flash('error', lang('status_yourself'));
-            redirect('/admin/users');
-        }
-
         $data = [
-            'username' => sanitize($_POST['username'] ?? ''),
-            'email' => sanitize($_POST['email'] ?? ''),
-            'name' => sanitize($_POST['name'] ?? ''),
-            'about' => sanitize($_POST['about'] ?? ''),
-            'website' => sanitize($_POST['website'] ?? ''),
-            'location' => sanitize($_POST['location'] ?? ''),
-            'type' => (int)($_POST['type'] ?? 0),
-            'active' => isset($_POST['active']) ? 1 : 0,
-            'private' => isset($_POST['private']) ? 1 : 0
+            'username' => $_POST['username'] ?? '',
+            'email' => $_POST['email'] ?? '',
+            'name' => $_POST['name'] ?? '',
+            'about' => $_POST['about'] ?? '',
+            'website' => $_POST['website'] ?? '',
+            'location' => $_POST['location'] ?? '',
+            'type' => $_POST['type'] ?? 0,
+            'active' => $_POST['active'] ?? null,
+            'private' => $_POST['private'] ?? null
         ];
 
-        if (User::update($id, $data)) {
-            AuditLog::log('update', 'users', $id, $currentUser->id, 'Updated user: ' . $user->username);
-            flash('success', lang('user_updated'));
+        $currentUser = auth();
+        $result = Users::updateAdmin($id, $currentUser->id, $data);
+
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', 'Failed to update user');
+            flash('error', $result['error']);
         }
 
         redirect('/admin/users');
@@ -125,23 +120,13 @@ class UserController
             redirect('/');
         }
 
-        $user = User::find($id);
-        if (!$user) {
-            flash('error', 'User not found');
-            redirect('/admin/users');
-        }
-
         $currentUser = auth();
-        if ($user->id == $currentUser->id) {
-            flash('error', lang('delete_yourself'));
-            redirect('/admin/users');
-        }
+        $result = Users::performAdminAction($id, $currentUser->id, 'delete');
 
-        if (User::delete($id)) {
-            AuditLog::log('delete', 'users', $id, $currentUser->id, 'Deleted user: ' . $user->username);
-            flash('success', lang('user_deleted'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', 'Failed to delete user');
+            flash('error', $result['error']);
         }
 
         redirect('/admin/users');
@@ -166,30 +151,12 @@ class UserController
         }
 
         $currentUser = auth();
-        if ($user->id == $currentUser->id) {
-            flash('error', lang('status_yourself'));
-            redirect('/admin/users');
-        }
+        $result = Users::performAdminAction($id, $currentUser->id, $action);
 
-        switch ($action) {
-            case 'activate':
-                User::update($id, ['active' => 1]);
-                AuditLog::log('activate', 'users', $id, $currentUser->id, 'Activated user: ' . $user->username);
-                flash('success', lang('user_activated'));
-                break;
-            case 'deactivate':
-                User::update($id, ['active' => 0]);
-                AuditLog::log('deactivate', 'users', $id, $currentUser->id, 'Deactivated user: ' . $user->username);
-                flash('success', lang('user_deactivated'));
-                break;
-            case 'delete':
-                if (User::delete($id)) {
-                    AuditLog::log('delete', 'users', $id, $currentUser->id, 'Deleted user: ' . $user->username);
-                    flash('success', lang('user_deleted'));
-                }
-                break;
-            default:
-                flash('error', 'Invalid action');
+        if ($result['success']) {
+            flash('success', $result['message']);
+        } else {
+            flash('error', $result['error']);
         }
 
         redirect('/admin/users');

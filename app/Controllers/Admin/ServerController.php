@@ -4,8 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Models\Server;
 use App\Models\Category;
-use App\Models\AuditLog;
-
+use App\Core\Features\Servers;
 /**
  * Admin servers controller.
  *
@@ -102,62 +101,30 @@ class ServerController
             redirect('/admin/servers');
         }
 
-        $categoryIds = $_POST['category_ids'] ?? [];
-        
-        if (empty($categoryIds) || !is_array($categoryIds)) {
-            flash('error', lang('category_required'));
-            redirect("/admin/servers/edit/{$id}");
-        }
-        
-        $categoryIds = array_filter(array_map('intval', $categoryIds));
-        if (empty($categoryIds)) {
-            flash('error', lang('invalid_categories'));
-            redirect("/admin/servers/edit/{$id}");
-        }
-
-        if (empty($_POST['country'] ?? '')) {
-            flash('error', 'Country is required');
-            redirect("/admin/servers/edit/{$id}");
-        }
-
         $data = [
-            'name' => sanitize($_POST['name'] ?? ''),
-            'address' => sanitize($_POST['address'] ?? ''),
-            'port' => (int)($_POST['port'] ?? 25565),
-            'category_id' => $categoryIds[0],
-            'description' => trim($_POST['description'] ?? ''),
-            'website' => sanitize($_POST['website'] ?? ''),
-            'country' => sanitize($_POST['country'] ?? ''),
-            'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
-            'active' => isset($_POST['active']) ? 1 : 0,
-            'private' => isset($_POST['private']) ? 1 : 0,
-            'highlight' => isset($_POST['highlight']) ? 1 : 0
+            'name' => $_POST['name'] ?? '',
+            'address' => $_POST['address'] ?? '',
+            'port' => $_POST['port'] ?? 25565,
+            'category_ids' => $_POST['category_ids'] ?? [],
+            'description' => $_POST['description'] ?? '',
+            'website' => $_POST['website'] ?? '',
+            'country' => $_POST['country'] ?? '',
+            'youtube_id' => $_POST['youtube_id'] ?? '',
+            'active' => $_POST['active'] ?? null,
+            'private' => $_POST['private'] ?? null,
+            'highlight' => $_POST['highlight'] ?? null,
+            'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
+            'votifier_ip' => $_POST['votifier_ip'] ?? '',
+            'votifier_port' => $_POST['votifier_port'] ?? 8192
         ];
 
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $image = uploadFile($_FILES['image'], 'banners');
-            if ($image) {
-                $data['image'] = $image;
-            }
-        }
+        $currentUser = auth();
+        $result = Servers::updateAdmin($id, $currentUser->id, $data, $_FILES);
 
-        $customData = [];
-        if (!empty($_POST['votifier_public_key'])) {
-            $customData['votifier_public_key'] = $_POST['votifier_public_key'];
-            $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $server->address;
-            $customData['votifier_port'] = (int)($_POST['votifier_port'] ?? 8192);
-        }
-        if (!empty($customData)) {
-            $data['custom_data'] = json_encode($customData);
-        }
-
-        if (Server::update($id, $data)) {
-            Server::setCategories($id, $categoryIds, $categoryIds[0]);
-            $currentUser = auth();
-            AuditLog::log('update', 'servers', $id, $currentUser->id, 'Updated server: ' . $server->name);
-            flash('success', lang('server_updated'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('server_update_failed'));
+            flash('error', $result['error']);
         }
 
         redirect("/admin/servers/edit/{$id}");
@@ -173,18 +140,13 @@ class ServerController
             redirect('/');
         }
 
-        $server = Server::find($id);
-        if (!$server) {
-            flash('error', lang('server_not_found_admin'));
-            redirect('/admin/servers');
-        }
+        $currentUser = auth();
+        $result = Servers::performAdminAction($id, $currentUser->id, 'delete');
 
-        if (Server::delete($id)) {
-            $currentUser = auth();
-            AuditLog::log('delete', 'servers', $id, $currentUser->id, 'Deleted server: ' . $server->name);
-            flash('success', lang('server_deleted'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('server_delete_failed'));
+            flash('error', $result['error']);
         }
 
         redirect('/admin/servers');
@@ -209,50 +171,18 @@ class ServerController
         }
 
         $currentUser = auth();
+        $result = Servers::performAdminAction($id, $currentUser->id, $action);
 
-        switch ($action) {
-            case 'activate':
-                Server::update($id, ['active' => 1]);
-                AuditLog::log('activate', 'servers', $id, $currentUser->id, 'Activated server: ' . $server->name);
-                flash('success', lang('server_activated'));
-                break;
-            case 'deactivate':
-                Server::update($id, ['active' => 0]);
-                AuditLog::log('deactivate', 'servers', $id, $currentUser->id, 'Deactivated server: ' . $server->name);
-                flash('success', lang('server_deactivated'));
-                break;
-            case 'make_private':
-                Server::update($id, ['private' => 1]);
-                AuditLog::log('make_private', 'servers', $id, $currentUser->id, 'Made server private: ' . $server->name);
-                flash('success', lang('server_made_private'));
-                break;
-            case 'make_public':
-                Server::update($id, ['private' => 0]);
-                AuditLog::log('make_public', 'servers', $id, $currentUser->id, 'Made server public: ' . $server->name);
-                flash('success', lang('server_made_public'));
-                break;
-            case 'add_highlight':
-                Server::update($id, ['highlight' => 1]);
-                AuditLog::log('add_highlight', 'servers', $id, $currentUser->id, 'Added highlight to server: ' . $server->name);
-                flash('success', lang('server_highlighted'));
-                break;
-            case 'remove_highlight':
-                Server::update($id, ['highlight' => 0]);
-                AuditLog::log('remove_highlight', 'servers', $id, $currentUser->id, 'Removed highlight from server: ' . $server->name);
-                flash('success', lang('server_highlight_removed'));
-                break;
-            case 'delete':
-                if (Server::delete($id)) {
-                    AuditLog::log('delete', 'servers', $id, $currentUser->id, 'Deleted server: ' . $server->name);
-                    flash('success', lang('server_deleted'));
-                    redirect('/admin/servers');
-                    return;
-                }
-                break;
-            default:
-                flash('error', 'Invalid action');
+        if ($result['success']) {
+            flash('success', $result['message']);
+        } else {
+            flash('error', $result['error']);
         }
 
-        redirect("/admin/servers/edit/{$id}");
+        if ($result['redirect'] === 'list') {
+            redirect('/admin/servers');
+        } else {
+            redirect("/admin/servers/edit/{$id}");
+        }
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Category;
-use App\Models\AuditLog;
-
+use App\Core\Features\Categories;
 /**
  * Admin categories controller.
  *
@@ -60,28 +59,19 @@ class CategoryController
 
         $data = [
             'name' => sanitize($_POST['name'] ?? ''),
-            'url' => $this->generateSlug($_POST['url'] ?? $_POST['name']),
+            'url' => $_POST['url'] ?? $_POST['name'],
             'description' => sanitize($_POST['description'] ?? ''),
             'title' => sanitize($_POST['title'] ?? ''),
             'parent_id' => (int)($_POST['parent_id'] ?? 0)
         ];
 
-        if (empty($data['name']) || empty($data['url'])) {
-            flash('error', lang('marked_fields_empty'));
-            redirect('/admin/categories');
-        }
+        $currentUser = auth();
+        $result = Categories::create($data, $currentUser->id);
 
-        if (Category::findByUrl($data['url'])) {
-            flash('error', lang('url_already_exists'));
-            redirect('/admin/categories');
-        }
-
-        if (Category::create($data)) {
-            $currentUser = auth();
-            AuditLog::log('create', 'categories', 0, $currentUser->id, 'Created category: ' . $data['name']);
-            flash('success', lang('category_created'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('category_create_failed'));
+            flash('error', $result['error']);
         }
 
         redirect('/admin/categories');
@@ -133,29 +123,19 @@ class CategoryController
 
         $data = [
             'name' => sanitize($_POST['name'] ?? ''),
-            'url' => $this->generateSlug($_POST['url'] ?? $_POST['name']),
+            'url' => $_POST['url'] ?? $_POST['name'],
             'description' => sanitize($_POST['description'] ?? ''),
             'title' => sanitize($_POST['title'] ?? ''),
             'parent_id' => (int)($_POST['parent_id'] ?? 0)
         ];
 
-        if (empty($data['name']) || empty($data['url'])) {
-            flash('error', lang('marked_fields_empty'));
-            redirect('/admin/categories');
-        }
+        $currentUser = auth();
+        $result = Categories::update($id, $data, $currentUser->id);
 
-        $existingCategory = Category::findByUrl($data['url']);
-        if ($existingCategory && $existingCategory->id != $id) {
-            flash('error', lang('url_already_exists'));
-            redirect('/admin/categories');
-        }
-
-        if (Category::update($id, $data)) {
-            $currentUser = auth();
-            AuditLog::log('update', 'categories', $id, $currentUser->id, 'Updated category: ' . $category->name);
-            flash('success', lang('category_updated'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('category_update_failed'));
+            flash('error', $result['error']);
         }
 
         redirect('/admin/categories');
@@ -173,36 +153,15 @@ class CategoryController
             redirect('/');
         }
 
-        $category = Category::find($id);
-        if (!$category) {
-            flash('error', lang('category_not_found'));
-            redirect('/admin/categories');
-        }
+        $currentUser = auth();
+        $result = Categories::delete($id, $currentUser->id);
 
-        if ($id == 1) {
-            flash('error', lang('cannot_delete_default_category'));
-            redirect('/admin/categories');
-        }
-
-        if (Category::delete($id)) {
-            $currentUser = auth();
-            AuditLog::log('delete', 'categories', $id, $currentUser->id, 'Deleted category: ' . $category->name);
-            flash('success', lang('category_deleted'));
+        if ($result['success']) {
+            flash('success', $result['message']);
         } else {
-            flash('error', lang('category_delete_failed'));
+            flash('error', $result['error']);
         }
 
         redirect('/admin/categories');
-    }
-
-    /**
-     * Generate a URL-safe slug for category URLs.
-     */
-    private function generateSlug($string)
-    {
-        $string = strtolower($string);
-        $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
-        $string = preg_replace('/[\s-]+/', '-', $string);
-        return trim($string, '-');
     }
 }

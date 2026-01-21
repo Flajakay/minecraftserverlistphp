@@ -11,14 +11,6 @@ use App\Core\Integrations\Votifier;
  */
 class Votes
 {
-    /**
-     * Cast a vote for a server.
-     * 
-     * @param int $serverId The ID of the server to vote for.
-     * @param string $ip The IP address of the voter.
-     * @param string $username Optional Minecraft username for Votifier.
-     * @return array Result of the voting operation: ['success' => bool, 'message' => string].
-     */
     public static function castVote(int $serverId, string $ip, string $username = ''): array
     {
         $server = Server::find($serverId);

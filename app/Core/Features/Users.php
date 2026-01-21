@@ -4,6 +4,7 @@ namespace App\Core\Features;
 
 use App\Models\User;
 use App\Models\Server;
+use App\Models\AuditLog;
 
 class Users
 {
@@ -182,4 +183,92 @@ class Users
             'is_own_profile' => $isOwnProfile
         ];
     }
+
+    public static function updateAdmin($targetUserId, $adminId, $data)
+    {
+        $user = User::find($targetUserId);
+        if (!$user) {
+            return [
+                'success' => false,
+                'error' => 'User not found'
+            ];
+        }
+
+        $currentUser = User::find($adminId);
+        if ($user->id == $currentUser->id) {
+            return [
+                'success' => false,
+                'error' => lang('status_yourself')
+            ];
+        }
+
+        $updateData = [
+            'username' => sanitize($data['username'] ?? ''),
+            'email' => sanitize($data['email'] ?? ''),
+            'name' => sanitize($data['name'] ?? ''),
+            'about' => sanitize($data['about'] ?? ''),
+            'website' => sanitize($data['website'] ?? ''),
+            'location' => sanitize($data['location'] ?? ''),
+            'type' => (int)($data['type'] ?? 0),
+            'active' => isset($data['active']) ? 1 : 0,
+            'private' => isset($data['private']) ? 1 : 0
+        ];
+
+        if (User::update($targetUserId, $updateData)) {
+            AuditLog::log('update', 'users', $targetUserId, $adminId, 'Updated user: ' . $user->username);
+            
+            return [
+                'success' => true,
+                'message' => lang('user_updated')
+            ];
+        }
+
+        return [
+            'success' => false,
+            'error' => 'Failed to update user'
+        ];
+    }
+
+    public static function performAdminAction($targetUserId, $adminId, $action)
+    {
+        $user = User::find($targetUserId);
+        
+        if (!$user) {
+            return [
+                'success' => false,
+                'error' => 'User not found'
+            ];
+        }
+
+        $currentUser = User::find($adminId);
+        if ($user->id == $currentUser->id) {
+            return [
+                'success' => false,
+                'error' => lang('status_yourself')
+            ];
+        }
+
+        switch ($action) {
+            case 'activate':
+                User::update($targetUserId, ['active' => 1]);
+                AuditLog::log('activate', 'users', $targetUserId, $adminId, 'Activated user: ' . $user->username);
+                return ['success' => true, 'message' => lang('user_activated')];
+
+            case 'deactivate':
+                User::update($targetUserId, ['active' => 0]);
+                AuditLog::log('deactivate', 'users', $targetUserId, $adminId, 'Deactivated user: ' . $user->username);
+                return ['success' => true, 'message' => lang('user_deactivated')];
+
+            case 'delete':
+                if (User::delete($targetUserId)) {
+                    AuditLog::log('delete', 'users', $targetUserId, $adminId, 'Deleted user: ' . $user->username);
+                    return ['success' => true, 'message' => lang('user_deleted')];
+                }
+                return ['success' => false, 'error' => 'Failed to delete user'];
+
+            default:
+                return ['success' => false, 'error' => 'Invalid action'];
+        }
+    }
+
 }
