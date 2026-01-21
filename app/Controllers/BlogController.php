@@ -2,14 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Models\Server;
-use App\Models\BlogPost;
 use App\Core\Auth;
+use App\Core\Blog;
 
 /**
  * Server blog posts controller.
  *
- * Handles create/update/delete operations for blog posts attached to a server.
+ * Handles HTTP layer for create/update/delete operations for blog posts attached to a server.
  * Most actions support both full-page flows (flash + redirect) and AJAX calls (JSON responses).
  */
 class BlogController
@@ -35,62 +34,26 @@ class BlogController
         $serverId = (int)($_POST['server_id'] ?? 0);
         $title = sanitize($_POST['title'] ?? '');
         $content = $_POST['content'] ?? '';
-
-        if (empty($title) || strlen($title) < 3) {
-            $message = lang('blog_title_required');
-            if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
-                return;
-            }
-            flash('error', $message);
-            redirect($_SERVER['HTTP_REFERER'] ?? '/');
-        }
-
-        if (empty($content) || strlen($content) < 10) {
-            $message = lang('blog_content_required');
-            if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
-                return;
-            }
-            flash('error', $message);
-            redirect($_SERVER['HTTP_REFERER'] ?? '/');
-        }
-
-        $server = Server::find($serverId);
-        if (!$server) {
-            $message = lang('server_not_found');
-            if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
-                return;
-            }
-            flash('error', $message);
-            redirect('/servers');
-        }
-
         $user = auth();
-        if ($server->user_id != $user->id && $user->type < 1) {
-            $message = lang('cant_access');
+
+        $result = Blog::createBlogPost($serverId, $user->id, $title, $content);
+
+        if (!$result['success']) {
             if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
+                echo json_encode(['success' => false, 'message' => $result['error']]);
                 return;
             }
-            flash('error', $message);
+            flash('error', $result['error']);
             redirect($_SERVER['HTTP_REFERER'] ?? '/');
         }
-
-        BlogPost::create([
-            'server_id' => $serverId,
-            'user_id' => $user->id,
-            'title' => $title,
-            'content' => $content
-        ]);
 
         if (isset($_POST['ajax'])) {
-            echo json_encode(['success' => true, 'message' => lang('blog_post_created')]);
+            echo json_encode(['success' => true, 'message' => $result['message']]);
             return;
         }
 
-        flash('success', lang('blog_post_created'));
+        $server = $result['server'];
+        flash('success', $result['message']);
         redirect($_SERVER['HTTP_REFERER'] ?? "/server/{$server->address}:{$server->port}");
     }
 
@@ -104,27 +67,17 @@ class BlogController
             redirect('/login');
         }
 
-        $blogPost = BlogPost::find($id);
-        if (!$blogPost) {
-            flash('error', lang('blog_post_not_found'));
-            redirect('/servers');
-        }
-
-        $server = Server::find($blogPost->server_id);
-        if (!$server) {
-            flash('error', lang('server_not_found'));
-            redirect('/servers');
-        }
-
         $user = auth();
-        if ($blogPost->user_id != $user->id && $user->type < 1) {
-            flash('error', lang('cant_access'));
-            redirect("/server/{$server->address}:{$server->port}");
+        $result = Blog::getBlogPostForEdit($id, $user->id);
+
+        if (!$result['success']) {
+            flash('error', $result['error']);
+            redirect('/servers');
         }
 
         view('servers.blog-edit', [
-            'blog_post' => $blogPost,
-            'server' => $server
+            'blog_post' => $result['blogPost'],
+            'server' => $result['server']
         ]);
     }
 
@@ -138,43 +91,19 @@ class BlogController
             redirect('/login');
         }
 
-        $blogPost = BlogPost::find($id);
-        if (!$blogPost) {
-            flash('error', lang('blog_post_not_found'));
-            redirect('/servers');
-        }
-
-        $server = Server::find($blogPost->server_id);
-        if (!$server) {
-            flash('error', lang('server_not_found'));
-            redirect('/servers');
-        }
-
-        $user = auth();
-        if ($blogPost->user_id != $user->id && $user->type < 1) {
-            flash('error', lang('cant_access'));
-            redirect("/server/{$server->address}:{$server->port}");
-        }
-
         $title = sanitize($_POST['title'] ?? '');
         $content = $_POST['content'] ?? '';
+        $user = auth();
 
-        if (empty($title) || strlen($title) < 3) {
-            flash('error', lang('blog_title_required'));
+        $result = Blog::updateBlogPost($id, $user->id, $title, $content);
+
+        if (!$result['success']) {
+            flash('error', $result['error']);
             redirect("/blog/edit/{$id}");
         }
 
-        if (empty($content) || strlen($content) < 10) {
-            flash('error', lang('blog_content_required'));
-            redirect("/blog/edit/{$id}");
-        }
-
-        BlogPost::update($id, [
-            'title' => $title,
-            'content' => $content
-        ]);
-
-        flash('success', lang('blog_post_updated'));
+        $server = $result['server'];
+        flash('success', $result['message']);
         redirect("/server/{$server->address}:{$server->port}");
     }
 
@@ -191,23 +120,11 @@ class BlogController
         }
 
         $blogPostId = (int)($_POST['blog_post_id'] ?? 0);
-        $blogPost = BlogPost::find($blogPostId);
-
-        if (!$blogPost) {
-            echo json_encode(['success' => false, 'message' => lang('blog_post_not_found')]);
-            return;
-        }
-
         $user = auth();
-        $server = Server::find($blogPost->server_id);
         
-        if ($blogPost->user_id != $user->id && $server->user_id != $user->id && $user->type < 1) {
-            echo json_encode(['success' => false, 'message' => lang('cant_access')]);
-            return;
-        }
+        $result = Blog::deleteBlogPost($blogPostId, $user->id);
 
-        BlogPost::delete($blogPostId);
-        echo json_encode(['success' => true, 'message' => lang('blog_post_deleted')]);
+        echo json_encode($result);
     }
 
     /**

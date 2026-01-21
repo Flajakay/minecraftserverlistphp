@@ -3,20 +3,10 @@
 namespace App\Models;
 
 use App\Core\Database;
-use App\Core\Auth;
-use App\Core\LoginSecurity;
 
 class User
 {
-    public static function create($data)
-    {
-        $data['password'] = Auth::hashPassword($data['password']);
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $data['active'] = 0;
-        $data['type'] = 0;
-        
-        return Database::insert('users', $data);
-    }
+
 
     public static function find($id)
     {
@@ -35,8 +25,6 @@ class User
 
     public static function activate($email, $code)
     {
-        echo $email;
-        echo $code;
         return Database::update('users', 
             ['active' => 1, 'email_activation_code' => ''], 
             'email = ? AND email_activation_code = ?', 
@@ -61,15 +49,7 @@ class User
         return $user && $user->active == 1;
     }
 
-    public static function isLockedOut($username)
-    {
-        return LoginSecurity::isLockedOut($username, 'username');
-    }
 
-    public static function clearFailedAttempts($username)
-    {
-        LoginSecurity::clearFailedAttempts($username, 'username');
-    }
 
     public static function getAllPaginated($page = 1, $limit = 20, $search = '', $filters = [])
     {
@@ -135,7 +115,6 @@ class User
     public static function delete($id)
     {
         Database::query('UPDATE servers SET user_id = 1 WHERE user_id = ?', [$id]);
-        Database::delete('favorites', 'user_id = ?', [$id]);
         Database::delete('comments', 'user_id = ?', [$id]);
         Database::delete('reports', 'user_id = ?', [$id]);
         return Database::delete('users', 'id = ?', [$id]);

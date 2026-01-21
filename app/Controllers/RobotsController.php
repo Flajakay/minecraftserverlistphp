@@ -20,8 +20,6 @@ class RobotsController
         $robots .= "Allow: /\n";
         $robots .= "Disallow: /admin/\n";
         $robots .= "Disallow: /settings/\n";
-        $robots .= "Disallow: /my-servers\n";
-        $robots .= "Disallow: /my-favorites\n";
         $robots .= "Disallow: /edit-server/\n";
         $robots .= "\n";
         $robots .= "Sitemap: " . url('/sitemap.xml') . "\n";

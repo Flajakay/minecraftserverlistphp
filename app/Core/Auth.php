@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Core\CookieManager;
 use App\Core\LoginSecurity;
+use App\Core\Mail;
 
 /**
  * Authentication facade.
@@ -56,6 +57,77 @@ class Auth
         CookieManager::delete('remember_token');
     }
 
+    public static function attemptLogin($username, $password, $ip, $remember = false)
+    {
+        if (empty($username) || empty($password)) {
+            return [
+                'success' => false,
+                'error' => 'empty_fields',
+                'message' => lang('please_fill_all_fields')
+            ];
+        }
+
+        if (LoginSecurity::isLockedOut($username, 'username')) {
+            $remaining = LoginSecurity::getLockoutTimeRemaining($username, 'username');
+            $minutes = ceil($remaining / 60);
+            return [
+                'success' => false,
+                'error' => 'username_locked',
+                'message' => sprintf(lang('account_locked_minutes'), $minutes),
+                'minutes' => $minutes
+            ];
+        }
+
+        if (LoginSecurity::isLockedOut($ip, 'ip')) {
+            $remaining = LoginSecurity::getLockoutTimeRemaining($ip, 'ip');
+            $minutes = ceil($remaining / 60);
+            return [
+                'success' => false,
+                'error' => 'ip_locked',
+                'message' => sprintf(lang('ip_locked_minutes'), $minutes),
+                'minutes' => $minutes
+            ];
+        }
+
+        $user = self::attempt($username, $password);
+        
+        if (!$user) {
+            LoginSecurity::recordFailedAttempt($username, 'username', $ip);
+            LoginSecurity::recordFailedAttempt($ip, 'ip', $ip);
+            
+            $remaining = LoginSecurity::getRemainingAttempts($username, 'username');
+            
+            if ($remaining > 0) {
+                $message = sprintf(lang('invalid_credentials_attempts'), $remaining);
+            } else {
+                $message = lang('invalid_credentials_locked');
+            }
+            
+            return [
+                'success' => false,
+                'error' => 'invalid_credentials',
+                'message' => $message,
+                'remaining' => $remaining
+            ];
+        }
+
+        if (!$user->active) {
+            return [
+                'success' => false,
+                'error' => 'account_inactive',
+                'message' => lang('account_not_active')
+            ];
+        }
+
+        self::login($user, $remember);
+        
+        return [
+            'success' => true,
+            'user' => $user,
+            'message' => lang('welcome_back')
+        ];
+    }
+
     public static function attempt($username, $password)
     {
         $user = Database::fetch('SELECT * FROM users WHERE username = ?', [$username]);
@@ -90,5 +162,221 @@ class Auth
     {
         $user = self::user();
         return $user && $user->type > 1;
+    }
+
+    public static function validateUsername($username)
+    {
+        if (strlen($username) < 3 || strlen($username) > 32) {
+            return lang('username_length_validation');
+        }
+
+        $existingUser = Database::fetch('SELECT id FROM users WHERE username = ?', [$username]);
+        if ($existingUser) {
+            return lang('username_exists');
+        }
+
+        return null;
+    }
+
+    public static function validateEmail($email)
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return lang('invalid_email');
+        }
+
+        $existingUser = Database::fetch('SELECT id FROM users WHERE email = ?', [$email]);
+        if ($existingUser) {
+            return lang('email_used');
+        }
+
+        return null;
+    }
+
+    public static function validatePasswordStrength($password)
+    {
+        if (strlen($password) < 6) {
+            return lang('password_too_short');
+        }
+
+        return null;
+    }
+
+    public static function validateRegistrationData($username, $email, $password, $name)
+    {
+        $errors = [];
+
+        $usernameError = self::validateUsername($username);
+        if ($usernameError) {
+            $errors[] = $usernameError;
+        }
+
+        $emailError = self::validateEmail($email);
+        if ($emailError) {
+            $errors[] = $emailError;
+        }
+
+        $passwordError = self::validatePasswordStrength($password);
+        if ($passwordError) {
+            $errors[] = $passwordError;
+        }
+
+        if (strlen($name) < 2 || strlen($name) > 32) {
+            $errors[] = lang('name_length_validation');
+        }
+
+        return $errors;
+    }
+
+    public static function register($username, $email, $password, $name, $ip)
+    {
+        $errors = self::validateRegistrationData($username, $email, $password, $name);
+        
+        if (!empty($errors)) {
+            return [
+                'success' => false,
+                'errors' => $errors,
+                'userId' => null
+            ];
+        }
+
+        $activationCode = bin2hex(random_bytes(16));
+        
+        $userId = Database::insert('users', [
+            'username' => $username,
+            'email' => $email,
+            'password' => self::hashPassword($password),
+            'name' => $name,
+            'ip' => $ip,
+            'email_activation_code' => $activationCode,
+            'created_at' => date('Y-m-d H:i:s'),
+            'active' => 0,
+            'type' => 0
+        ]);
+
+        $emailSent = false;
+        $emailError = null;
+
+        if (setting('email_confirmation', 0)) {
+            try {
+                $activationUrl = url('/activate/' . urlencode($email) . '/' . $activationCode);
+                
+                Mail::create()
+                    ->to($email, $name)
+                    ->template('activation', [
+                        'name' => $name,
+                        'activationUrl' => $activationUrl
+                    ])
+                    ->send();
+                    
+                $emailSent = true;
+            } catch (\Exception $e) {
+                $emailError = lang('email_send_failed', 'Registration successful but activation email could not be sent.');
+            }
+        } else {
+            Database::update('users', ['active' => 1], 'id = ?', [$userId]);
+        }
+
+        return [
+            'success' => true,
+            'errors' => [],
+            'userId' => $userId,
+            'emailSent' => $emailSent,
+            'emailError' => $emailError,
+            'requiresActivation' => setting('email_confirmation', 0)
+        ];
+    }
+
+    public static function activateAccount($email, $code)
+    {
+        $updated = Database::update('users', 
+            ['active' => 1, 'email_activation_code' => ''], 
+            'email = ? AND email_activation_code = ?', 
+            [$email, $code]
+        );
+
+        return $updated > 0;
+    }
+
+    public static function initiatePasswordReset($email)
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return [
+                'success' => false,
+                'error' => lang('invalid_email'),
+                'user' => null
+            ];
+        }
+
+        $user = Database::fetch('SELECT * FROM users WHERE email = ?', [$email]);
+        if (!$user) {
+            return [
+                'success' => false,
+                'error' => lang('email_doesnt_exist'),
+                'user' => null
+            ];
+        }
+
+        $code = bin2hex(random_bytes(16));
+        Database::update('users', ['lost_password_code' => $code], 'id = ?', [$user->id]);
+
+        try {
+            $resetUrl = url('/reset-password/' . urlencode($email) . '/' . $code);
+            
+            Mail::create()
+                ->to($email, $user->name)
+                ->template('reset-password', [
+                    'name' => $user->name,
+                    'resetUrl' => $resetUrl
+                ])
+                ->send();
+                
+            return [
+                'success' => true,
+                'error' => null,
+                'user' => $user
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => lang('email_send_failed', 'Failed to send reset email. Please try again later.'),
+                'user' => $user
+            ];
+        }
+    }
+
+    public static function resetPassword($email, $code, $newPassword, $confirmPassword)
+    {
+        $user = Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+        
+        if (!$user) {
+            return [
+                'success' => false,
+                'error' => lang('invalid_reset_link')
+            ];
+        }
+
+        $passwordError = self::validatePasswordStrength($newPassword);
+        if ($passwordError) {
+            return [
+                'success' => false,
+                'error' => $passwordError
+            ];
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return [
+                'success' => false,
+                'error' => lang('passwords_doesnt_match')
+            ];
+        }
+
+        $hashedPassword = self::hashPassword($newPassword);
+        Database::update('users', ['password' => $hashedPassword], 'id = ?', [$user->id]);
+        Database::update('users', ['lost_password_code' => ''], 'id = ?', [$user->id]);
+
+        return [
+            'success' => true,
+            'error' => null
+        ];
     }
 }

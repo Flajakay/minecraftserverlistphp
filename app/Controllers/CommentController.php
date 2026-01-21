@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Models\Server;
 use App\Models\Comment;
 use App\Core\Auth;
+use App\Core\Comments;
 
 /**
  * Server comments controller.
@@ -21,7 +21,7 @@ class CommentController
     {
         if (!isLoggedIn()) {
             if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => 'Must be logged in']);
+                echo json_encode(['success' => false, 'message' => lang('logged_in_action')]);
                 return;
             }
             flash('error', lang('login_required_comment'));
@@ -31,51 +31,26 @@ class CommentController
         $serverId = (int)($_POST['server_id'] ?? 0);
         $comment = sanitize($_POST['comment'] ?? '');
         $type = (int)($_POST['type'] ?? 0);
+        $user = auth();
 
-        if (empty($comment) || strlen($comment) < 5) {
-            $message = 'Comment must be at least 5 characters long';
+        $result = Comments::createComment($serverId, $user->id, $comment, $type);
+
+        if (!$result['success']) {
             if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
+                echo json_encode(['success' => false, 'message' => $result['error']]);
                 return;
             }
-            flash('error', $message);
+            flash('error', $result['error']);
             redirect($_SERVER['HTTP_REFERER'] ?? '/');
         }
-
-        if (strlen($comment) > 512) {
-            $message = 'Comment is too long (max 512 characters)';
-            if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
-                return;
-            }
-            flash('error', $message);
-            redirect($_SERVER['HTTP_REFERER'] ?? '/');
-        }
-
-        $server = Server::find($serverId);
-        if (!$server) {
-            $message = 'Server not found';
-            if (isset($_POST['ajax'])) {
-                echo json_encode(['success' => false, 'message' => $message]);
-                return;
-            }
-            flash('error', $message);
-            redirect('/servers');
-        }
-
-        Comment::create([
-            'server_id' => $serverId,
-            'user_id' => auth()->id,
-            'type' => $type,
-            'comment' => $comment
-        ]);
 
         if (isset($_POST['ajax'])) {
-            echo json_encode(['success' => true, 'message' => 'Comment added successfully']);
+            echo json_encode(['success' => true, 'message' => $result['message']]);
             return;
         }
 
-        flash('success', lang('comment_added'));
+        $server = $result['server'];
+        flash('success', $result['message']);
         redirect($_SERVER['HTTP_REFERER'] ?? "/server/{$server->address}:{$server->port}");
     }
 
@@ -92,23 +67,11 @@ class CommentController
         }
 
         $commentId = (int)($_POST['comment_id'] ?? 0);
-        $comment = Comment::find($commentId);
-
-        if (!$comment) {
-            echo json_encode(['success' => false, 'message' => 'Comment not found']);
-            return;
-        }
-
         $user = auth();
-        $server = Server::find($comment->server_id);
-        
-        if ($comment->user_id != $user->id && $server->user_id != $user->id && $user->type < 1) {
-            echo json_encode(['success' => false, 'message' => 'Access denied']);
-            return;
-        }
 
-        Comment::delete($commentId);
-        echo json_encode(['success' => true, 'message' => 'Comment deleted successfully']);
+        $result = Comments::deleteComment($commentId, $user->id);
+
+        echo json_encode($result);
     }
 
     /**

@@ -14,12 +14,7 @@ use App\Core\SEO;
  */
 class HomeController
 {
-    /**
-     * Render the home page.
-     *
-     * Note: We fetch multiple short lists (featured/recent/top-voted) and then compute favorites for
-     * the union so the UI can mark items consistently.
-     */
+
     public function index()
     {
         SEO::configureHomePage();

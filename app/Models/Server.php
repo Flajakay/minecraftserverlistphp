@@ -31,7 +31,6 @@ class Server
     {
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['votes'] = 0;
-        $data['favorites'] = 0;
         $data['highlight'] = 0;
         $data['private'] = 1;
         $data['active'] = 1;
@@ -123,7 +122,7 @@ class Server
             $orderBy = 'created_at';
         }
 
-        $validOrders = ['votes', 'players', 'favorites', 'created_at'];
+        $validOrders = ['votes', 'players', 'created_at'];
 
         if (!in_array($orderBy, $validOrders)) {
             $orderBy = 'votes';
@@ -169,15 +168,6 @@ class Server
         return Database::query('UPDATE servers SET votes = votes + 1 WHERE id = ?', [$serverId]);
     }
 
-    public static function addFavorite($serverId)
-    {
-        return Database::query('UPDATE servers SET favorites = favorites + 1 WHERE id = ?', [$serverId]);
-    }
-
-    public static function removeFavorite($serverId)
-    {
-        return Database::query('UPDATE servers SET favorites = favorites - 1 WHERE id = ?', [$serverId]);
-    }
 
     public static function updateHighlight($serverId, $highlight)
     {
@@ -196,8 +186,6 @@ class Server
 
     public static function delete($id)
     {
-        Database::delete('votes', 'server_id = ?', [$id]);
-        Database::delete('favorites', 'server_id = ?', [$id]);
         Database::delete('comments', 'server_id = ?', [$id]);
         Database::delete('reports', 'reported_id = ? AND type = 2', [$id]);
         return Database::delete('servers', 'id = ?', [$id]);

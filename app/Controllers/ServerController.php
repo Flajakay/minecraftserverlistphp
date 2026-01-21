@@ -9,10 +9,8 @@ use App\Models\Vote;
 use App\Models\Comment;
 use App\Models\BlogPost;
 use App\Models\PlayerHistory;
-use App\Core\Auth;
-use App\Core\MinecraftPing;
-use App\Core\Database;
 use App\Core\SEO;
+use App\Core\Servers;
 
 class ServerController
 {
@@ -25,38 +23,7 @@ class ServerController
         $perPage = Setting::getValue('servers_pagination', 15);
         $offset = ($page - 1) * $perPage;
 
-        $filters = [
-            'limit' => $perPage,
-            'offset' => $offset
-        ];
-
-        if (isset($_GET['categories']) && !empty($_GET['categories'])) {
-            $categoryIds = explode(',', $_GET['categories']);
-            $categoryIds = array_filter(array_map('intval', $categoryIds));
-            if (!empty($categoryIds)) {
-                $filters['categories'] = $categoryIds;
-            }
-        }
-
-        if (isset($_GET['include_subcategories']) && $_GET['include_subcategories'] == '1') {
-            $filters['include_subcategories'] = true;
-        }
-
-        if (isset($_GET['order_by'])) {
-            $filters['order_by'] = $_GET['order_by'];
-        }
-
-        if (isset($_GET['country']) && $_GET['country'] !== '') {
-            $filters['country'] = $_GET['country'];
-        }
-
-        if (isset($_GET['status']) && $_GET['status'] !== '') {
-            $filters['status'] = $_GET['status'];
-        }
-
-        if (isset($_GET['highlight'])) {
-            $filters['highlight'] = $_GET['highlight'];
-        }
+        $filters = Servers::buildFiltersFromRequest($_GET, $perPage, $offset);
 
         $servers = Server::getAll($filters);
         $totalServers = Server::count($filters);
@@ -87,8 +54,6 @@ class ServerController
             flash('error', lang('server_not_found'));
             redirect('/servers');
         }
-
-
 
         SEO::configureServerPage($server);
 
@@ -142,114 +107,33 @@ class ServerController
             redirect('/login');
         }
 
-        $address = sanitize($_POST['address'] ?? '');
-        $port = (int) ($_POST['port'] ?? 25565);
-        $name = sanitize($_POST['name'] ?? '');
-        $categoryIds = $_POST['category_ids'] ?? [];
-        $primaryCategoryId = (int) ($_POST['primary_category_id'] ?? 0);
-        $description = trim($_POST['description'] ?? '');
-        $website = sanitize($_POST['website'] ?? '');
-        $country = sanitize($_POST['country'] ?? '');
-        $youtubeId = sanitize($_POST['youtube_id'] ?? '');
+        $data = [
+            'address' => sanitize($_POST['address'] ?? ''),
+            'port' => (int) ($_POST['port'] ?? 25565),
+            'name' => sanitize($_POST['name'] ?? ''),
+            'category_ids' => $_POST['category_ids'] ?? [],
+            'primary_category_id' => (int) ($_POST['primary_category_id'] ?? 0),
+            'description' => trim($_POST['description'] ?? ''),
+            'website' => sanitize($_POST['website'] ?? ''),
+            'country' => sanitize($_POST['country'] ?? ''),
+            'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
+            'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
+            'votifier_ip' => $_POST['votifier_ip'] ?? '',
+            'votifier_port' => $_POST['votifier_port'] ?? ''
+        ];
 
-        $errors = [];
+        $result = Servers::submitServer(auth()->id, $data, $_FILES);
 
-        if (empty($address)) {
-            $errors[] = 'Server address is required';
-        }
-
-        if (empty($country)) {
-            $errors[] = 'Country is required';
-        }
-
-        if (Server::exists($address, $port)) {
-            $errors[] = 'Server already exists';
-        }
-
-        if (strlen($name) < 3 || strlen($name) > 64) {
-            $errors[] = 'Server name must be between 3 and 64 characters';
-        }
-
-        if (empty($categoryIds) || !is_array($categoryIds)) {
-            $errors[] = 'At least one category must be selected';
-        } else {
-            $categoryIds = array_filter(array_map('intval', $categoryIds));
-            if (empty($categoryIds)) {
-                $errors[] = 'Invalid categories selected';
-            }
-
-            if ($primaryCategoryId && !in_array($primaryCategoryId, $categoryIds)) {
-                $errors[] = 'Primary category must be one of the selected categories';
-            }
-        }
-
-        if (strlen($description) > 2560) {
-            $errors[] = 'Description is too long (max 2560 characters)';
-        }
-
-        $serverStatus = MinecraftPing::checkServer($address, $port);
-        if (!$serverStatus['online']) {
-            $errors[] = 'Server is offline or unreachable';
-        }
-
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
+        if (!$result['success']) {
+            foreach ($result['errors'] as $error) {
                 flash('error', $error);
             }
             redirect('/submit');
         }
 
-        $image = '';
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $image = uploadFile($_FILES['image'], 'banners');
-            if (!$image) {
-                flash('error', lang('banner_upload_failed'));
-                redirect('/submit');
-            }
-        }
-
-        $icon = '';
-        if (isset($_FILES['icon']) && $_FILES['icon']['error'] === UPLOAD_ERR_OK) {
-            $icon = uploadFile($_FILES['icon'], 'icons');
-            if (!$icon) {
-                flash('error', lang('icon_upload_failed'));
-                redirect('/submit');
-            }
-        }
-
-        $customData = [];
-        if (!empty($_POST['votifier_public_key'])) {
-            $customData['votifier_public_key'] = $_POST['votifier_public_key'];
-            $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $address;
-            $customData['votifier_port'] = (int) ($_POST['votifier_port'] ?? 8192);
-        }
-
-        $serverId = Server::create([
-            'user_id' => auth()->id,
-            'category_id' => $primaryCategoryId ?: $categoryIds[0],
-            'address' => $address,
-            'port' => $port,
-            'name' => $name,
-            'description' => $description,
-            'image' => $image,
-            'icon' => $icon,
-            'website' => $website,
-            'country' => $country,
-            'youtube_id' => $youtubeId,
-            'players' => $serverStatus['players'],
-            'max_players' => $serverStatus['max_players'],
-            'version' => $serverStatus['version'],
-            'custom_data' => json_encode($customData)
-        ]);
-
-        Server::setCategories($serverId, $categoryIds, $primaryCategoryId ?: $categoryIds[0]);
-
-        flash('success', lang('server_added_review'));
+        flash('success', $result['message']);
         redirect('/profile/' . auth()->username);
     }
-
-
-
 
     public function edit($id)
     {
@@ -257,21 +141,18 @@ class ServerController
             redirect('/login');
         }
 
-        $server = Server::find($id);
-        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
-            flash('error', lang('server_not_found_access_denied'));
+        $result = Servers::getEditPageData($id, auth()->id);
+
+        if (!$result['success']) {
+            flash('error', $result['error']);
             redirect('/profile/' . auth()->username);
         }
 
-        $categories = Category::getAllForSelect();
-        $countries = getCountries();
-        $serverCategories = Server::getCategories($id);
-
         view('servers.edit', [
-            'server' => $server,
-            'categories' => $categories,
-            'countries' => $countries,
-            'server_categories' => $serverCategories
+            'server' => $result['server'],
+            'categories' => $result['categories'],
+            'countries' => $result['countries'],
+            'server_categories' => $result['server_categories']
         ]);
     }
 
@@ -281,88 +162,33 @@ class ServerController
             redirect('/login');
         }
 
-        $server = Server::find($id);
-        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
-            flash('error', lang('server_not_found_access_denied'));
+        $data = [
+            'name' => sanitize($_POST['name'] ?? ''),
+            'category_ids' => $_POST['category_ids'] ?? [],
+            'description' => sanitize($_POST['description'] ?? ''),
+            'website' => sanitize($_POST['website'] ?? ''),
+            'country' => sanitize($_POST['country'] ?? ''),
+            'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
+            'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
+            'votifier_ip' => $_POST['votifier_ip'] ?? '',
+            'votifier_port' => $_POST['votifier_port'] ?? ''
+        ];
+
+        $result = Servers::updateServer($id, auth()->id, $data, $_FILES);
+
+        if (!$result['success']) {
+            if (isset($result['errors'])) {
+                foreach ($result['errors'] as $error) {
+                    flash('error', $error);
+                }
+                redirect("/edit-server/{$id}");
+            }
+            flash('error', $result['error']);
             redirect('/profile/' . auth()->username);
         }
 
-        $name = sanitize($_POST['name'] ?? '');
-        $categoryIds = $_POST['category_ids'] ?? [];
-        $description = sanitize($_POST['description'] ?? '');
-        $website = sanitize($_POST['website'] ?? '');
-        $country = sanitize($_POST['country'] ?? '');
-        $youtubeId = sanitize($_POST['youtube_id'] ?? '');
-
-        $errors = [];
-
-        if (strlen($name) < 3 || strlen($name) > 64) {
-            $errors[] = 'Server name must be between 3 and 64 characters';
-        }
-
-        if (empty($country)) {
-            $errors[] = 'Country is required';
-        }
-
-        if (empty($categoryIds) || !is_array($categoryIds)) {
-            $errors[] = 'At least one category must be selected';
-        } else {
-            $categoryIds = array_filter(array_map('intval', $categoryIds));
-            if (empty($categoryIds)) {
-                $errors[] = 'Invalid categories selected';
-            }
-        }
-
-        if (strlen($description) > 2560) {
-            $errors[] = 'Description is too long (max 2560 characters)';
-        }
-
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                flash('error', $error);
-            }
-            redirect("/edit-server/{$id}");
-        }
-
-        $updateData = [
-            'name' => $name,
-            'category_id' => $categoryIds[0],
-            'description' => $description,
-            'website' => $website,
-            'country' => $country,
-            'youtube_id' => $youtubeId
-        ];
-
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $image = uploadFile($_FILES['image'], 'banners');
-            if ($image) {
-                $updateData['image'] = $image;
-            }
-        }
-
-        if (isset($_FILES['icon']) && $_FILES['icon']['error'] === UPLOAD_ERR_OK) {
-            $icon = uploadFile($_FILES['icon'], 'icons');
-            if ($icon) {
-                $updateData['icon'] = $icon;
-            }
-        }
-
-        $customData = [];
-        if (!empty($_POST['votifier_public_key'])) {
-            $customData['votifier_public_key'] = $_POST['votifier_public_key'];
-            $customData['votifier_ip'] = $_POST['votifier_ip'] ?? $server->address;
-            $customData['votifier_port'] = (int) ($_POST['votifier_port'] ?? 8192);
-        }
-
-        if (!empty($customData)) {
-            $updateData['custom_data'] = json_encode($customData);
-        }
-
-        Database::update('servers', $updateData, 'id = ?', [$id]);
-        Server::setCategories($id, $categoryIds, $categoryIds[0]);
-
-        flash('success', lang('server_updated'));
-        redirect('/my-servers');
+        flash('success', $result['message']);
+        redirect('/profile/' . auth()->username);
     }
 
     public function action($id)
@@ -371,33 +197,18 @@ class ServerController
             redirect('/login');
         }
 
-        $server = Server::find($id);
-        if (!$server || (!Server::isEffectiveOwner($server, auth()->id) && !isAdmin())) {
-            flash('error', lang('server_not_found_access_denied'));
-            redirect('/my-servers');
+        $action = $_POST['action'] ?? '';
+        $result = Servers::performAction($id, auth()->id, $action);
+
+        if (!$result['success']) {
+            flash('error', $result['error']);
+            redirect('/profile/' . auth()->username);
         }
 
-        $action = $_POST['action'] ?? '';
+        flash('success', $result['message']);
 
-        switch ($action) {
-            case 'make_public':
-                Server::setPrivate($id, 0);
-                flash('success', lang('server_now_public'));
-                break;
-
-            case 'make_private':
-                Server::setPrivate($id, 1);
-                flash('success', lang('server_now_private'));
-                break;
-
-            case 'delete':
-                Server::delete($id);
-                flash('success', lang('server_deleted'));
-                redirect('/profile/' . auth()->username);
-                return;
-
-            default:
-                flash('error', lang('invalid_action'));
+        if ($result['redirect'] === 'profile') {
+            redirect('/profile/' . auth()->username);
         }
 
         redirect('/edit-server/' . $id);
