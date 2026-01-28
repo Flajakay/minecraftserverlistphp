@@ -19,7 +19,7 @@ A modern PHP-based Minecraft server listing platform built with Bootstrap 5 and 
 ## Requirements
 
 - PHP 8.0 or higher (+ GD, sockets, curl, pdo_mysql)
-- MySQL 5.7+
+- MySQL 8.0+
 
 ## Installation
 
