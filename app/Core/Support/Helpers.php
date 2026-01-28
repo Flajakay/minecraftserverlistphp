@@ -202,6 +202,17 @@ function uploadFile($file, $directory, $resize = null)
     return false;
 }
 
+
+function validatePort($port, $default = 25565)
+{
+    $port = (int) $port;
+    if ($port < 1 || $port > 65535) {
+        return $default;
+    }
+    return $port;
+}
+
+
 function resizeImage($source, $destination, $width, $height)
 {
     $imageInfo = getimagesize($source);

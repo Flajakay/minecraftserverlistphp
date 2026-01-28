@@ -111,7 +111,7 @@ class ServerController
 
         $data = [
             'address' => sanitize($_POST['address'] ?? ''),
-            'port' => (int) ($_POST['port'] ?? 25565),
+            'port' => validatePort($_POST['port'] ?? 25565),
             'name' => sanitize($_POST['name'] ?? ''),
             'category_ids' => $_POST['category_ids'] ?? [],
             'primary_category_id' => (int) ($_POST['primary_category_id'] ?? 0),
@@ -119,9 +119,9 @@ class ServerController
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
-            'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
-            'votifier_ip' => $_POST['votifier_ip'] ?? '',
-            'votifier_port' => $_POST['votifier_port'] ?? ''
+            'votifier_public_key' => sanitize($_POST['votifier_public_key'] ?? ''),
+            'votifier_ip' => sanitize($_POST['votifier_ip'] ?? ''),
+            'votifier_port' => validatePort($_POST['votifier_port'] ?? 8192)
         ];
 
         $result = Servers::submitServer(auth()->id, $data, $_FILES);
@@ -171,9 +171,9 @@ class ServerController
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
-            'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
-            'votifier_ip' => $_POST['votifier_ip'] ?? '',
-            'votifier_port' => $_POST['votifier_port'] ?? ''
+            'votifier_public_key' => sanitize($_POST['votifier_public_key'] ?? ''),
+            'votifier_ip' => sanitize($_POST['votifier_ip'] ?? ''),
+            'votifier_port' => validatePort($_POST['votifier_port'] ?? 8192)
         ];
 
         $result = Servers::updateServer($id, auth()->id, $data, $_FILES);
