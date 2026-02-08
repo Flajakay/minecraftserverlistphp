@@ -61,12 +61,47 @@ class Auth
 
     public static function attemptLogin($username, $password, $ip = null, $remember = false): array
     {
-        // Use LoginSecurity's IP detection if not provided explicitly
-        if ($ip === null) {
-            $rateLimit = RateLimit::getInstance();
-            $ip = $rateLimit->getClientIp();
+        $ip = $ip ?? RateLimit::getInstance()->getClientIp();
+
+        // Validate input
+        $validationError = self::validateLoginInput($username, $password);
+        if ($validationError) {
+            return $validationError;
         }
 
+        // Check lockouts
+        $lockoutError = self::checkLockouts($username, $ip);
+        if ($lockoutError) {
+            return $lockoutError;
+        }
+
+        // Attempt authentication
+        $user = self::attempt($username, $password, $ip);
+        if (!$user) {
+            return self::handleFailedLogin($username, $ip);
+        }
+
+        // Check account status
+        if (!$user->active) {
+            return [
+                'success' => false,
+                'error' => 'account_inactive',
+                'message' => lang('account_not_active')
+            ];
+        }
+
+        // Successful login
+        self::login($user, $remember);
+        
+        return [
+            'success' => true,
+            'user' => $user,
+            'message' => lang('welcome_back')
+        ];
+    }
+
+    private static function validateLoginInput($username, $password): ?array
+    {
         if (empty($username) || empty($password)) {
             return [
                 'success' => false,
@@ -74,7 +109,12 @@ class Auth
                 'message' => lang('please_fill_all_fields')
             ];
         }
+        
+        return null;
+    }
 
+    private static function checkLockouts($username, $ip): ?array
+    {
         if (LoginSecurity::isLockedOut($username, 'username')) {
             $remaining = LoginSecurity::getLockoutTimeRemaining($username, 'username');
             $minutes = ceil($remaining / 60);
@@ -97,42 +137,25 @@ class Auth
             ];
         }
 
-        $user = self::attempt($username, $password, $ip);
+        return null;
+    }
+
+    private static function handleFailedLogin($username, $ip): array
+    {
+        LoginSecurity::recordFailedAttempt($username, 'username', $ip);
+        LoginSecurity::recordFailedAttempt($ip, 'ip', $ip);
         
-        if (!$user) {
-            LoginSecurity::recordFailedAttempt($username, 'username', $ip);
-            LoginSecurity::recordFailedAttempt($ip, 'ip', $ip);
-            
-            $remaining = LoginSecurity::getRemainingAttempts($username, 'username');
-            
-            if ($remaining > 0) {
-                $message = sprintf(lang('invalid_credentials_attempts'), $remaining);
-            } else {
-                $message = lang('invalid_credentials_locked');
-            }
-            
-            return [
-                'success' => false,
-                'error' => 'invalid_credentials',
-                'message' => $message,
-                'remaining' => $remaining
-            ];
-        }
-
-        if (!$user->active) {
-            return [
-                'success' => false,
-                'error' => 'account_inactive',
-                'message' => lang('account_not_active')
-            ];
-        }
-
-        self::login($user, $remember);
+        $remaining = LoginSecurity::getRemainingAttempts($username, 'username');
+        
+        $message = $remaining > 0 
+            ? sprintf(lang('invalid_credentials_attempts'), $remaining)
+            : lang('invalid_credentials_locked');
         
         return [
-            'success' => true,
-            'user' => $user,
-            'message' => lang('welcome_back')
+            'success' => false,
+            'error' => 'invalid_credentials',
+            'message' => $message,
+            'remaining' => $remaining
         ];
     }
 

@@ -186,7 +186,7 @@ class RateLimit
         return implode('|', $parts);
     }
 
-    private function getClientIp()
+    public function getClientIp()
     {
         $headers = [
             'HTTP_X_FORWARDED_FOR',
