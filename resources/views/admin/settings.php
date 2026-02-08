@@ -236,75 +236,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="row g-4 mt-4">
-            <!-- Danger Zone -->
-            <div class="col-lg-6">
-                <div class="card border-danger shadow-sm h-100">
-                    <div class="card-header bg-danger text-white py-3">
-                        <h5 class="fw-semibold mb-0">
-                            <i class="bi bi-exclamation-triangle me-2"></i><?= lang('danger_zone') ?>
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="text-danger fw-semibold"><?= lang('reset_votes') ?></h6>
-                        <p class="text-muted mb-3"><?= lang('reset_votes_warning') ?></p>
-                        <button type="button" 
-                                class="btn btn-outline-danger"
-                                onclick="if(confirm('<?= lang('confirm_reset_votes') ?>')) { 
-                                    fetch('<?= url('/admin/reset-votes') ?>', {
-                                        method: 'POST',
-                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                                        body: 'csrf_token=<?= csrf() ?>'
-                                    }).then(() => location.reload());
-                                }">
-                            <i class="bi bi-arrow-clockwise me-2"></i><?= lang('reset_votes') ?>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-transparent border-0 py-3">
-                        <h5 class="fw-semibold mb-0">
-                            <i class="bi bi-lightning text-primary me-2"></i><?= lang('quick_links') ?>
-                        </h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="list-group list-group-flush">
-                            <a href="<?= url('/admin/users') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-people text-primary me-3"></i>
-                                <span class="fw-semibold"><?= lang('users_management') ?></span>
-                            </a>
-                            <a href="<?= url('/admin/servers') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-server text-success me-3"></i>
-                                <span class="fw-semibold"><?= lang('servers_management') ?></span>
-                            </a>
-                            <a href="<?= url('/admin/categories') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-tags text-warning me-3"></i>
-                                <span class="fw-semibold"><?= lang('categories_management') ?></span>
-                            </a>
-                            <a href="<?= url('/admin/reports') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-flag text-danger me-3"></i>
-                                <span class="fw-semibold"><?= lang('reports_management') ?></span>
-                            </a>
-                            <a href="<?= url('/admin/blog-posts') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-journal-text text-info me-3"></i>
-                                <span class="fw-semibold"><?= lang('blog_posts_management') ?></span>
-                            </a>
-                            <a href="<?= url('/admin/audit') ?>" class="list-group-item list-group-item-action border-0 py-3">
-                                <i class="bi bi-clock-history text-secondary me-3"></i>
-                                <span class="fw-semibold"><?= lang('audit_logs') ?></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PayPal Settings -->
+<!-- PayPal Settings -->
         <div class="card border-0 shadow-sm mt-4">
             <div class="card-header bg-transparent border-0 py-3">
                 <h5 class="fw-semibold mb-1">
@@ -451,6 +383,75 @@
                 </div>
             </div>
         </div>
+
+        <div class="row g-4 mt-4">
+            <!-- Danger Zone -->
+            <div class="col-lg-6">
+                <div class="card border-danger shadow-sm h-100">
+                    <div class="card-header bg-danger text-white py-3">
+                        <h5 class="fw-semibold mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i><?= lang('danger_zone') ?>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="text-danger fw-semibold"><?= lang('reset_votes') ?></h6>
+                        <p class="text-muted mb-3"><?= lang('reset_votes_warning') ?></p>
+                        <button type="button" 
+                                class="btn btn-outline-danger"
+                                onclick="if(confirm('<?= lang('confirm_reset_votes') ?>')) { 
+                                    fetch('<?= url('/admin/reset-votes') ?>', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                        body: 'csrf_token=<?= csrf() ?>'
+                                    }).then(() => location.reload());
+                                }">
+                            <i class="bi bi-arrow-clockwise me-2"></i><?= lang('reset_votes') ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="fw-semibold mb-0">
+                            <i class="bi bi-lightning text-primary me-2"></i><?= lang('quick_links') ?>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="<?= url('/admin/users') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-people text-primary me-3"></i>
+                                <span class="fw-semibold"><?= lang('users_management') ?></span>
+                            </a>
+                            <a href="<?= url('/admin/servers') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-server text-success me-3"></i>
+                                <span class="fw-semibold"><?= lang('servers_management') ?></span>
+                            </a>
+                            <a href="<?= url('/admin/categories') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-tags text-warning me-3"></i>
+                                <span class="fw-semibold"><?= lang('categories_management') ?></span>
+                            </a>
+                            <a href="<?= url('/admin/reports') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-flag text-danger me-3"></i>
+                                <span class="fw-semibold"><?= lang('reports_management') ?></span>
+                            </a>
+                            <a href="<?= url('/admin/blog-posts') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-journal-text text-info me-3"></i>
+                                <span class="fw-semibold"><?= lang('blog_posts_management') ?></span>
+                            </a>
+                            <a href="<?= url('/admin/audit') ?>" class="list-group-item list-group-item-action border-0 py-3">
+                                <i class="bi bi-clock-history text-secondary me-3"></i>
+                                <span class="fw-semibold"><?= lang('audit_logs') ?></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
 
         <!-- Save Button -->
         <div class="text-center mt-4 pt-3 border-top">

@@ -2,12 +2,12 @@
 
 return [
     'name' => 'Minecraft Server List',
-    'url' => 'https://minecraftserverlistphp/',
+    'url' => 'http://minecraft.local/',
     'timezone' => 'America/New_York',
     'db' => [
-        'host' => 'MYSQL-8.0',
-        'username' => 'root',
-        'password' => '',
+        'host' => 'localhost',
+        'username' => 'admin',
+        'password' => 'admin',
         'database' => 'serverlist'
     ]
 ];
