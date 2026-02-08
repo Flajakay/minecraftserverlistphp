@@ -6,7 +6,7 @@ use App\Core\Features\Users;
 
 class UserController
 {
-    public function show($username)
+    public function show($username): void
     {
         $viewerId = isLoggedIn() ? auth()->id : null;
         $result = Users::getProfilePageData($username, $viewerId);
@@ -22,7 +22,7 @@ class UserController
         ]);
     }
 
-    public function editProfile()
+    public function editProfile(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -31,7 +31,7 @@ class UserController
         view('users.edit-profile', ['user' => auth()]);
     }
 
-    public function updateProfile()
+    public function updateProfile(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -68,7 +68,7 @@ class UserController
         redirect('/settings/profile');
     }
 
-    public function changePassword()
+    public function changePassword(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -77,7 +77,7 @@ class UserController
         view('users.change-password');
     }
 
-    public function updatePassword()
+    public function updatePassword(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');

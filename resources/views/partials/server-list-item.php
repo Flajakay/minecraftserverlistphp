@@ -1,6 +1,7 @@
 <div class="d-flex align-items-center">
     <div class="flex-shrink-0 me-3">
-        <?php if ($server->image): ?>
+        <?php /** @noinspection PhpUndefinedVariableInspection */
+        if ($server->image): ?>
             <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
                  class="rounded shadow-sm" 
                  width="48" 

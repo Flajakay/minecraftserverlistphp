@@ -29,7 +29,7 @@ class LoginAttempt
         return Database::delete('login_attempts', 'identifier = ? AND identifier_type = ?', [$identifier, $type]);
     }
 
-    public static function cleanup()
+    public static function cleanup(): void
     {
         $cutoff = date('Y-m-d H:i:s', strtotime('-10 minutes'));
         Database::query('DELETE FROM login_attempts WHERE last_attempt < ? AND lockout_until IS NULL', [$cutoff]);

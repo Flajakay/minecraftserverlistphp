@@ -10,12 +10,12 @@ namespace App\Core\Support;
  */
 class Language
 {
-    private static $currentLanguage = 'english';
-    private static $defaultLanguage = 'english';
-    private static $availableLanguages = [];
-    private static $translations = [];
+    private static string $currentLanguage = 'english';
+    private static string $defaultLanguage = 'english';
+    private static array $availableLanguages = [];
+    private static array $translations = [];
     private static $languagesPath;
-    private static $initialized = false;
+    private static bool $initialized = false;
 
     public static function initialize(): void
     {
@@ -126,4 +126,3 @@ class Language
     }
 }
 
-?>

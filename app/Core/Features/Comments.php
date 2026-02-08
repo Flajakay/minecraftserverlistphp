@@ -8,7 +8,7 @@ use App\Models\User;
 
 class Comments
 {
-    public static function validateComment($comment)
+    public static function validateComment($comment): array
     {
         $errors = [];
 
@@ -23,7 +23,7 @@ class Comments
         return $errors;
     }
 
-    public static function canDeleteComment($user, $comment, $server)
+    public static function canDeleteComment($user, $comment, $server): bool
     {
         if (!$user || !$comment) {
             return false;
@@ -43,7 +43,7 @@ class Comments
         return $user->type >= 1;
     }
 
-    public static function createComment($serverId, $userId, $comment, $type = 0)
+    public static function createComment($serverId, $userId, $comment, $type = 0): array
     {
         $errors = self::validateComment($comment);
         if (!empty($errors)) {
@@ -76,7 +76,7 @@ class Comments
         ];
     }
 
-    public static function deleteComment($commentId, $userId)
+    public static function deleteComment($commentId, $userId): array
     {
         $comment = Comment::find($commentId);
         if (!$comment) {

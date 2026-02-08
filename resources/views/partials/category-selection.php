@@ -12,7 +12,7 @@
 </div>
 
 <script>
-    window.categoryCloudData = <?= json_encode($categories) ?>;
+    window.categoryCloudData = <?= /** @noinspection PhpUndefinedVariableInspection */json_encode($categories) ?>;
     window.selectedCategoryIds = <?= json_encode(isset($server_categories) ? array_column($server_categories, 'category_id') : []) ?>;
 </script>
 

@@ -17,7 +17,7 @@ class AsyncBatchPinger
      *
      * @param array $servers Objects with at least: id, address, port
      */
-    public function pingBatch(array $servers, int $timeout = 2, int $concurrency = 10)
+    public function pingBatch(array $servers, int $timeout = 2, int $concurrency = 10): array
     {
         $results = [];
         $sockets = [];
@@ -138,7 +138,7 @@ class AsyncBatchPinger
         return $results;
     }
 
-    private function getOfflineResult()
+    private function getOfflineResult(): array
     {
         return [
             'online' => false,
@@ -148,7 +148,7 @@ class AsyncBatchPinger
         ];
     }
 
-    private function formatResult($result)
+    private function formatResult($result): array
     {
         return [
             'online' => true,

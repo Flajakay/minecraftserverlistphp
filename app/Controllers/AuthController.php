@@ -14,7 +14,7 @@ class AuthController
     /**
      * Render the login page.
      */
-    public function showLogin()
+    public function showLogin(): void
     {
         if (isLoggedIn()) {
             redirect('/');
@@ -28,14 +28,13 @@ class AuthController
      *
      * Enforces lockout both by username and by IP to reduce brute-force attempts.
      */
-    public function login()
+    public function login(): void
     {
         $username = sanitize($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']);
-        $ip = $_SERVER['REMOTE_ADDR'];
 
-        $result = Auth::attemptLogin($username, $password, $ip, $remember);
+        $result = Auth::attemptLogin($username, $password, null, $remember);
 
         if (!$result['success']) {
             flash('error', $result['message']);
@@ -49,7 +48,7 @@ class AuthController
     /**
      * Render the registration page.
      */
-    public function showRegister()
+    public function showRegister(): void
     {
         if (isLoggedIn()) {
             redirect('/');
@@ -63,15 +62,14 @@ class AuthController
      *
      * Depending on settings, the user is either activated immediately or must confirm via email.
      */
-    public function register()
+    public function register(): void
     {
         $username = sanitize($_POST['username'] ?? '');
         $email = sanitize($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $name = sanitize($_POST['name'] ?? '');
-        $ip = $_SERVER['REMOTE_ADDR'];
 
-        $result = Auth::register($username, $email, $password, $name, $ip);
+        $result = Auth::register($username, $email, $password, $name);
 
         if (!$result['success']) {
             foreach ($result['errors'] as $error) {
@@ -94,7 +92,7 @@ class AuthController
     /**
      * Logout the current user and clear session/cookies.
      */
-    public function logout()
+    public function logout(): void
     {
         Auth::logout();
         flash('success', lang('loggedout'));
@@ -104,7 +102,7 @@ class AuthController
     /**
      * Activate a user account using an emailed activation link.
      */
-    public function activate($email, $code)
+    public function activate($email, $code): void
     {
         $email = urldecode($email);
 
@@ -120,7 +118,7 @@ class AuthController
     /**
      * Render the "lost password" page.
      */
-    public function showLostPassword()
+    public function showLostPassword(): void
     {
         view('auth.lost-password');
     }
@@ -128,7 +126,7 @@ class AuthController
     /**
      * Email a password reset link.
      */
-    public function sendResetLink()
+    public function sendResetLink(): void
     {
         $email = sanitize($_POST['email'] ?? '');
         
@@ -146,7 +144,7 @@ class AuthController
     /**
      * Render and handle the reset password form.
      */
-    public function resetPassword($email, $code)
+    public function resetPassword($email, $code): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = $_POST['password'] ?? '';

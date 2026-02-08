@@ -2,6 +2,10 @@
 
 namespace App\Core\Integrations;
 
+use Exception;
+use PaypalServerSdkLib\Controllers\OrdersController;
+use PaypalServerSdkLib\Http\ApiResponse;
+use PaypalServerSdkLib\PaypalServerSdkClient;
 use PaypalServerSdkLib\PaypalServerSdkClientBuilder;
 use PaypalServerSdkLib\Authentication\ClientCredentialsAuthCredentialsBuilder;
 use PaypalServerSdkLib\Environment;
@@ -18,8 +22,8 @@ use App\Models\Setting;
  */
 class PayPalService
 {
-    private $client;
-    private $ordersController;
+    private PaypalServerSdkClient $client;
+    private OrdersController $ordersController;
 
     public function __construct()
     {
@@ -27,14 +31,14 @@ class PayPalService
         $this->ordersController = $this->client->getOrdersController();
     }
 
-    private function getClient()
+    private function getClient(): PaypalServerSdkClient
     {
         $clientId = Setting::getValue('paypal_client_id');
         $clientSecret = Setting::getValue('paypal_client_secret');
         $isSandbox = Setting::getValue('paypal_sandbox', 1);
 
         if (!$clientId || !$clientSecret) {
-            throw new \Exception('PayPal client credentials not configured');
+            throw new Exception('PayPal client credentials not configured');
         }
 
         $environment = $isSandbox ? Environment::SANDBOX : Environment::PRODUCTION;
@@ -49,7 +53,7 @@ class PayPalService
             ->build();
     }
 
-    public function createOrder($amount, $currency, $description)
+    public function createOrder($amount, $currency, $description): ApiResponse
     {
         $orderRequest = OrderRequestBuilder::init(
             CheckoutPaymentIntent::CAPTURE,
@@ -65,32 +69,30 @@ class PayPalService
             ]
         )->build();
         try {
-            $response = $this->ordersController->createOrder([
+            return $this->ordersController->createOrder([
                 'body' => $orderRequest,
                 'prefer' => 'return=representation'
             ]);
-            return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('PayPal order creation failed: ' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function capturePayment($orderId)
+    public function capturePayment($orderId): ApiResponse
     {
         try {
-            $response = $this->ordersController->captureOrder([
+            return $this->ordersController->captureOrder([
                 'id' => $orderId,
                 'prefer' => 'return=representation'
             ]);
-            return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('PayPal payment capture failed: ' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function validateConfiguration()
+    public function validateConfiguration(): bool
     {
         $clientId = Setting::getValue('paypal_client_id');
         $clientSecret = Setting::getValue('paypal_client_secret');
@@ -99,13 +101,13 @@ class PayPalService
         return !empty($clientId) && !empty($clientSecret) && !empty($email);
     }
 
-    public function calculateAmount($days)
+    public function calculateAmount($days): float|int
     {
         $costPerDay = Setting::getValue('per_day_cost', 0.00);
         return $days * $costPerDay;
     }
 
-    public function validateDays($days)
+    public function validateDays($days): bool
     {
         $minDays = Setting::getValue('minimum_days', 1);
         $maxDays = Setting::getValue('maximum_days', 30);

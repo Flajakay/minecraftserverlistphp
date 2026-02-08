@@ -11,8 +11,8 @@ class MinecraftPing
 {
     private $socket;
     private $address;
-    private $port;
-    private $timeout;
+    private int $port;
+    private int $timeout;
 
     public function __construct($address, $port = 25565, $timeout = 2)
     {
@@ -56,7 +56,7 @@ class MinecraftPing
         return $response ?: false;
     }
 
-    private function connect()
+    private function connect(): bool
     {
         // Suppress warnings; the caller treats any failure as "offline".
         $this->socket = @fsockopen($this->address, $this->port, $errno, $errstr, $this->timeout);
@@ -70,7 +70,7 @@ class MinecraftPing
         return true;
     }
 
-    private function close()
+    private function close(): void
     {
         if ($this->socket) {
             fclose($this->socket);
@@ -84,7 +84,7 @@ class MinecraftPing
      * Minecraft uses VarInt encoding (7 bits per byte + continuation bit). Returns 0 on
      * read/protocol failure.
      */
-    public static function readVarInt($socket)
+    public static function readVarInt($socket): int
     {
         $i = 0;  // Accumulated value
         $j = 0;  // Bit position counter
@@ -114,19 +114,19 @@ class MinecraftPing
     /**
      * Build the handshake packet for a status request.
      */
-    public static function buildHandshakePacket($address, $port)
+    public static function buildHandshakePacket($address, $port): string
     {
         $data = "\x00";  // Packet ID for handshake
         $data .= "\x04";  // Protocol version 4
         $data .= pack('c', strlen($address)) . $address;  // Server address with length prefix
         $data .= pack('n', $port);  // Port number (big-endian)
         $data .= "\x01";  // Next state = status
-        $data = pack('c', strlen($data)) . $data;  // Prepend packet length
+        // Prepend packet length
 
-        return $data;
+        return pack('c', strlen($data)) . $data;
     }
 
-    public static function checkServer($address, $port)
+    public static function checkServer($address, $port): array
     {
         $ping = new self($address, $port);
         $result = $ping->query();

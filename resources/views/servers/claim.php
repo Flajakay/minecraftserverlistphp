@@ -10,14 +10,17 @@
                 </div>
                 <h2 class="h3 fw-bold text-dark"><?= lang('server_claim_title') ?></h2>
                 <p class="text-muted mb-0">
-                    <?= htmlspecialchars($server->name) ?>
+                    <?= /** @noinspection PhpUndefinedVariableInspection */
+                    htmlspecialchars($server->name) ?>
                     <span class="ms-2">(<?= $server->address ?><?= $server->port != 25565 ? ':' . $server->port : '' ?>)</span>
                 </p>
             </div>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <?php if ($is_pending && $is_requestor): ?>
+                    <?php /** @noinspection PhpUndefinedVariableInspection */
+                    /** @noinspection PhpUndefinedVariableInspection */
+                    if ($is_pending && $is_requestor): ?>
                         <div class="alert alert-info border-0">
                             <div class="fw-semibold mb-2"><?= lang('server_claim_instructions_title') ?></div>
                             <div class="mb-3"><?= lang('server_claim_instructions_body') ?></div>

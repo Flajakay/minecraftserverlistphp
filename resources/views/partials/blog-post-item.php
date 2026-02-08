@@ -1,4 +1,5 @@
-<div class="blog-post-item mb-4" data-blog-id="<?= $blogPost->id ?>">
+<div class="blog-post-item mb-4" data-blog-id="<?= /** @noinspection PhpUndefinedVariableInspection */
+$blogPost->id ?>">
     <div class="d-flex justify-content-between align-items-start mb-2">
         <h5 class="mb-1 fw-semibold"><?= htmlspecialchars($blogPost->title) ?></h5>
         <div class="d-flex align-items-center gap-2">

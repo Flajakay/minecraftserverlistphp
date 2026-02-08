@@ -15,7 +15,7 @@ use App\Core\Support\SEO;
 class HomeController
 {
 
-    public function index()
+    public function index(): void
     {
         SEO::configureHomePage();
         

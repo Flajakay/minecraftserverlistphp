@@ -1,4 +1,5 @@
-<div class="card h-100 border-0 shadow-sm server-card <?= $server->highlight ? 'border-warning border-2' : '' ?>">
+<div class="card h-100 border-0 shadow-sm server-card <?= /** @noinspection PhpUndefinedVariableInspection */
+$server->highlight ? 'border-warning border-2' : '' ?>">
     <?php if ($server->highlight): ?>
         <div class="card-header bg-warning text-dark py-2 border-0">
             <div class="d-flex align-items-center justify-content-center">

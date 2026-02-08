@@ -9,7 +9,7 @@ use App\Core\Security\Auth;
 
 class Users
 {
-    public static function canViewProfile($viewer, $profileUser)
+    public static function canViewProfile($viewer, $profileUser): array
     {
         if (!$profileUser) {
             return ['allowed' => false, 'error' => lang('user_not_found')];
@@ -25,7 +25,7 @@ class Users
         return ['allowed' => true];
     }
 
-    public static function validateProfileData($data, $currentUser)
+    public static function validateProfileData($data, $currentUser): array
     {
         $errors = [];
 
@@ -49,7 +49,7 @@ class Users
         return $errors;
     }
 
-    public static function validatePasswordChange($oldPassword, $newPassword, $confirmPassword, $user)
+    public static function validatePasswordChange($oldPassword, $newPassword, $confirmPassword, $user): array
     {
         if (!Auth::attempt($user->username, $oldPassword)) {
             return ['success' => false, 'error' => lang('incorrect_old_password')];
@@ -66,7 +66,7 @@ class Users
         return ['success' => true];
     }
 
-    public static function processProfileUploads($files, $currentUser)
+    public static function processProfileUploads($files, $currentUser): array
     {
         $result = ['data' => [], 'error' => null];
 
@@ -101,7 +101,7 @@ class Users
         return $result;
     }
 
-    public static function updateProfile($userId, $data, $files)
+    public static function updateProfile($userId, $data, $files): array
     {
         $user = User::find($userId);
         if (!$user) {
@@ -144,7 +144,7 @@ class Users
         return ['success' => true, 'message' => null];
     }
 
-    public static function changePassword($userId, $oldPassword, $newPassword, $confirmPassword)
+    public static function changePassword($userId, $oldPassword, $newPassword, $confirmPassword): array
     {
         $user = User::find($userId);
         if (!$user) {
@@ -161,7 +161,7 @@ class Users
         return ['success' => true, 'message' => lang('password_updated')];
     }
 
-    public static function getProfilePageData($username, $viewerId = null)
+    public static function getProfilePageData($username, $viewerId = null): array
     {
         $profileUser = User::findByUsername($username);
         $viewer = $viewerId ? User::find($viewerId) : null;
@@ -188,7 +188,7 @@ class Users
         ];
     }
 
-    public static function updateAdmin($targetUserId, $adminId, $data)
+    public static function updateAdmin($targetUserId, $adminId, $data): array
     {
         $user = User::find($targetUserId);
         if (!$user) {
@@ -234,7 +234,7 @@ class Users
         ];
     }
 
-    public static function performAdminAction($targetUserId, $adminId, $action)
+    public static function performAdminAction($targetUserId, $adminId, $action): array
     {
         $user = User::find($targetUserId);
         

@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\System\MigrationRunner;
 use App\Models\AuditLog;
+use Throwable;
 
 /**
  * Admin migrations controller.
@@ -15,7 +16,7 @@ class MigrationController
     /**
      * Show migration status (applied vs pending).
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));
@@ -33,7 +34,7 @@ class MigrationController
     /**
      * Run all pending migrations.
      */
-    public function runAll()
+    public function runAll(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));
@@ -55,7 +56,7 @@ class MigrationController
                 $currentUser = auth();
                 $details = json_encode($result);
                 AuditLog::log('migrations_run', 'schema_migrations', 0, $currentUser->id, $details ?: '');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
             }
         }
 
@@ -65,7 +66,7 @@ class MigrationController
     /**
      * Run only the selected migrations.
      */
-    public function runSelected()
+    public function runSelected(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));
@@ -91,7 +92,7 @@ class MigrationController
                 $currentUser = auth();
                 $details = json_encode($result);
                 AuditLog::log('migrations_run_selected', 'schema_migrations', 0, $currentUser->id, $details ?: '');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
             }
         }
 

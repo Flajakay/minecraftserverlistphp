@@ -8,11 +8,15 @@ ob_start();
 <p><?= lang('contact_form_received') ?></p>
 
 <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-    <p><strong><?= lang('name') ?>:</strong> <?= htmlspecialchars($name) ?></p>
-    <p><strong><?= lang('email') ?>:</strong> <?= htmlspecialchars($email) ?></p>
-    <p><strong><?= lang('subject') ?>:</strong> <?= htmlspecialchars($messageSubject) ?></p>
+    <p><strong><?= lang('name') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
+        htmlspecialchars($name) ?></p>
+    <p><strong><?= lang('email') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
+        htmlspecialchars($email) ?></p>
+    <p><strong><?= lang('subject') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
+        htmlspecialchars($messageSubject) ?></p>
     <p><strong><?= lang('message') ?>:</strong></p>
-    <p><?= nl2br(htmlspecialchars($message)) ?></p>
+    <p><?= /** @noinspection PhpUndefinedVariableInspection */
+        nl2br(htmlspecialchars($message)) ?></p>
 </div>
 
 <p><?= lang('contact_form_reply') ?></p>

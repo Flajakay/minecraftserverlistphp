@@ -5,7 +5,8 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <?php if ($user->avatar): ?>
+                    <?php /** @noinspection PhpUndefinedVariableInspection */
+                    if ($user->avatar): ?>
                         <img src="<?= url('public/uploads/avatars/' . $user->avatar) ?>" 
                              class="rounded-circle mb-3" 
                              width="120" height="120" 
@@ -56,7 +57,8 @@
                     
                     <div class="row">
                         <div class="col-6 text-muted"><?= lang('total_servers') ?>:</div>
-                        <div class="col-6"><?= count($servers) ?></div>
+                        <div class="col-6"><?= /** @noinspection PhpUndefinedVariableInspection */
+                            count($servers) ?></div>
                     </div>
                 </div>
             </div>

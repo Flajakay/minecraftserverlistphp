@@ -5,7 +5,8 @@
         <div class="col-lg-8">
             <!-- Hero Banner Section -->
             <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-                <?php if ($server->image): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($server->image): ?>
                     <div class="position-relative">
                         <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
                              class="card-img-top" 
@@ -117,7 +118,8 @@
                                     data-bs-target="#comments" 
                                     type="button" 
                                     role="tab">
-                                <i class="bi bi-chat-dots me-1"></i><?= lang('comments') ?> (<?= count($comments) ?>)
+                                <i class="bi bi-chat-dots me-1"></i><?= lang('comments') ?> (<?= /** @noinspection PhpUndefinedVariableInspection */
+                                count($comments) ?>)
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -127,7 +129,8 @@
                                     data-bs-target="#blog" 
                                     type="button" 
                                     role="tab">
-                                <i class="bi bi-journal-text me-1"></i><?= lang('blog') ?> (<?= $blog_posts_count ?>)
+                                <i class="bi bi-journal-text me-1"></i><?= lang('blog') ?> (<?= /** @noinspection PhpUndefinedVariableInspection */
+                                $blog_posts_count ?>)
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -172,6 +175,7 @@
                                             <span>
                                                 <?php 
                                                 $displayLimit = 2;
+                                                /** @noinspection PhpUndefinedVariableInspection */
                                                 $totalCategories = count($categories);
                                                 $displayCategories = array_slice($categories, 0, $displayLimit);
                                                 $remainingCount = $totalCategories - $displayLimit;
@@ -266,7 +270,8 @@
                                             <span class="text-muted">
                                                 <i class="bi bi-eye me-2"></i><?= lang('monthly_views') ?>
                                             </span>
-                                            <span><?= number_format($monthly_hits) ?></span>
+                                            <span><?= /** @noinspection PhpUndefinedVariableInspection */
+                                                number_format($monthly_hits) ?></span>
                                         </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                             <span class="text-muted">
@@ -376,7 +381,8 @@
                         </div>
                         <!-- Blog Tab -->
                         <div class="tab-pane fade" id="blog" role="tabpanel">
-                            <?php if ($is_owner): ?>
+                            <?php /** @noinspection PhpUndefinedVariableInspection */
+                            if ($is_owner): ?>
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <div class="h6 fw-semibold text-dark mb-0">
                                         <i class="bi bi-journal-text text-primary me-2"></i><?= lang('blog') ?>
@@ -414,7 +420,8 @@
                                 <?php endif; ?>
                             </div>
                             
-                            <?php if (count($blog_posts) >= 5): ?>
+                            <?php /** @noinspection PhpUndefinedVariableInspection */
+                            if (count($blog_posts) >= 5): ?>
                                 <div class="text-center mt-4">
                                     <button id="loadMoreBlogPosts" 
                                             class="btn btn-outline-primary" 
@@ -492,7 +499,8 @@
                 </div>
                 <div class="card-body">
                     <?php if (isLoggedIn()): ?>
-                        <?php if ($can_vote): ?>
+                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                        if ($can_vote): ?>
                             <button type="button" 
                                     class="btn btn-success w-100 mb-3 py-2" 
                                     onclick="voteForServer(<?= $server->id ?>)">
@@ -631,7 +639,7 @@
 <script src="<?= asset('js/server-show.js') ?>"></script>
 
 <script>
-window.serverStatistics = <?= json_encode($statistics) ?>;
+window.serverStatistics = <?= /** @noinspection PhpUndefinedVariableInspection */json_encode($statistics) ?>;
 window.lang = {
     content_placeholder: '<?= lang('content_placeholder') ?>',
     blog_content_required: '<?= lang('blog_content_required') ?>',

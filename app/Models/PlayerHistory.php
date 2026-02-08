@@ -66,7 +66,7 @@ class PlayerHistory
         );
     }
 
-    public static function shouldRecord($serverId, $intervalMinutes = 15)
+    public static function shouldRecord($serverId, $intervalMinutes = 15): bool
     {
         $lastRecord = self::getLatestForServer($serverId);
 

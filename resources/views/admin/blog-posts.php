@@ -20,14 +20,17 @@
                            name="search" 
                            class="form-control" 
                            placeholder="<?= lang('search_posts_authors_servers') ?>"
-                           value="<?= htmlspecialchars($search) ?>">
+                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                           htmlspecialchars($search) ?>">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold"><?= lang('blog_post_server') ?></label>
                     <select name="server_id" class="form-select">
                         <option value=""><?= lang('all_servers') ?></option>
-                        <?php foreach ($servers as $server): ?>
-                            <option value="<?= $server->id ?>" <?= $filters['server_id'] == $server->id ? 'selected' : '' ?>>
+                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                        foreach ($servers as $server): ?>
+                            <option value="<?= $server->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */
+                            $filters['server_id'] == $server->id ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($server->name) ?>
                             </option>
                         <?php endforeach; ?>
@@ -37,8 +40,10 @@
                     <label class="form-label small fw-semibold"><?= lang('blog_post_author') ?></label>
                     <select name="user_id" class="form-select">
                         <option value=""><?= lang('all_authors') ?></option>
-                        <?php foreach ($users as $user): ?>
-                            <option value="<?= $user->id ?>" <?= $filters['user_id'] == $user->id ? 'selected' : '' ?>>
+                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                        foreach ($users as $user): ?>
+                            <option value="<?= $user->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */
+                            $filters['user_id'] == $user->id ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($user->username) ?>
                             </option>
                         <?php endforeach; ?>
@@ -115,15 +120,18 @@
                     </table>
                 </div>
 
-                <?php if ($total_pages > 1): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($total_pages > 1): ?>
                     <div class="card-footer bg-transparent border-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="small text-muted">
-                                <?= sprintf(lang('total_results'), $total_blog_posts) ?>
+                                <?= /** @noinspection PhpUndefinedVariableInspection */
+                                sprintf(lang('total_results'), $total_blog_posts) ?>
                             </div>
                             <nav>
                                 <ul class="pagination pagination-sm mb-0">
-                                    <?php if ($current_page > 1): ?>
+                                    <?php /** @noinspection PhpUndefinedVariableInspection */
+                                    if ($current_page > 1): ?>
                                         <li class="page-item">
                                             <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $current_page - 1])) ?>">
                                                 <i class="bi bi-chevron-left"></i>

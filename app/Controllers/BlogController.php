@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Security\Auth;
 use App\Core\Features\Blog;
+use App\Models\BlogPost;
 
 /**
  * Server blog posts controller.
@@ -20,7 +21,7 @@ class BlogController
      * - server owner (or admin/moderator) can post
      * - supports AJAX via `$_POST['ajax']`
      */
-    public function store()
+    public function store(): void
     {
         if (!isLoggedIn()) {
             if (isset($_POST['ajax'])) {
@@ -60,7 +61,7 @@ class BlogController
     /**
      * Render the blog post edit form.
      */
-    public function edit($id)
+    public function edit($id): void
     {
         if (!isLoggedIn()) {
             flash('error', lang('logged_in_action'));
@@ -84,7 +85,7 @@ class BlogController
     /**
      * Persist edits to an existing blog post.
      */
-    public function update($id)
+    public function update($id): void
     {
         if (!isLoggedIn()) {
             flash('error', lang('logged_in_action'));
@@ -112,7 +113,7 @@ class BlogController
      *
      * This endpoint is intended for AJAX usage and always returns JSON.
      */
-    public function delete()
+    public function delete(): void
     {
         if (!isLoggedIn()) {
             echo json_encode(['success' => false, 'message' => lang('logged_in_action')]);
@@ -132,7 +133,7 @@ class BlogController
      *
      * Returns rendered HTML for the next chunk plus pagination metadata.
      */
-    public function loadMore()
+    public function loadMore(): void
     {
         $serverId = (int)($_GET['server_id'] ?? 0);
         $offset = (int)($_GET['offset'] ?? 0);

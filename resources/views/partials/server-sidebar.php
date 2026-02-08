@@ -6,7 +6,8 @@
     </div>
     <div class="card-body">
         <div class="d-flex align-items-center mb-3">
-            <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-2">
+            <span class="badge bg-<?= /** @noinspection PhpUndefinedVariableInspection */
+            $server->status ? 'success' : 'danger' ?> me-2">
                 <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
                 <?= $server->status ? lang('active') : lang('inactive') ?>
             </span>

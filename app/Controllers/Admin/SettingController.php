@@ -14,7 +14,7 @@ class SettingController
     /**
      * Render settings form.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));
@@ -29,7 +29,7 @@ class SettingController
     /**
      * Persist settings changes.
      */
-    public function update()
+    public function update(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));
@@ -45,7 +45,7 @@ class SettingController
     /**
      * Reset votes for all servers.
      */
-    public function resetVotes()
+    public function resetVotes(): void
     {
         if (!isAdmin()) {
             flash('error', lang('access_denied'));

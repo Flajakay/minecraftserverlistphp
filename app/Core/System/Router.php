@@ -2,6 +2,8 @@
 
 namespace App\Core\System;
 
+use App\Core\Security\Csrf;
+
 /**
  * Minimal HTTP router.
  *
@@ -10,14 +12,14 @@ namespace App\Core\System;
  */
 class Router
 {
-    private $routes = [];
+    private array $routes = [];
 
-    public function get($uri, $action)
+    public function get($uri, $action): void
     {
         $this->routes['GET'][$uri] = $action;
     }
 
-    public function post($uri, $action)
+    public function post($uri, $action): void
     {
         $this->routes['POST'][$uri] = $action;
     }
@@ -28,7 +30,7 @@ class Router
 
         // Rate limiting (when enabled) should run before CSRF so abusive traffic is rejected early.
         
-        if (!\App\Core\Security\Csrf::check($method, $uri)) {
+        if (!Csrf::check($method, $uri)) {
             flash('error', 'Invalid security token');
             $referer = $_SERVER['HTTP_REFERER'] ?? '/';
             header('Location: ' . $referer);
@@ -44,7 +46,7 @@ class Router
         $this->notFound();
     }
 
-    private function match($route, $uri, &$params)
+    private function match($route, $uri, &$params): bool
     {
         $params = [];
         
@@ -78,7 +80,7 @@ class Router
         }
     }
 
-    private function notFound()
+    private function notFound(): void
     {
         http_response_code(404);
         view('errors.404');

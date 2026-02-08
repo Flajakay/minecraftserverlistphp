@@ -43,7 +43,8 @@
                                            name="search"
                                            class="form-control border-start-0 ps-0"
                                            placeholder="<?= lang('search_payments') ?>"
-                                           value="<?= htmlspecialchars($search) ?>">
+                                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                           htmlspecialchars($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -72,7 +73,8 @@
                         </h6>
                         <?php if (!empty($payments)): ?>
                             <small class="text-muted">
-                                <?= sprintf(lang('showing_payments'), count($payments), $totalPayments) ?>
+                                <?= /** @noinspection PhpUndefinedVariableInspection */
+                                sprintf(lang('showing_payments'), count($payments), $totalPayments) ?>
                             </small>
                         <?php endif; ?>
                     </div>

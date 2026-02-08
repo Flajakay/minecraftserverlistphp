@@ -12,7 +12,7 @@ class RobotsController
     /**
      * Output robots.txt.
      */
-    public function txt()
+    public function txt(): void
     {
         header('Content-Type: text/plain; charset=utf-8');
         

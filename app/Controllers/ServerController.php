@@ -14,7 +14,7 @@ use App\Core\Features\Servers;
 
 class ServerController
 {
-    public function index($page = 1)
+    public function index($page = 1): void
     {
         SEO::setDescription(lang('seo.servers_description'));
         SEO::setKeywords(lang('seo.keywords_default'));
@@ -44,7 +44,7 @@ class ServerController
         ]);
     }
 
-    public function show($address, $port)
+    public function show($address, $port): void
     {
         $server = Server::findByAddress($address, $port);
         $effectiveOwnerId = Server::getEffectiveOwnerUserId($server);
@@ -87,7 +87,7 @@ class ServerController
         ]);
     }
 
-    public function showSubmit()
+    public function showSubmit(): void
     {
         if (!isLoggedIn()) {
             flash('error', lang('login_required_submit'));
@@ -103,7 +103,7 @@ class ServerController
         ]);
     }
 
-    public function submit()
+    public function submit(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -137,7 +137,7 @@ class ServerController
         redirect('/profile/' . auth()->username);
     }
 
-    public function edit($id)
+    public function edit($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -158,7 +158,7 @@ class ServerController
         ]);
     }
 
-    public function update($id)
+    public function update($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -193,7 +193,7 @@ class ServerController
         redirect('/profile/' . auth()->username);
     }
 
-    public function action($id)
+    public function action($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');

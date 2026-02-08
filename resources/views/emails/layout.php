@@ -65,7 +65,8 @@
         </div>
         
         <div class="content">
-            <?= $content ?>
+            <?= /** @noinspection PhpUndefinedVariableInspection */
+            $content ?>
         </div>
         
         <div class="footer">

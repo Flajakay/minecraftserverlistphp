@@ -5,12 +5,14 @@ ob_start();
 
 <h2><?= lang('reset_password_email_title') ?></h2>
 
-<p><?= lang('reset_password_email_greeting') ?> <strong><?= htmlspecialchars($name) ?></strong>,</p>
+<p><?= lang('reset_password_email_greeting') ?> <strong><?= /** @noinspection PhpUndefinedVariableInspection */
+        htmlspecialchars($name) ?></strong>,</p>
 
 <p><?= lang('reset_password_email_message') ?></p>
 
 <div style="text-align: center;">
-    <a href="<?= $resetUrl ?>" class="button"><?= lang('reset_password') ?></a>
+    <a href="<?= /** @noinspection PhpUndefinedVariableInspection */
+    $resetUrl ?>" class="button"><?= lang('reset_password') ?></a>
 </div>
 
 <p><?= lang('reset_password_email_alternative') ?></p>

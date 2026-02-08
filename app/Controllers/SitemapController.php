@@ -15,7 +15,7 @@ class SitemapController
     /**
      * Output sitemap.xml.
      */
-    public function xml()
+    public function xml(): void
     {
         header('Content-Type: application/xml; charset=utf-8');
         
@@ -46,7 +46,7 @@ class SitemapController
     /**
      * Format a single sitemap <url> entry.
      */
-    private function addUrl($url, $priority = '0.5', $changefreq = 'weekly', $lastmod = null)
+    private function addUrl($url, $priority = '0.5', $changefreq = 'weekly', $lastmod = null): string
     {
         $xml = "  <url>\n";
         $xml .= "    <loc>" . htmlspecialchars($url) . "</loc>\n";

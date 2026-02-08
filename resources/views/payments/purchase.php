@@ -26,7 +26,8 @@
                                 <label for="server_id" class="form-label fw-semibold"><?= lang('choose_server') ?></label>
                                 <select class="form-select" id="server_id" name="server_id" required>
                                     <option value=""><?= lang('select_a_server') ?></option>
-                                    <?php foreach ($servers as $server): ?>
+                                    <?php /** @noinspection PhpUndefinedVariableInspection */
+                                    foreach ($servers as $server): ?>
                                         <option value="<?= $server->id ?>" <?= $server->highlight ? 'disabled' : '' ?>>
                                             <?= htmlspecialchars($server->name) ?> (<?= $server->address ?>:<?= $server->port ?>)
                                             <?php if ($server->highlight): ?>
@@ -56,8 +57,10 @@
                                                class="form-control border-start-0 ps-0"
                                                id="days"
                                                name="days"
-                                               min="<?= $min_days ?>"
-                                               max="<?= $max_days ?>"
+                                               min="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                               $min_days ?>"
+                                               max="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                               $max_days ?>"
                                                value="<?= $min_days ?>"
                                                required>
                                     </div>
@@ -70,9 +73,11 @@
                                         <div class="card-body py-3">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span id="cost-display">
-                                                    <span id="days-display"><?= $min_days ?></span> <?= lang('days') ?> × $<?= number_format($cost_per_day, 2) ?>/<?= lang('day') ?>
+                                                    <span id="days-display"><?= $min_days ?></span> <?= lang('days') ?> × $<?= /** @noinspection PhpUndefinedVariableInspection */
+                                                    number_format($cost_per_day, 2) ?>/<?= lang('day') ?>
                                                 </span>
-                                                <strong id="total-display">$<?= number_format($min_days * $cost_per_day, 2) ?> <?= $currency ?></strong>
+                                                <strong id="total-display">$<?= number_format($min_days * $cost_per_day, 2) ?> <?= /** @noinspection PhpUndefinedVariableInspection */
+                                                    $currency ?></strong>
                                             </div>
                                         </div>
                                     </div>

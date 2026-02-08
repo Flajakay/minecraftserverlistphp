@@ -56,7 +56,8 @@
                                                        class="form-control border-start-0 ps-0" 
                                                        id="name" 
                                                        name="name" 
-                                                       value="<?= sanitize($user->name) ?>" 
+                                                       value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                                       sanitize($user->name) ?>"
                                                        placeholder="<?= lang('display_name_placeholder') ?>"
                                                        required>
                                             </div>

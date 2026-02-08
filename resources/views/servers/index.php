@@ -50,7 +50,8 @@
                     <?php endforeach; ?>
                 </div>
 
-                <?php if ($total_pages > 1): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($total_pages > 1): ?>
                     <nav aria-label="<?= lang('pagination_label') ?>" class="mt-4">
                         <ul class="pagination justify-content-center">
                             <?php
@@ -58,7 +59,8 @@
                             unset($queryParams['page']);
                             $queryString = !empty($queryParams) ? '?' . http_build_query($queryParams) : '';
                             ?>
-                            <?php if ($current_page > 1): ?>
+                            <?php /** @noinspection PhpUndefinedVariableInspection */
+                            if ($current_page > 1): ?>
                                 <li class="page-item">
                                     <a class="page-link" href="<?= url('/servers/' . ($current_page - 1)) . $queryString ?>">
                                         <i class="bi bi-chevron-left me-1"></i><?= lang('previous') ?>

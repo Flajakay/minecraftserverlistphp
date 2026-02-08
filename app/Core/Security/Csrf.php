@@ -9,17 +9,17 @@ namespace App\Core\Security;
  */
 class Csrf
 {
-    private static $whitelist = [
+    private static array $whitelist = [
         '/vote',
         '/banner'
     ];
 
-    public static function verify($token)
+    public static function verify($token): bool
     {
         return hash_equals($_SESSION['csrf_token'] ?? '', $token);
     }
 
-    public static function isWhitelisted($uri)
+    public static function isWhitelisted($uri): bool
     {
         // Exact match or prefix match (e.g., '/vote/...' ) are treated as whitelisted.
         foreach (self::$whitelist as $whitelistedUri) {
@@ -30,7 +30,7 @@ class Csrf
         return false;
     }
 
-    public static function check($method, $uri)
+    public static function check($method, $uri): bool
     {
         // Only enforce CSRF on state-changing methods.
         if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {

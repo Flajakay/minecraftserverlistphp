@@ -54,7 +54,7 @@ class ServerCategory
         return Database::fetchAll($sql, $categoryIds);
     }
 
-    public static function setServerCategories($serverId, $categoryIds, $primaryCategoryId = null)
+    public static function setServerCategories($serverId, $categoryIds, $primaryCategoryId = null): bool
     {
         Database::delete('server_categories', 'server_id = ?', [$serverId]);
         
@@ -85,7 +85,7 @@ class ServerCategory
         );
     }
 
-    public static function exists($serverId, $categoryId)
+    public static function exists($serverId, $categoryId): bool
     {
         $result = Database::fetch(
             'SELECT id FROM server_categories WHERE server_id = ? AND category_id = ?',

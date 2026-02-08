@@ -1,6 +1,13 @@
 <?php
 
-function view($name, $data = [])
+use App\Core\Security\Auth;
+use App\Core\Security\Csrf;
+use App\Core\Security\RateLimit;
+use App\Core\Support\Language;
+use App\Core\Support\SEO;
+use App\Models\Setting;
+
+function view($name, $data = []): void
 {
     extract($data);
     
@@ -9,13 +16,13 @@ function view($name, $data = [])
     if (file_exists($viewFile)) {
         require $viewFile;
     } else {
-        throw new Exception("View {$name} not found");
+        throw new Exception("View $name not found");
     }
 }
 
-function redirect($url = '/')
+function redirect($url = '/'): void
 {
-    header("Location: {$url}");
+    header("Location: $url");
     exit;
 }
 
@@ -33,7 +40,7 @@ function session($key, $value = null)
     $_SESSION[$key] = $value;
 }
 
-function flash($key, $message)
+function flash($key, $message): void
 {
     $_SESSION['flash'][$key] = $message;
 }
@@ -54,24 +61,24 @@ function csrf()
     return $_SESSION['csrf_token'];
 }
 
-function verifyCsrf($token)
+function verifyCsrf($token): bool
 {
-    return \App\Core\Security\Csrf::verify($token);
+    return Csrf::verify($token);
 }
 
-function asset($path)
+function asset($path): string
 {
     $config = require __DIR__ . '/../../../config/app.php';
     return $config['url'] . 'assets/' . ltrim($path, '/');
 }
 
-function url($path = '')
+function url($path = ''): string
 {
     $config = require __DIR__ . '/../../../config/app.php';
     return rtrim($config['url'], '/') . '/' . ltrim($path, '/');
 }
 
-function sanitize($input)
+function sanitize($input): array|string
 {
     if (is_array($input)) {
         return array_map('sanitize', $input);
@@ -87,7 +94,7 @@ function displayHtml($input)
     }
     
     // If content appears HTML-escaped already, decode it for rendering.
-    if (strpos($input, '&lt;') !== false || strpos($input, '&gt;') !== false) {
+    if (str_contains($input, '&lt;') || str_contains($input, '&gt;')) {
         return html_entity_decode($input, ENT_QUOTES, 'UTF-8');
     }
     
@@ -95,7 +102,7 @@ function displayHtml($input)
     return $input;
 }
 
-function formatBytes($bytes, $precision = 2)
+function formatBytes($bytes, $precision = 2): string
 {
     $units = ['B', 'KB', 'MB', 'GB'];
     
@@ -106,7 +113,7 @@ function formatBytes($bytes, $precision = 2)
     return round($bytes, $precision) . ' ' . $units[$i];
 }
 
-function timeAgo($timestamp)
+function timeAgo($timestamp): string
 {
     // Gracefully handle missing/invalid timestamps from legacy data.
     if (empty($timestamp)) {
@@ -130,13 +137,10 @@ function timeAgo($timestamp)
     return date('M j, Y', $timestampValue);
 }
 
-function getCountries()
+function getCountries(): array
 {
-	
-	$list = array("AF" => "Afghanistan", "AL" => "Albania", "DZ" => "Algeria", "AS" => "American Samoa", "AD" => "Andorra", "AO" => "Angola", "AI" => "Anguilla", "AQ" => "Antarctica", "AG" => "Antigua and Barbuda", "AR" => "Argentina", "AM" => "Armenia", "AW" => "Aruba", "AU" => "Australia", "AT" => "Austria", "AZ" => "Azerbaijan", "AX" => "Åland Islands", "BS" => "Bahamas", "BH" => "Bahrain", "BD" => "Bangladesh", "BB" => "Barbados", "BY" => "Belarus", "BE" => "Belgium", "BZ" => "Belize", "BJ" => "Benin", "BM" => "Bermuda", "BT" => "Bhutan", "BO" => "Bolivia", "BA" => "Bosnia and Herzegovina", "BW" => "Botswana", "BV" => "Bouvet Island", "BR" => "Brazil", "BQ" => "British Antarctic Territory", "IO" => "British Indian Ocean Territory", "VG" => "British Virgin Islands", "BN" => "Brunei", "BG" => "Bulgaria", "BF" => "Burkina Faso", "BI" => "Burundi", "KH" => "Cambodia", "CM" => "Cameroon", "CA" => "Canada", "CV" => "Cape Verde", "KY" => "Cayman Islands", "CF" => "Central African Republic", "TD" => "Chad", "CL" => "Chile", "CN" => "China", "CX" => "Christmas Island", "CC" => "Cocos [Keeling] Islands", "CO" => "Colombia", "KM" => "Comoros", "CG" => "Congo - Brazzaville", "CD" => "Congo - Kinshasa", "CK" => "Cook Islands", "CR" => "Costa Rica", "HR" => "Croatia", "CU" => "Cuba", "CY" => "Cyprus", "CZ" => "Czech Republic", "CI" => "Côte d’Ivoire", "DK" => "Denmark", "DJ" => "Djibouti", "DM" => "Dominica", "DO" => "Dominican Republic", "EC" => "Ecuador", "EG" => "Egypt", "SV" => "El Salvador", "GQ" => "Equatorial Guinea", "ER" => "Eritrea", "EE" => "Estonia", "ET" => "Ethiopia", "FK" => "Falkland Islands", "FO" => "Faroe Islands", "FJ" => "Fiji", "FI" => "Finland", "FR" => "France", "GF" => "French Guiana", "PF" => "French Polynesia", "TF" => "French Southern Territories", "GA" => "Gabon", "GM" => "Gambia", "GE" => "Georgia", "DE" => "Germany", "GH" => "Ghana", "GI" => "Gibraltar", "GR" => "Greece", "GL" => "Greenland", "GD" => "Grenada", "GP" => "Guadeloupe", "GU" => "Guam", "GT" => "Guatemala", "GN" => "Guinea", "GW" => "Guinea-Bissau", "GY" => "Guyana", "HT" => "Haiti", "HM" => "Heard Island and McDonald Islands", "HN" => "Honduras", "HK" => "Hong Kong SAR China", "HU" => "Hungary", "IS" => "Iceland", "IN" => "India", "ID" => "Indonesia", "IR" => "Iran", "IQ" => "Iraq", "IE" => "Ireland", "IL" => "Israel", "IT" => "Italy", "JM" => "Jamaica", "JP" => "Japan", "JO" => "Jordan", "KZ" => "Kazakhstan", "KE" => "Kenya", "KI" => "Kiribati", "KW" => "Kuwait", "KG" => "Kyrgyzstan", "LA" => "Laos", "LV" => "Latvia", "LB" => "Lebanon", "LS" => "Lesotho", "LR" => "Liberia", "LY" => "Libya", "LI" => "Liechtenstein", "LT" => "Lithuania", "LU" => "Luxembourg", "MO" => "Macau SAR China", "MK" => "Macedonia", "MG" => "Madagascar", "MW" => "Malawi", "MY" => "Malaysia", "MV" => "Maldives", "ML" => "Mali", "MT" => "Malta", "MH" => "Marshall Islands", "MQ" => "Martinique", "MR" => "Mauritania", "MU" => "Mauritius", "YT" => "Mayotte", "MX" => "Mexico", "FM" => "Micronesia", "MD" => "Moldova", "MC" => "Monaco", "MN" => "Mongolia", "ME" => "Montenegro", "MS" => "Montserrat", "MA" => "Morocco", "MZ" => "Mozambique", "MM" => "Myanmar [Burma]", "NA" => "Namibia", "NR" => "Nauru", "NP" => "Nepal", "NL" => "Netherlands", "AN" => "Netherlands Antilles", "NC" => "New Caledonia", "NZ" => "New Zealand", "NI" => "Nicaragua", "NE" => "Niger", "NG" => "Nigeria", "NU" => "Niue", "NF" => "Norfolk Island", "KP" => "North Korea", "MP" => "Northern Mariana Islands", "NO" => "Norway", "OM" => "Oman", "PK" => "Pakistan", "PW" => "Palau", "PS" => "Palestinian Territories", "PA" => "Panama", "PG" => "Papua New Guinea", "PY" => "Paraguay", "PE" => "Peru", "PH" => "Philippines", "PN" => "Pitcairn Islands", "PL" => "Poland", "PT" => "Portugal", "PR" => "Puerto Rico", "QA" => "Qatar", "RO" => "Romania", "RU" => "Russia", "RW" => "Rwanda", "RE" => "R?ion", "SH" => "Saint Helena", "KN" => "Saint Kitts and Nevis", "LC" => "Saint Lucia", "PM" => "Saint Pierre and Miquelon", "VC" => "Saint Vincent and the Grenadines", "WS" => "Samoa", "SM" => "San Marino", "SA" => "Saudi Arabia", "SN" => "Senegal", "RS" => "Serbia", "CS" => "Serbia and Montenegro", "SC" => "Seychelles", "SL" => "Sierra Leone", "SG" => "Singapore", "SK" => "Slovakia", "SI" => "Slovenia", "SB" => "Solomon Islands", "SO" => "Somalia", "ZA" => "South Africa", "GS" => "South Georgia and the South Sandwich Islands", "KR" => "South Korea", "ES" => "Spain", "LK" => "Sri Lanka", "SD" => "Sudan", "SR" => "Suriname", "SJ" => "Svalbard and Jan Mayen", "SZ" => "Swaziland", "SE" => "Sweden", "CH" => "Switzerland", "SY" => "Syria", "ST" => "S?Tom?nd Pr?ipe", "TW" => "Taiwan", "TJ" => "Tajikistan", "TZ" => "Tanzania", "TH" => "Thailand", "TL" => "Timor-Leste", "TG" => "Togo", "TK" => "Tokelau", "TO" => "Tonga", "TT" => "Trinidad and Tobago", "TN" => "Tunisia", "TR" => "Turkey", "TM" => "Turkmenistan", "TC" => "Turks and Caicos Islands", "TV" => "Tuvalu", "UM" => "U.S. Minor Outlying Islands", "VI" => "U.S. Virgin Islands", "UG" => "Uganda", "UA" => "Ukraine", "SU" => "Union of Soviet Socialist Republics", "AE" => "United Arab Emirates", "GB" => "United Kingdom", "US" => "United States", "UY" => "Uruguay", "UZ" => "Uzbekistan", "VU" => "Vanuatu", "VA" => "Vatican City", "VE" => "Venezuela", "VN" => "Vietnam", "WF" => "Wallis and Futuna", "EH" => "Western Sahara", "YE" => "Yemen", "ZM" => "Zambia", "ZW" => "Zimbabwe");
 
-	
-    return $list;
+    return array("AF" => "Afghanistan", "AL" => "Albania", "DZ" => "Algeria", "AS" => "American Samoa", "AD" => "Andorra", "AO" => "Angola", "AI" => "Anguilla", "AQ" => "Antarctica", "AG" => "Antigua and Barbuda", "AR" => "Argentina", "AM" => "Armenia", "AW" => "Aruba", "AU" => "Australia", "AT" => "Austria", "AZ" => "Azerbaijan", "AX" => "Åland Islands", "BS" => "Bahamas", "BH" => "Bahrain", "BD" => "Bangladesh", "BB" => "Barbados", "BY" => "Belarus", "BE" => "Belgium", "BZ" => "Belize", "BJ" => "Benin", "BM" => "Bermuda", "BT" => "Bhutan", "BO" => "Bolivia", "BA" => "Bosnia and Herzegovina", "BW" => "Botswana", "BV" => "Bouvet Island", "BR" => "Brazil", "BQ" => "British Antarctic Territory", "IO" => "British Indian Ocean Territory", "VG" => "British Virgin Islands", "BN" => "Brunei", "BG" => "Bulgaria", "BF" => "Burkina Faso", "BI" => "Burundi", "KH" => "Cambodia", "CM" => "Cameroon", "CA" => "Canada", "CV" => "Cape Verde", "KY" => "Cayman Islands", "CF" => "Central African Republic", "TD" => "Chad", "CL" => "Chile", "CN" => "China", "CX" => "Christmas Island", "CC" => "Cocos [Keeling] Islands", "CO" => "Colombia", "KM" => "Comoros", "CG" => "Congo - Brazzaville", "CD" => "Congo - Kinshasa", "CK" => "Cook Islands", "CR" => "Costa Rica", "HR" => "Croatia", "CU" => "Cuba", "CY" => "Cyprus", "CZ" => "Czech Republic", "CI" => "Côte d’Ivoire", "DK" => "Denmark", "DJ" => "Djibouti", "DM" => "Dominica", "DO" => "Dominican Republic", "EC" => "Ecuador", "EG" => "Egypt", "SV" => "El Salvador", "GQ" => "Equatorial Guinea", "ER" => "Eritrea", "EE" => "Estonia", "ET" => "Ethiopia", "FK" => "Falkland Islands", "FO" => "Faroe Islands", "FJ" => "Fiji", "FI" => "Finland", "FR" => "France", "GF" => "French Guiana", "PF" => "French Polynesia", "TF" => "French Southern Territories", "GA" => "Gabon", "GM" => "Gambia", "GE" => "Georgia", "DE" => "Germany", "GH" => "Ghana", "GI" => "Gibraltar", "GR" => "Greece", "GL" => "Greenland", "GD" => "Grenada", "GP" => "Guadeloupe", "GU" => "Guam", "GT" => "Guatemala", "GN" => "Guinea", "GW" => "Guinea-Bissau", "GY" => "Guyana", "HT" => "Haiti", "HM" => "Heard Island and McDonald Islands", "HN" => "Honduras", "HK" => "Hong Kong SAR China", "HU" => "Hungary", "IS" => "Iceland", "IN" => "India", "ID" => "Indonesia", "IR" => "Iran", "IQ" => "Iraq", "IE" => "Ireland", "IL" => "Israel", "IT" => "Italy", "JM" => "Jamaica", "JP" => "Japan", "JO" => "Jordan", "KZ" => "Kazakhstan", "KE" => "Kenya", "KI" => "Kiribati", "KW" => "Kuwait", "KG" => "Kyrgyzstan", "LA" => "Laos", "LV" => "Latvia", "LB" => "Lebanon", "LS" => "Lesotho", "LR" => "Liberia", "LY" => "Libya", "LI" => "Liechtenstein", "LT" => "Lithuania", "LU" => "Luxembourg", "MO" => "Macau SAR China", "MK" => "Macedonia", "MG" => "Madagascar", "MW" => "Malawi", "MY" => "Malaysia", "MV" => "Maldives", "ML" => "Mali", "MT" => "Malta", "MH" => "Marshall Islands", "MQ" => "Martinique", "MR" => "Mauritania", "MU" => "Mauritius", "YT" => "Mayotte", "MX" => "Mexico", "FM" => "Micronesia", "MD" => "Moldova", "MC" => "Monaco", "MN" => "Mongolia", "ME" => "Montenegro", "MS" => "Montserrat", "MA" => "Morocco", "MZ" => "Mozambique", "MM" => "Myanmar [Burma]", "NA" => "Namibia", "NR" => "Nauru", "NP" => "Nepal", "NL" => "Netherlands", "AN" => "Netherlands Antilles", "NC" => "New Caledonia", "NZ" => "New Zealand", "NI" => "Nicaragua", "NE" => "Niger", "NG" => "Nigeria", "NU" => "Niue", "NF" => "Norfolk Island", "KP" => "North Korea", "MP" => "Northern Mariana Islands", "NO" => "Norway", "OM" => "Oman", "PK" => "Pakistan", "PW" => "Palau", "PS" => "Palestinian Territories", "PA" => "Panama", "PG" => "Papua New Guinea", "PY" => "Paraguay", "PE" => "Peru", "PH" => "Philippines", "PN" => "Pitcairn Islands", "PL" => "Poland", "PT" => "Portugal", "PR" => "Puerto Rico", "QA" => "Qatar", "RO" => "Romania", "RU" => "Russia", "RW" => "Rwanda", "RE" => "R?ion", "SH" => "Saint Helena", "KN" => "Saint Kitts and Nevis", "LC" => "Saint Lucia", "PM" => "Saint Pierre and Miquelon", "VC" => "Saint Vincent and the Grenadines", "WS" => "Samoa", "SM" => "San Marino", "SA" => "Saudi Arabia", "SN" => "Senegal", "RS" => "Serbia", "CS" => "Serbia and Montenegro", "SC" => "Seychelles", "SL" => "Sierra Leone", "SG" => "Singapore", "SK" => "Slovakia", "SI" => "Slovenia", "SB" => "Solomon Islands", "SO" => "Somalia", "ZA" => "South Africa", "GS" => "South Georgia and the South Sandwich Islands", "KR" => "South Korea", "ES" => "Spain", "LK" => "Sri Lanka", "SD" => "Sudan", "SR" => "Suriname", "SJ" => "Svalbard and Jan Mayen", "SZ" => "Swaziland", "SE" => "Sweden", "CH" => "Switzerland", "SY" => "Syria", "ST" => "S?Tom?nd Pr?ipe", "TW" => "Taiwan", "TJ" => "Tajikistan", "TZ" => "Tanzania", "TH" => "Thailand", "TL" => "Timor-Leste", "TG" => "Togo", "TK" => "Tokelau", "TO" => "Tonga", "TT" => "Trinidad and Tobago", "TN" => "Tunisia", "TR" => "Turkey", "TM" => "Turkmenistan", "TC" => "Turks and Caicos Islands", "TV" => "Tuvalu", "UM" => "U.S. Minor Outlying Islands", "VI" => "U.S. Virgin Islands", "UG" => "Uganda", "UA" => "Ukraine", "SU" => "Union of Soviet Socialist Republics", "AE" => "United Arab Emirates", "GB" => "United Kingdom", "US" => "United States", "UY" => "Uruguay", "UZ" => "Uzbekistan", "VU" => "Vanuatu", "VA" => "Vatican City", "VE" => "Venezuela", "VN" => "Vietnam", "WF" => "Wallis and Futuna", "EH" => "Western Sahara", "YE" => "Yemen", "ZM" => "Zambia", "ZW" => "Zimbabwe");
 }
 
 function getCountryName($code)
@@ -145,27 +149,27 @@ function getCountryName($code)
     return $countries[$code] ?? $code;
 }
 
-function lang($key, $default = null)
+function lang($key, $default = null): string
 {
-    return \App\Core\Support\Language::get($key, $default);
+    return Language::get($key, $default);
 }
 
 function setting($key, $default = null)
 {
-    return \App\Models\Setting::getValue($key, $default);
+    return Setting::getValue($key, $default);
 }
 
-function getAvailableLanguages()
+function getAvailableLanguages(): array
 {
-    return \App\Core\Support\Language::getAvailableLanguages();
+    return Language::getAvailableLanguages();
 }
 
-function getCurrentLanguage()
+function getCurrentLanguage(): string
 {
-    return \App\Core\Support\Language::getCurrentLanguage();
+    return Language::getCurrentLanguage();
 }
 
-function uploadFile($file, $directory, $resize = null)
+function uploadFile($file, $directory, $resize = null): false|string
 {
     if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
         return false;
@@ -213,7 +217,7 @@ function validatePort($port, $default = 25565)
 }
 
 
-function resizeImage($source, $destination, $width, $height)
+function resizeImage($source, $destination, $width, $height): bool
 {
     $imageInfo = getimagesize($source);
     if (!$imageInfo) {
@@ -295,72 +299,162 @@ function resizeImage($source, $destination, $width, $height)
 
 function auth()
 {
-    return \App\Core\Security\Auth::user();
+    return Auth::user();
 }
 
-function isLoggedIn()
+function isLoggedIn(): bool
 {
-    return \App\Core\Security\Auth::check();
+    return Auth::check();
 }
 
-function isAdmin()
+function isAdmin(): bool
 {
-    return \App\Core\Security\Auth::isAdmin();
+    return Auth::isAdmin();
 }
 
-function isOwner()
+function isOwner(): bool
 {
-    return \App\Core\Security\Auth::isOwner();
+    return Auth::isOwner();
 }
 
-function rateLimitCheck($route, $method = 'GET')
+function rateLimitCheck($route, $method = 'GET'): bool
 {
-    return \App\Core\Security\RateLimit::getInstance()->checkRequest($route, $method);
+    return RateLimit::getInstance()->checkRequest($route, $method);
 }
 
 function rateLimitRetryAfter($route, $method = 'GET')
 {
-    return \App\Core\Security\RateLimit::getInstance()->getRetryAfter($route, $method);
+    return RateLimit::getInstance()->getRetryAfter($route, $method);
 }
 
-function ensureDirectoryExists($path, $permissions = 0755)
+function ensureDirectoryExists($path, $permissions = 0755): void
 {
     if (!is_dir($path)) {
         mkdir($path, $permissions, true);
     }
 }
 
-function seo()
+function seo(): string
 {
-    return \App\Core\Support\SEO::class;
+    return SEO::class;
 }
 
-function setTitle($title)
+function setTitle($title): void
 {
-    \App\Core\Support\SEO::setTitle($title);
+    SEO::setTitle($title);
 }
 
-function setDescription($description)
+function setDescription($description): void
 {
-    \App\Core\Support\SEO::setDescription($description);
+    SEO::setDescription($description);
 }
 
-function setKeywords($keywords)
+function setKeywords($keywords): void
 {
-    \App\Core\Support\SEO::setKeywords($keywords);
+    SEO::setKeywords($keywords);
 }
 
-function setCanonical($url)
+function setCanonical($url): void
 {
-    \App\Core\Support\SEO::setCanonical($url);
+    SEO::setCanonical($url);
 }
 
-function setRobots($robots)
+function setRobots($robots): void
 {
-    \App\Core\Support\SEO::setRobots($robots);
+    SEO::setRobots($robots);
 }
 
-function renderMetaTags()
+function renderMetaTags(): string
 {
-    return \App\Core\Support\SEO::renderMetaTags();
+    return SEO::renderMetaTags();
+}
+
+/**
+ * Jodit Editor Integration Helpers
+ */
+
+if (!function_exists('joditAssets')) {
+
+    function joditAssets(): void
+    {
+        static $included = false;
+        if ($included) return;
+        $included = true;
+        
+        echo '<script src="' . asset('js/jodit-helper.js') . '"></script>' . "\n";
+        echo '<script>' . "\n";
+        echo 'document.addEventListener("DOMContentLoaded", function() {' . "\n";
+        echo '    // Set editor language from PHP.' . "\n";
+        echo '    window.joditHelper.setLanguage("' . lang('_jodit_code', 'en') . '");' . "\n";
+        echo '});' . "\n";
+        echo '</script>' . "\n";
+    }
+}
+
+if (!function_exists('joditInit')) {
+    function joditInit($selector, $type = 'page', $options = [], $placeholder = null): string
+    {
+        $placeholderText = $placeholder ?: lang('content_placeholder', 'Write your content here...');
+        
+        $jsOptions = '';
+        if (!empty($options)) {
+            $jsOptions = ', ' . json_encode($options);
+        }
+
+        $initMethod = match ($type) {
+            'blog' => 'initBlogEditor',
+            'page' => 'initPageEditor',
+            default => 'init',
+        };
+        
+        return "window.joditHelper.{$initMethod}('{$selector}', '{$placeholderText}'{$jsOptions});";
+    }
+}
+
+if (!function_exists('joditValidation')) {
+    function joditValidation($selector, $minLength = 10, $errorMessage = null): string
+    {
+        $errorMsg = $errorMessage ?: lang('blog_content_required', 'Content must be at least 10 characters long');
+        
+        return "
+        const validation = window.joditHelper.validateContent('{$selector}', {$minLength});
+        if (!validation.valid) {
+            e.preventDefault();
+            alert('{$errorMsg}');
+            return false;
+        }";
+    }
+}
+
+if (!function_exists('joditScript')) {
+    function joditScript($editors = [], $onReady = ''): string
+    {
+        $script = '<script>' . "\n";
+        $script .= 'document.addEventListener("DOMContentLoaded", async function() {' . "\n";
+        
+        foreach ($editors as $config) {
+            $selector = $config['selector'];
+            $type = $config['type'] ?? 'page';
+            $options = $config['options'] ?? [];
+            $placeholder = $config['placeholder'] ?? null;
+            $variable = $config['variable'] ?? null;
+            
+            $initCode = joditInit($selector, $type, $options, $placeholder);
+            
+            if ($variable) {
+                $script .= "    const {$variable} = await {$initCode}\n";
+            } else {
+                $script .= "    await {$initCode}\n";
+            }
+        }
+        
+        if ($onReady) {
+            $script .= "\n    " . $onReady . "\n";
+        }
+        
+        $script .= '});' . "\n";
+        $script .= '</script>' . "\n";
+        
+        return $script;
+    }
 }

@@ -12,7 +12,8 @@
                     <div>
                         <h2 class="h4 fw-bold text-dark mb-1"><?= lang('users_management') ?></h2>
                         <p class="text-muted mb-0">
-                            <?= sprintf(lang('total_users_count'), number_format($totalUsers)) ?>
+                            <?= /** @noinspection PhpUndefinedVariableInspection */
+                            sprintf(lang('total_users_count'), number_format($totalUsers)) ?>
                         </p>
                     </div>
                 </div>
@@ -43,7 +44,8 @@
                                            name="search" 
                                            class="form-control border-start-0 ps-0" 
                                            placeholder="<?= lang('search') ?>" 
-                                           value="<?= htmlspecialchars($search) ?>">
+                                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                           htmlspecialchars($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -62,7 +64,8 @@
                                     </span>
                                     <select name="type" class="form-select border-start-0">
                                         <option value=""><?= lang('user_type') ?></option>
-                                        <option value="0" <?= $filters['type'] === '0' ? 'selected' : '' ?>><?= lang('user') ?></option>
+                                        <option value="0" <?= /** @noinspection PhpUndefinedVariableInspection */
+                                        $filters['type'] === '0' ? 'selected' : '' ?>><?= lang('user') ?></option>
                                         <option value="1" <?= $filters['type'] === '1' ? 'selected' : '' ?>><?= lang('administrator') ?></option>
                                         <option value="2" <?= $filters['type'] === '2' ? 'selected' : '' ?>><?= lang('owner') ?></option>
                                     </select>
@@ -221,11 +224,13 @@
                 </div>
 
                 <!-- Pagination -->
-                <?php if ($totalPages > 1): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($totalPages > 1): ?>
                     <div class="card-footer bg-light border-0">
                         <nav>
                             <ul class="pagination justify-content-center mb-0">
-                                <?php if ($currentPage > 1): ?>
+                                <?php /** @noinspection PhpUndefinedVariableInspection */
+                                if ($currentPage > 1): ?>
                                     <li class="page-item">
                                         <a class="page-link" href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($search) ?>&type=<?= urlencode($filters['type']) ?>&active=<?= urlencode($filters['active']) ?>">
                                             <i class="bi bi-chevron-left"></i> <?= lang('previous') ?>

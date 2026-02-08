@@ -9,7 +9,8 @@
                 </div>
                 <div>
                     <h2 class="h4 fw-bold text-dark mb-1"><?= lang('titles.edit_server') ?></h2>
-                    <p class="text-muted mb-0"><?= htmlspecialchars($server->name) ?></p>
+                    <p class="text-muted mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
+                        htmlspecialchars($server->name) ?></p>
                 </div>
             </div>
 

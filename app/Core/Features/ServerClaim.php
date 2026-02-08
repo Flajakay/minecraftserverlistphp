@@ -2,6 +2,7 @@
 
 namespace App\Core\Features;
 
+use App\Core\Integrations\MinecraftPing;
 use App\Models\Server;
 
 class ServerClaim
@@ -10,21 +11,21 @@ class ServerClaim
      * Check if server was already verified by a different user.
      * Prevents ownership transfers without admin intervention.
      */
-    public static function isAlreadyVerifiedByOther($user, $server)
+    public static function isAlreadyVerifiedByOther($user, $server): bool
     {
         return (int) $server->verification_status === 2 
             && $server->verified_owner_user_id 
             && (int) $server->verified_owner_user_id !== (int) $user->id;
     }
 
-    public static function isClaimInProgressByOther($user, $server)
+    public static function isClaimInProgressByOther($user, $server): bool
     {
         return (int) $server->verification_status === 1 
             && $server->verification_requested_by_user_id 
             && (int) $server->verification_requested_by_user_id !== (int) $user->id;
     }
 
-    public static function canStartClaim($user, $server)
+    public static function canStartClaim($user, $server): array
     {
         if (!$user || !$server || !$server->active) {
             return ['allowed' => false, 'error' => lang('server_not_found')];
@@ -41,7 +42,7 @@ class ServerClaim
         return ['allowed' => true];
     }
 
-    public static function canVerifyClaim($user, $server)
+    public static function canVerifyClaim($user, $server): array
     {
         if (!$user || !$server || !$server->active) {
             return ['allowed' => false, 'error' => lang('server_not_found')];
@@ -54,12 +55,12 @@ class ServerClaim
         return ['allowed' => true];
     }
 
-    public static function canCancelClaim($user, $server)
+    public static function canCancelClaim($user, $server): array
     {
         return self::canVerifyClaim($user, $server);
     }
 
-    public static function isTokenExpired($server)
+    public static function isTokenExpired($server): bool
     {
         return empty($server->verification_token) 
             || empty($server->verification_token_expires_at) 
@@ -70,12 +71,12 @@ class ServerClaim
      * Generate unique verification token with MSL prefix.
      * Format: MSL-[16 random hex characters]
      */
-    public static function generateVerificationToken()
+    public static function generateVerificationToken(): string
     {
         return 'MSL-' . bin2hex(random_bytes(8));
     }
 
-    public static function startClaim($serverId, $userId)
+    public static function startClaim($serverId, $userId): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId];
@@ -102,7 +103,7 @@ class ServerClaim
         ];
     }
 
-    public static function verifyClaim($serverId, $userId)
+    public static function verifyClaim($serverId, $userId): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId];
@@ -165,7 +166,7 @@ class ServerClaim
         ];
     }
 
-    public static function cancelClaim($serverId, $userId)
+    public static function cancelClaim($serverId, $userId): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId];
@@ -237,7 +238,7 @@ class ServerClaim
         return $text;
     }
 
-    public static function getShowPageData($user, $server)
+    public static function getShowPageData($user, $server): array
     {
         if (!$server || !$server->active) {
             return [

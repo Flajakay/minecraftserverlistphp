@@ -1,6 +1,7 @@
 <div class="server-row-item border rounded-3 p-3 mb-3 bg-white shadow-sm position-relative overflow-hidden">
     <!-- Premium Highlight Strip -->
-    <?php if ($server->highlight): ?>
+    <?php /** @noinspection PhpUndefinedVariableInspection */
+    if ($server->highlight): ?>
         <div class="position-absolute top-0 start-0 bottom-0 bg-warning" style="width: 4px;"></div>
     <?php endif; ?>
 

@@ -6,6 +6,7 @@ use App\Models\Server;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Core\Integrations\PayPalService;
+use Exception;
 
 /**
  * Feature class for handling premium payments.
@@ -18,11 +19,11 @@ class Payments
 
         $server = Server::find($serverId);
         if (!$server || $server->user_id != $userId) {
-            throw new \Exception('Invalid server selection');
+            throw new Exception('Invalid server selection');
         }
 
         if (!$paypalService->validateDays($days)) {
-            throw new \Exception('Invalid number of days');
+            throw new Exception('Invalid number of days');
         }
 
         $amount = $paypalService->calculateAmount($days);
@@ -44,17 +45,17 @@ class Payments
         $paypalService = new PayPalService();
 
         if (empty($orderId) || !$serverId || !$days) {
-            throw new \Exception('Missing payment data');
+            throw new Exception('Missing payment data');
         }
 
         $server = Server::find($serverId);
         if (!$server || $server->user_id != $userId) {
-            throw new \Exception('Invalid server');
+            throw new Exception('Invalid server');
         }
 
         $capture = $paypalService->capturePayment($orderId);
         if ($capture->getResult()->getStatus() !== 'COMPLETED') {
-            throw new \Exception('Payment not completed');
+            throw new Exception('Payment not completed');
         }
 
         $amount = $paypalService->calculateAmount($days);

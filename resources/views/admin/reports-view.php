@@ -13,7 +13,8 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Report #<?= $report->id ?></h5>
+                        <h5 class="mb-0">Report #<?= /** @noinspection PhpUndefinedVariableInspection */
+                            $report->id ?></h5>
                         <div>
                             <?php if ($report->type == 1): ?>
                                 <span class="badge bg-info">User Report</span>

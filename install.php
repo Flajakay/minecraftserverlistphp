@@ -1,5 +1,7 @@
 <?php
 
+use App\Core\System\MigrationRunner;
+
 $installLockPath = __DIR__ . '/storage/installed.lock';
 
 if (file_exists($installLockPath)) {
@@ -46,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (class_exists('App\\Core\\MigrationRunner')) {
-            $runner = new \App\Core\MigrationRunner($pdo, __DIR__ . '/database/migrations');
+            $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
             $runner->runAllPending();
         }
 

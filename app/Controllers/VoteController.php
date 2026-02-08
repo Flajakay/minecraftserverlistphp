@@ -22,7 +22,7 @@ class VoteController
      *
      * JSON-only endpoint.
      */
-    public function vote()
+    public function vote(): void
     {
         if (!isLoggedIn()) {
             echo json_encode(['success' => false, 'message' => 'You must be logged in to vote']);

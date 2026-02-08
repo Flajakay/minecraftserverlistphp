@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUndefinedVariableInspection */
 
 $router->get('/', 'HomeController@index');
 $router->get('/servers', 'ServerController@index');

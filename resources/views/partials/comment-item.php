@@ -2,7 +2,8 @@
     <div class="d-flex justify-content-between align-items-start">
         <div class="flex-grow-1">
             <div class="d-flex align-items-center mb-1">
-                <strong class="me-2"><?= htmlspecialchars($comment->name ?: $comment->username) ?></strong>
+                <strong class="me-2"><?= /** @noinspection PhpUndefinedVariableInspection */
+                    htmlspecialchars($comment->name ?: $comment->username) ?></strong>
                 <small class="text-muted"><?= timeAgo($comment->created_at) ?></small>
             </div>
             <p class="mb-0"><?= nl2br(htmlspecialchars($comment->comment)) ?></p>
@@ -10,7 +11,8 @@
         <?php if (isLoggedIn()): ?>
             <?php 
             $user = auth();
-            $canDelete = $comment->user_id == $user->id || 
+            /** @noinspection PhpUndefinedVariableInspection */
+            $canDelete = $comment->user_id == $user->id ||
                         ($server && $server->user_id == $user->id) || 
                         $user->type >= 1;
             ?>

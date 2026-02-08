@@ -9,7 +9,8 @@
                         <h4 class="fw-bold mb-0">
                             <i class="bi bi-images text-primary me-2"></i>Banner Generator
                         </h4>
-                        <?php if ($server): ?>
+                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                        if ($server): ?>
                             <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Server
                             </a>
@@ -134,7 +135,8 @@
                             </div>
                         </div>
                         <select id="bgTemplateSelect" class="form-select mb-2">
-                            <?php foreach ($backgrounds as $key => $label): ?>
+                            <?php /** @noinspection PhpUndefinedVariableInspection */
+                            foreach ($backgrounds as $key => $label): ?>
                                 <option value="<?= $key ?>"><?= $label ?></option>
                             <?php endforeach; ?>
                         </select>

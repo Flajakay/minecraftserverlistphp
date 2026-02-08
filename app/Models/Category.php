@@ -107,7 +107,7 @@ class Category
         return Database::fetchAll('SELECT * FROM categories ORDER BY parent_id, name ASC');
     }
 
-    public static function getDescendants($categoryId)
+    public static function getDescendants($categoryId): array
     {
         $descendants = [];
         $subcategories = self::getSubcategories($categoryId);

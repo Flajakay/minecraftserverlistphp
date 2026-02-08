@@ -3,9 +3,10 @@
 namespace App\Core\Security;
 
 use App\Core\Support\CookieManager;
-
+use App\Core\Security\RateLimit;
 use App\Core\System\Mail;
 use App\Core\System\Database;
+use Exception;
 
 /**
  * Authentication facade.
@@ -29,28 +30,28 @@ class Auth
         return Database::fetch('SELECT * FROM users WHERE id = ?', [$userId]);
     }
 
-    public static function check()
+    public static function check(): bool
     {
         // Consider a user authenticated if they have an active session OR a remember-me cookie.
         return isset($_SESSION['user_id']) || 
                (CookieManager::has('user_id') && CookieManager::has('remember_token'));
     }
 
-    public static function login($user, $remember = false)
+    public static function login($user, $remember = false): void
     {
         $_SESSION['user_id'] = $user->id;
         
         if ($remember) {
             // Store a random token in both cookie + DB so the cookie alone is not sufficient.
             $token = bin2hex(random_bytes(32));
-            CookieManager::set('user_id', $user->id, 30);
-            CookieManager::set('remember_token', $token, 30);
+            CookieManager::set('user_id', $user->id);
+            CookieManager::set('remember_token', $token);
             
             Database::update('users', ['remember_token' => $token], 'id = ?', [$user->id]);
         }
     }
 
-    public static function logout()
+    public static function logout(): void
     {
         // Destroy session and clear remember-me cookies.
         session_destroy();
@@ -58,8 +59,14 @@ class Auth
         CookieManager::delete('remember_token');
     }
 
-    public static function attemptLogin($username, $password, $ip, $remember = false)
+    public static function attemptLogin($username, $password, $ip = null, $remember = false): array
     {
+        // Use LoginSecurity's IP detection if not provided explicitly
+        if ($ip === null) {
+            $rateLimit = RateLimit::getInstance();
+            $ip = $rateLimit->getClientIp();
+        }
+
         if (empty($username) || empty($password)) {
             return [
                 'success' => false,
@@ -90,7 +97,7 @@ class Auth
             ];
         }
 
-        $user = self::attempt($username, $password);
+        $user = self::attempt($username, $password, $ip);
         
         if (!$user) {
             LoginSecurity::recordFailedAttempt($username, 'username', $ip);
@@ -129,43 +136,49 @@ class Auth
         ];
     }
 
-    public static function attempt($username, $password)
+    public static function attempt($username, $password, $ip = null)
     {
+        // Use RateLimit's IP detection if not provided explicitly
+        if ($ip === null) {
+            $rateLimit = RateLimit::getInstance();
+            $ip = $rateLimit->getClientIp();
+        }
+
         $user = Database::fetch('SELECT * FROM users WHERE username = ?', [$username]);
 
         if ($user && self::verifyPassword($password, $user->password)) {
             // Successful login resets lockouts for both username and IP.
             LoginSecurity::clearFailedAttempts($username, 'username');
-            LoginSecurity::clearFailedAttempts($_SERVER['REMOTE_ADDR'], 'ip');
+            LoginSecurity::clearFailedAttempts($ip, 'ip');
             return $user;
         }
 
         return false;
     }
 
-    public static function hashPassword($password, $username = null)
+    public static function hashPassword($password): string
     {
         return password_hash($password, PASSWORD_ARGON2ID);
     }
 
-    private static function verifyPassword($password, $hash, $username = null)
+    private static function verifyPassword($password, $hash): bool
     {
         return password_verify($password, $hash);
     }
 
-    public static function isAdmin()
+    public static function isAdmin(): bool
     {
         $user = self::user();
         return $user && $user->type > 0;
     }
 
-    public static function isOwner()
+    public static function isOwner(): bool
     {
         $user = self::user();
         return $user && $user->type > 1;
     }
 
-    public static function validateUsername($username)
+    public static function validateUsername($username): ?string
     {
         if (strlen($username) < 3 || strlen($username) > 32) {
             return lang('username_length_validation');
@@ -179,7 +192,7 @@ class Auth
         return null;
     }
 
-    public static function validateEmail($email)
+    public static function validateEmail($email): ?string
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return lang('invalid_email');
@@ -193,7 +206,7 @@ class Auth
         return null;
     }
 
-    public static function validatePasswordStrength($password)
+    public static function validatePasswordStrength($password): ?string
     {
         if (strlen($password) < 6) {
             return lang('password_too_short');
@@ -202,7 +215,7 @@ class Auth
         return null;
     }
 
-    public static function validateRegistrationData($username, $email, $password, $name)
+    public static function validateRegistrationData($username, $email, $password, $name): array
     {
         $errors = [];
 
@@ -228,8 +241,14 @@ class Auth
         return $errors;
     }
 
-    public static function register($username, $email, $password, $name, $ip)
+    public static function register($username, $email, $password, $name, $ip = null): array
     {
+        // Use RateLimit's IP detection if not provided explicitly
+        if ($ip === null) {
+            $rateLimit = RateLimit::getInstance();
+            $ip = $rateLimit->getClientIpAddress();
+        }
+
         $errors = self::validateRegistrationData($username, $email, $password, $name);
         
         if (!empty($errors)) {
@@ -270,7 +289,7 @@ class Auth
                     ->send();
                     
                 $emailSent = true;
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 $emailError = lang('email_send_failed', 'Registration successful but activation email could not be sent.');
             }
         } else {
@@ -287,7 +306,7 @@ class Auth
         ];
     }
 
-    public static function activateAccount($email, $code)
+    public static function activateAccount($email, $code): bool
     {
         $updated = Database::update('users', 
             ['active' => 1, 'email_activation_code' => ''], 
@@ -298,7 +317,7 @@ class Auth
         return $updated > 0;
     }
 
-    public static function initiatePasswordReset($email)
+    public static function initiatePasswordReset($email): array
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return [
@@ -336,7 +355,7 @@ class Auth
                 'error' => null,
                 'user' => $user
             ];
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return [
                 'success' => false,
                 'error' => lang('email_send_failed', 'Failed to send reset email. Please try again later.'),
@@ -354,7 +373,7 @@ class Auth
         return Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
     }
 
-    public static function resetPassword($email, $code, $newPassword, $confirmPassword)
+    public static function resetPassword($email, $code, $newPassword, $confirmPassword): array
     {
         $user = self::validateResetLink($email, $code);
         

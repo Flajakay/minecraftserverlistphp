@@ -19,7 +19,7 @@ class ReportController
      * - JSON-only response
      * - enforces a single report per user/type/reported_id tuple
      */
-    public function store()
+    public function store(): void
     {
         if (!isLoggedIn()) {
             echo json_encode(['success' => false, 'message' => 'Must be logged in']);

@@ -8,7 +8,7 @@ use App\Models\User;
 
 class Blog
 {
-    public static function validateBlogPost($title, $content)
+    public static function validateBlogPost($title, $content): array
     {
         $errors = [];
 
@@ -23,7 +23,7 @@ class Blog
         return $errors;
     }
 
-    public static function canCreateBlogPost($user, $server)
+    public static function canCreateBlogPost($user, $server): bool
     {
         if (!$user || !$server) {
             return false;
@@ -33,7 +33,7 @@ class Blog
         return $server->user_id == $user->id || $user->type >= 1;
     }
 
-    public static function canManageBlogPost($user, $blogPost, $server = null)
+    public static function canManageBlogPost($user, $blogPost, $server = null): bool
     {
         if (!$user || !$blogPost) {
             return false;
@@ -53,7 +53,7 @@ class Blog
         return $user->type >= 1;
     }
 
-    public static function createBlogPost($serverId, $userId, $title, $content)
+    public static function createBlogPost($serverId, $userId, $title, $content): array
     {
         $errors = self::validateBlogPost($title, $content);
         if (!empty($errors)) {
@@ -95,7 +95,7 @@ class Blog
         ];
     }
 
-    public static function updateBlogPost($blogPostId, $userId, $title, $content)
+    public static function updateBlogPost($blogPostId, $userId, $title, $content): array
     {
         $errors = self::validateBlogPost($title, $content);
         if (!empty($errors)) {
@@ -141,7 +141,7 @@ class Blog
         ];
     }
 
-    public static function deleteBlogPost($blogPostId, $userId)
+    public static function deleteBlogPost($blogPostId, $userId): array
     {
         $blogPost = BlogPost::find($blogPostId);
         if (!$blogPost) {
@@ -169,7 +169,7 @@ class Blog
         ];
     }
 
-    public static function getBlogPostForEdit($blogPostId, $userId)
+    public static function getBlogPostForEdit($blogPostId, $userId): array
     {
         $blogPost = BlogPost::find($blogPostId);
         if (!$blogPost) {

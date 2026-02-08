@@ -8,7 +8,7 @@ use App\Models\AuditLog;
 
 class SiteSettings
 {
-    public static function update($data)
+    public static function update($data): array
     {
         $settingsData = [
             'title' => sanitize($data['title'] ?? ''),
@@ -42,7 +42,7 @@ class SiteSettings
         ];
     }
 
-    public static function resetVotes($initiatorId)
+    public static function resetVotes($initiatorId): array
     {
         if (Server::resetAllVotes()) {
             AuditLog::log('reset_votes', 'servers', 0, $initiatorId, 'Reset all server votes');

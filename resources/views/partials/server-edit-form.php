@@ -3,7 +3,8 @@ $config = $config ?? [];
 $isAdmin = $config['isAdmin'] ?? false;
 ?>
 
-<form method="POST" <?= !$isAdmin ? 'action="' . url('/edit-server/' . $server->id) . '"' : '' ?> enctype="multipart/form-data">
+<form method="POST" <?= /** @noinspection PhpUndefinedVariableInspection */
+!$isAdmin ? 'action="' . url('/edit-server/' . $server->id) . '"' : '' ?> enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
     
     <div class="mb-4">
@@ -22,7 +23,8 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0 <?= $isAdmin ? '' : 'bg-light' ?>" 
                            id="address" 
                            <?= $isAdmin ? 'name="address"' : '' ?>
-                           value="<?= htmlspecialchars($server->address) ?>" 
+                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                           htmlspecialchars($server->address) ?>"
                            <?= $isAdmin ? 'required' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>

@@ -12,7 +12,8 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><?= sprintf(lang('editing_user'), htmlspecialchars($user->username)) ?></h5>
+                    <h5 class="mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
+                        sprintf(lang('editing_user'), htmlspecialchars($user->username)) ?></h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">

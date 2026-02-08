@@ -7,7 +7,7 @@ use App\Models\AuditLog;
 
 class Categories
 {
-    public static function create($data, $creatorId)
+    public static function create($data, $creatorId): array
     {
         if (empty($data['name']) || empty($data['url'])) {
             return [
@@ -49,7 +49,7 @@ class Categories
         ];
     }
 
-    public static function update($id, $data, $updaterId)
+    public static function update($id, $data, $updaterId): array
     {
         $category = Category::find($id);
         if (!$category) {
@@ -100,7 +100,7 @@ class Categories
         ];
     }
 
-    public static function delete($id, $deleterId)
+    public static function delete($id, $deleterId): array
     {
         $category = Category::find($id);
         if (!$category) {
@@ -137,7 +137,7 @@ class Categories
      * Generate URL-safe slug from string.
      * Removes special characters and normalizes whitespace to hyphens.
      */
-    private static function generateSlug($string)
+    private static function generateSlug($string): string
     {
         $string = strtolower($string);
         $string = preg_replace('/[^a-z0-9\s-]/', '', $string);

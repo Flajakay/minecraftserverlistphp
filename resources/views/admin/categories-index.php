@@ -12,7 +12,8 @@
                     <div>
                         <h2 class="h4 fw-bold text-dark mb-1"><?= lang('categories_management') ?></h2>
                         <p class="text-muted mb-0">
-                            <?= sprintf(lang('total_categories_count'), number_format($totalCategories)) ?>
+                            <?= /** @noinspection PhpUndefinedVariableInspection */
+                            sprintf(lang('total_categories_count'), number_format($totalCategories)) ?>
                         </p>
                     </div>
                 </div>
@@ -41,7 +42,8 @@
                                                name="search" 
                                                class="form-control border-start-0 ps-0" 
                                                placeholder="<?= lang('search') ?>" 
-                                               value="<?= htmlspecialchars($search) ?>">
+                                               value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                               htmlspecialchars($search) ?>">
                                         <button type="submit" class="btn btn-primary ms-2">
                                             <?= lang('search_button') ?>
                                         </button>
@@ -160,11 +162,13 @@
                         </div>
 
                         <!-- Pagination -->
-                        <?php if ($totalPages > 1): ?>
+                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                        if ($totalPages > 1): ?>
                             <div class="card-footer bg-light border-0">
                                 <nav>
                                     <ul class="pagination justify-content-center mb-0">
-                                        <?php if ($currentPage > 1): ?>
+                                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                                        if ($currentPage > 1): ?>
                                             <li class="page-item">
                                             <a class="page-link" href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($search) ?>">
                                             <i class="bi bi-chevron-left"></i> <?= lang('previous') ?>
@@ -266,7 +270,8 @@
                                         </span>
                                         <select class="form-select border-start-0" id="parent_id" name="parent_id">
                                             <option value="0"><?= lang('none_root_category') ?></option>
-                                            <?php foreach ($parentCategories as $parent): ?>
+                                            <?php /** @noinspection PhpUndefinedVariableInspection */
+                                            foreach ($parentCategories as $parent): ?>
                                                 <option value="<?= $parent->id ?>"><?= htmlspecialchars($parent->name) ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -298,7 +303,8 @@
                                 <div class="col-6">
                                     <div class="p-3 bg-light rounded">
                                         <div class="h5 text-success mb-0">
-                                            <?= number_format(array_sum(array_column($categories, 'server_count'))) ?>
+                                            <?= /** @noinspection PhpUndefinedVariableInspection */
+                                            number_format(array_sum(array_column($categories, 'server_count'))) ?>
                                         </div>
                                         <small class="text-muted"><?= lang('total_servers') ?></small>
                                     </div>

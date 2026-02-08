@@ -41,5 +41,6 @@
 ]); ?>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.edit_server') . ': ' . htmlspecialchars($server->name) . ' - ' . setting('title'); ?>
+<?php /** @noinspection PhpUndefinedVariableInspection */
+$title = lang('titles.edit_server') . ': ' . htmlspecialchars($server->name) . ' - ' . setting('title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

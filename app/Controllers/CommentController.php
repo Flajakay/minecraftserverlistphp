@@ -17,7 +17,7 @@ class CommentController
     /**
      * Create a comment for a server.
      */
-    public function store()
+    public function store(): void
     {
         if (!isLoggedIn()) {
             if (isset($_POST['ajax'])) {
@@ -59,7 +59,7 @@ class CommentController
      *
      * Authorization: comment author, server owner, or privileged user.
      */
-    public function delete()
+    public function delete(): void
     {
         if (!isLoggedIn()) {
             echo json_encode(['success' => false, 'message' => 'Must be logged in']);
@@ -79,7 +79,7 @@ class CommentController
      *
      * Returns rendered HTML for the next chunk plus pagination metadata.
      */
-    public function loadMore()
+    public function loadMore(): void
     {
         $serverId = (int)($_GET['server_id'] ?? 0);
         $offset = (int)($_GET['offset'] ?? 0);

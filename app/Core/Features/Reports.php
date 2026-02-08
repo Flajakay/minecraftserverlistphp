@@ -7,7 +7,7 @@ use App\Models\AuditLog;
 
 class Reports
 {
-    public static function delete($id, $deleterId)
+    public static function delete($id, $deleterId): array
     {
         $report = Report::find($id);
         if (!$report) {
@@ -32,7 +32,7 @@ class Reports
         ];
     }
 
-    public static function resolve($id, $resolverId)
+    public static function resolve($id, $resolverId): array
     {
         $report = Report::find($id);
         if (!$report) {

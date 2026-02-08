@@ -14,9 +14,9 @@ use Exception;
  */
 class RateLimit
 {
-    private static $instance;
-    private $throttle;
-    private $config;
+    private static RateLimit $instance;
+    private LeakyBucket $throttle;
+    private mixed $config;
 
     private function __construct()
     {
@@ -36,7 +36,7 @@ class RateLimit
         }
     }
 
-    public static function getInstance()
+    public static function getInstance(): RateLimit
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -44,7 +44,7 @@ class RateLimit
         return self::$instance;
     }
 
-    public function checkRequest($route, $method = 'GET')
+    public function checkRequest($route, $method = 'GET'): bool
     {
         // Bypass checks must run first so trusted callers aren't throttled.
         if ($this->shouldBypass()) {
@@ -92,7 +92,7 @@ class RateLimit
         }
     }
 
-    private function shouldBypass()
+    private function shouldBypass(): bool
     {
         $bypass = $this->config['bypass'];
         
@@ -138,7 +138,7 @@ class RateLimit
         return $rules['general'] ?? null;
     }
 
-    private function routeMatches($route, $pattern)
+    private function routeMatches($route, $pattern): bool|int
     {
         // Simple wildcard support ("*") for route patterns.
         if ($pattern === '*') {
@@ -153,7 +153,7 @@ class RateLimit
         return $route === $pattern;
     }
 
-    private function generateKey($rule, $route)
+    private function generateKey($rule, $route): string
     {
         $keyType = $rule['key_type'];
         $parts = [];
@@ -210,7 +210,12 @@ class RateLimit
         return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
     }
 
-    private function logViolation($route, $rule, $key, $waitTime)
+    public function getClientIpAddress(): string
+    {
+        return $this->getClientIp();
+    }
+
+    private function logViolation($route, $rule, $key, $waitTime): void
     {
         if (!$this->config['logging']['enabled']) {
             return;
@@ -241,7 +246,7 @@ class RateLimit
         file_put_contents($logFile, $logLine, FILE_APPEND | LOCK_EX);
     }
 
-    private function logDebug($message, $context = [])
+    private function logDebug($message, $context = []): void
     {
         if (!$this->config['logging']['enabled']) {
             return;
@@ -266,7 +271,7 @@ class RateLimit
         file_put_contents($logFile, $logLine, FILE_APPEND | LOCK_EX);
     }
 
-    private function logError($message, $context = [])
+    private function logError($message, $context = []): void
     {
         $logFile = $this->config['logging']['log_file'];
         $logDir = dirname($logFile);
@@ -293,7 +298,7 @@ class RateLimit
         return $rule ? $rule['window'] : 3600;
     }
 
-    public function handleRateLimitExceeded($route)
+    public function handleRateLimitExceeded($route): void
     {
         $config = $this->config['responses']['too_many_requests'];
         $retryAfter = $this->getRetryAfter($route);
@@ -313,7 +318,7 @@ class RateLimit
         redirect($redirectUrl);
     }
 
-    public function middleware($route, $method = 'GET')
+    public function middleware($route, $method = 'GET'): void
     {
         if (!$this->checkRequest($route, $method)) {
             $this->handleRateLimitExceeded($route);

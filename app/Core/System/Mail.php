@@ -3,6 +3,7 @@
 namespace App\Core\System;
 
 use App\Models\Setting;
+use Exception;
 
 /**
  * Minimal mail sender.
@@ -12,44 +13,44 @@ use App\Models\Setting;
  */
 class Mail
 {
-    private $to = [];
-    private $subject = '';
-    private $body = '';
-    private $headers = [];
-    private $isHtml = true;
+    private array $to = [];
+    private string $subject = '';
+    private string $body = '';
+    private array $headers = [];
+    private bool $isHtml = true;
 
-    public function to($email, $name = null)
+    public function to($email, $name = null): static
     {
         $this->to[] = $name ? "$name <$email>" : $email;
         return $this;
     }
 
-    public function subject($subject)
+    public function subject($subject): static
     {
         $this->subject = $subject;
         return $this;
     }
 
-    public function html($body)
+    public function html($body): static
     {
         $this->body = $body;
         $this->isHtml = true;
         return $this;
     }
 
-    public function text($body)
+    public function text($body): static
     {
         $this->body = $body;
         $this->isHtml = false;
         return $this;
     }
 
-    public function template($template, $data = [])
+    public function template($template, $data = []): static
     {
         $templatePath = __DIR__ . '/../../../resources/views/emails/' . $template . '.php';
         
         if (!file_exists($templatePath)) {
-            throw new \Exception("Email template {$template} not found");
+            throw new Exception("Email template {$template} not found");
         }
 
         // Render the PHP email template into a string.
@@ -62,7 +63,7 @@ class Mail
         return $this;
     }
 
-    public function send()
+    public function send(): bool
     {
         $settings = Setting::get();
         
@@ -74,7 +75,7 @@ class Mail
         return $this->sendWithSmtp($settings);
     }
 
-    private function sendWithPhpMail()
+    private function sendWithPhpMail(): bool
     {
         $headers = $this->buildHeaders();
         $recipients = array_map([$this, 'extractEmail'], $this->to);
@@ -83,7 +84,7 @@ class Mail
         return mail($to, $this->subject, $this->body, $headers);
     }
 
-    private function sendWithSmtp($settings)
+    private function sendWithSmtp($settings): bool
     {
         $socket = fsockopen($settings->smtp_host, (int)$settings->smtp_port, $errno, $errstr, 30);
         
@@ -129,13 +130,13 @@ class Mail
         return true;
     }
 
-    private function sendCommand($socket, $command)
+    private function sendCommand($socket, $command): false|string
     {
         fputs($socket, $command . "\r\n");
         return $this->readResponse($socket);
     }
 
-    private function readResponse($socket)
+    private function readResponse($socket): false|string
     {
         return fgets($socket, 512);
     }
@@ -148,7 +149,7 @@ class Mail
         return $recipient;
     }
 
-    private function buildHeaders()
+    private function buildHeaders(): string
     {
         $settings = Setting::get();
         $from = $settings->contact_email;
@@ -169,7 +170,7 @@ class Mail
         return implode("\r\n", $headers);
     }
 
-    private function buildEmailMessage($from)
+    private function buildEmailMessage($from): string
     {
         $to = implode(', ', $this->to);
         
@@ -189,7 +190,7 @@ class Mail
         return $message;
     }
 
-    public static function create()
+    public static function create(): Mail
     {
         return new self();
     }

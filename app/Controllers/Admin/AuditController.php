@@ -14,7 +14,7 @@ class AuditController
     /**
      * List audit log entries.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

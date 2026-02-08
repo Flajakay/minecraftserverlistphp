@@ -14,7 +14,7 @@ class PaymentController
     /**
      * List payments.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

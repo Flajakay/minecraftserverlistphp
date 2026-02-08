@@ -10,39 +10,39 @@ namespace App\Core\Support;
  */
 class SEO
 {
-    private static $title = '';
-    private static $description = '';
-    private static $keywords = [];
-    private static $canonical = '';
-    private static $robots = 'index, follow';
-    private static $ogImage = '';
+    private static string $title = '';
+    private static string $description = '';
+    private static array $keywords = [];
+    private static string $canonical = '';
+    private static string $robots = 'index, follow';
+    private static string $ogImage = '';
 
-    public static function setTitle($title)
+    public static function setTitle($title): void
     {
         self::$title = $title;
     }
 
-    public static function setDescription($description)
+    public static function setDescription($description): void
     {
         self::$description = $description;
     }
 
-    public static function setKeywords($keywords)
+    public static function setKeywords($keywords): void
     {
         self::$keywords = is_array($keywords) ? $keywords : explode(',', $keywords);
     }
 
-    public static function setCanonical($url)
+    public static function setCanonical($url): void
     {
         self::$canonical = $url;
     }
 
-    public static function setRobots($robots)
+    public static function setRobots($robots): void
     {
         self::$robots = $robots;
     }
 
-    public static function setOgImage($image)
+    public static function setOgImage($image): void
     {
         self::$ogImage = $image;
     }
@@ -59,27 +59,27 @@ class SEO
         return self::$description ?: setting('meta_description', 'Find the best Minecraft servers to play on');
     }
 
-    public static function getKeywords()
+    public static function getKeywords(): string
     {
         return implode(', ', self::$keywords);
     }
 
-    public static function getCanonical()
+    public static function getCanonical(): string
     {
         return self::$canonical ?: url($_SERVER['REQUEST_URI']);
     }
 
-    public static function getRobots()
+    public static function getRobots(): string
     {
         return self::$robots;
     }
 
-    public static function getOgImage()
+    public static function getOgImage(): string
     {
         return self::$ogImage ?: asset('images/og-default.jpg');
     }
 
-    public static function renderMetaTags()
+    public static function renderMetaTags(): string
     {
         $output = '';
         
@@ -109,7 +109,7 @@ class SEO
         return $output;
     }
 
-    public static function configureServerPage($server)
+    public static function configureServerPage($server): void
     {
         self::setTitle($server->name);
         $description = sprintf(lang('seo.server_description'), $server->name, $server->address . ':' . $server->port, strip_tags($server->description));
@@ -118,7 +118,7 @@ class SEO
         self::setCanonical(url("/server/{$server->address}:{$server->port}"));
     }
 
-    public static function configureCategoryPage($category)
+    public static function configureCategoryPage($category): void
     {
         self::setTitle($category->name . ' Minecraft Servers');
         $description = $category->description ?: sprintf(lang('seo.category_description'), $category->name);
@@ -127,7 +127,7 @@ class SEO
         self::setCanonical(url("/category/{$category->url}"));
     }
 
-    public static function configureHomePage()
+    public static function configureHomePage(): void
     {
         self::setTitle('');
         self::setDescription(lang('seo.home_description'));

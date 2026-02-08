@@ -9,7 +9,8 @@
                         <h4 class="mb-0 fw-semibold">
                             <i class="bi bi-pencil text-primary me-2"></i><?= lang('edit_blog_post') ?>
                         </h4>
-                        <a href="<?= url("/server/{$server->address}:{$server->port}") ?>" class="btn btn-outline-secondary">
+                        <a href="<?= /** @noinspection PhpUndefinedVariableInspection */
+                        url("/server/{$server->address}:{$server->port}") ?>" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i><?= lang('back_to_server') ?>
                         </a>
                     </div>
@@ -24,7 +25,8 @@
                                    class="form-control" 
                                    id="title" 
                                    name="title" 
-                                   value="<?= htmlspecialchars($blog_post->title) ?>"
+                                   value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                   htmlspecialchars($blog_post->title) ?>"
                                    maxlength="255" 
                                    required>
                         </div>

@@ -14,7 +14,7 @@ class Database
 {
     private static $pdo;
 
-    public static function connect()
+    public static function connect(): void
     {
         $config = require __DIR__ . '/../../../config/app.php';
         $db = $config['db'];

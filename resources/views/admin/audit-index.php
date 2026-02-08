@@ -12,7 +12,8 @@
                     <div>
                         <h2 class="h4 fw-bold text-dark mb-1"><?= lang('audit_logs') ?></h2>
                         <p class="text-muted mb-0">
-                            <?= sprintf(lang('total_results'), number_format($totalLogs)) ?> <?= lang('audit_entries') ?>
+                            <?= /** @noinspection PhpUndefinedVariableInspection */
+                            sprintf(lang('total_results'), number_format($totalLogs)) ?> <?= lang('audit_entries') ?>
                         </p>
                     </div>
                 </div>
@@ -45,7 +46,8 @@
                                        name="search" 
                                        class="form-control border-start-0 ps-0" 
                                        placeholder="<?= lang('search_users_actions') ?>" 
-                                       value="<?= htmlspecialchars($search) ?>">
+                                       value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                       htmlspecialchars($search) ?>">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -226,11 +228,13 @@
                 <?php endif; ?>
 
                 <!-- Pagination -->
-                <?php if ($totalPages > 1): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($totalPages > 1): ?>
                     <div class="card-footer bg-light border-0 py-3">
                         <nav>
                             <ul class="pagination justify-content-center mb-2">
-                                <?php if ($currentPage > 1): ?>
+                                <?php /** @noinspection PhpUndefinedVariableInspection */
+                                if ($currentPage > 1): ?>
                                     <li class="page-item">
                                         <a class="page-link" href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($search) ?>">
                                             <i class="bi bi-chevron-left"></i> <?= lang('previous') ?>

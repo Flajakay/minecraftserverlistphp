@@ -2,6 +2,8 @@
 
 namespace App\Core\Integrations;
 
+use Exception;
+
 /**
  * Minimal Votifier client.
  *
@@ -10,7 +12,7 @@ namespace App\Core\Integrations;
  */
 class Votifier
 {
-    public static function sendVote($publicKey, $host, $port, $username)
+    public static function sendVote($publicKey, $host, $port, $username): bool
     {
         try {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -56,7 +58,7 @@ class Votifier
             
             return true;
             
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }

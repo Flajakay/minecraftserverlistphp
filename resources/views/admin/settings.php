@@ -34,7 +34,8 @@
                                        class="form-control border-start-0 ps-0" 
                                        id="title" 
                                        name="title" 
-                                       value="<?= htmlspecialchars($settings->title) ?>" 
+                                       value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                       htmlspecialchars($settings->title) ?>"
                                        placeholder="<?= lang('minecraft_server_list') ?>"
                                        required>
                             </div>

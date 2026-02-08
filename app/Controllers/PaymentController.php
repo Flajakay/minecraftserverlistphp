@@ -7,6 +7,8 @@ use App\Models\Payment;
 use App\Core\Integrations\PayPalService;
 use App\Models\Setting;
 use App\Core\Features\Payments;
+use Exception;
+
 /**
  * Premium purchase/payment controller.
  *
@@ -19,7 +21,7 @@ class PaymentController
      *
      * Availability is controlled by settings (per-day cost > 0).
      */
-    public function showPurchase()
+    public function showPurchase(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -49,7 +51,7 @@ class PaymentController
      *
      * JSON-only endpoint used by the PayPal JS SDK.
      */
-    public function createOrder()
+    public function createOrder(): void
     {
         header('Content-Type: application/json');
         
@@ -66,7 +68,7 @@ class PaymentController
             $result = Payments::initiateOrder(auth()->id, $serverId, $days);
             echo json_encode($result);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('PayPal order creation error: ' . $e->getMessage());
             http_response_code(400);
             echo json_encode(['error' => 'Failed to create payment order']);
@@ -78,7 +80,7 @@ class PaymentController
      *
      * JSON-only endpoint. On success it records the payment and enables server highlighting.
      */
-    public function capturePayment()
+    public function capturePayment(): void
     {
         header('Content-Type: application/json');
         
@@ -98,7 +100,7 @@ class PaymentController
             flash('success', lang('payment_successful_highlight'));
             echo json_encode(['success' => true]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log('Payment capture error: ' . $e->getMessage());
             http_response_code(400);
             echo json_encode(['error' => 'Payment processing failed']);
@@ -108,7 +110,7 @@ class PaymentController
     /**
      * Handle a canceled PayPal checkout and return the user to the premium page.
      */
-    public function cancelPayment()
+    public function cancelPayment(): void
     {
         if (!isLoggedIn()) {
             redirect('/login');

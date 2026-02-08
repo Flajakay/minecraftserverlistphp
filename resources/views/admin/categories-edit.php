@@ -12,7 +12,8 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><?= sprintf(lang('editing_category'), htmlspecialchars($category->name)) ?></h5>
+                    <h5 class="mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
+                        sprintf(lang('editing_category'), htmlspecialchars($category->name)) ?></h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -47,7 +48,8 @@
                             <label for="parent_id" class="form-label"><?= lang('admin_add_category_parent') ?></label>
                             <select class="form-select" id="parent_id" name="parent_id">
                                 <option value="0" <?= $category->parent_id == 0 ? 'selected' : '' ?>><?= lang('none_root_category') ?></option>
-                                <?php foreach ($parentCategories as $parent): ?>
+                                <?php /** @noinspection PhpUndefinedVariableInspection */
+                                foreach ($parentCategories as $parent): ?>
                                     <?php if ($parent->id != $category->id): ?>
                                         <option value="<?= $parent->id ?>" <?= $category->parent_id == $parent->id ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($parent->name) ?>

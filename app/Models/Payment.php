@@ -89,7 +89,7 @@ class Payment
         return Database::delete('payments', 'id = ?', [$id]);
     }
 
-    public static function expireHighlights()
+    public static function expireHighlights(): int
     {
         $expiredPayments = Database::fetchAll(
             'SELECT p.id, p.server_id, p.user_id, p.highlighted_days, p.created_at, s.name as server_name, u.username

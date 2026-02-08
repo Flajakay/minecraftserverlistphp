@@ -12,7 +12,7 @@ class StaticController
     /**
      * Render terms of service page.
      */
-    public function termsOfService()
+    public function termsOfService(): void
     {
         view('static.terms-of-service');
     }
@@ -20,7 +20,7 @@ class StaticController
     /**
      * Render privacy policy page.
      */
-    public function privacyPolicy()
+    public function privacyPolicy(): void
     {
         view('static.privacy-policy');
     }

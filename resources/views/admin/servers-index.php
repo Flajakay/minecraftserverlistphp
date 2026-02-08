@@ -13,7 +13,8 @@
                     <div>
                         <h2 class="h4 fw-bold text-dark mb-1"><?= lang('servers_management') ?></h2>
                         <p class="text-muted mb-0">
-                            <?= sprintf(lang('total_servers_count'), number_format($totalServers)) ?>
+                            <?= /** @noinspection PhpUndefinedVariableInspection */
+                            sprintf(lang('total_servers_count'), number_format($totalServers)) ?>
                         </p>
                     </div>
                 </div>
@@ -44,7 +45,8 @@
                                            name="search" 
                                            class="form-control border-start-0 ps-0" 
                                            placeholder="<?= lang('search') ?>" 
-                                           value="<?= htmlspecialchars($search) ?>">
+                                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
+                                           htmlspecialchars($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -63,8 +65,10 @@
                                     </span>
                                     <select name="category_id" class="form-select border-start-0">
                                         <option value=""><?= lang('server_category') ?></option>
-                                        <?php foreach ($categories as $category): ?>
-                                            <option value="<?= $category->id ?>" <?= $filters['category_id'] == $category->id ? 'selected' : '' ?>>
+                                        <?php /** @noinspection PhpUndefinedVariableInspection */
+                                        foreach ($categories as $category): ?>
+                                            <option value="<?= $category->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */
+                                            $filters['category_id'] == $category->id ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($category->name) ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -77,7 +81,8 @@
                                     </span>
                                     <select name="status" class="form-select border-start-0">
                                         <option value=""><?= lang('server_status') ?></option>
-                                        <option value="1" <?= $filters['status'] === '1' ? 'selected' : '' ?>><?= lang('active') ?></option>
+                                        <option value="1" <?= /** @noinspection PhpUndefinedVariableInspection */
+                                        $filters['status'] === '1' ? 'selected' : '' ?>><?= lang('active') ?></option>
                                         <option value="0" <?= $filters['status'] === '0' ? 'selected' : '' ?>><?= lang('inactive') ?></option>
                                     </select>
                                 </div>
@@ -304,11 +309,13 @@
                 </div>
 
                 <!-- Pagination -->
-                <?php if ($totalPages > 1): ?>
+                <?php /** @noinspection PhpUndefinedVariableInspection */
+                if ($totalPages > 1): ?>
                     <div class="card-footer bg-light border-0">
                         <nav>
                             <ul class="pagination justify-content-center mb-0">
-                                <?php if ($currentPage > 1): ?>
+                                <?php /** @noinspection PhpUndefinedVariableInspection */
+                                if ($currentPage > 1): ?>
                                     <li class="page-item">
                                         <a class="page-link" href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($search) ?>&category_id=<?= urlencode($filters['category_id']) ?>&status=<?= urlencode($filters['status']) ?>&active=<?= urlencode($filters['active']) ?>&private=<?= urlencode($filters['private']) ?>">
                                             <i class="bi bi-chevron-left"></i> <?= lang('previous') ?>

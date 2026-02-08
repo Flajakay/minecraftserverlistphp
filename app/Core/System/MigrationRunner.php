@@ -3,6 +3,7 @@
 namespace App\Core\System;
 
 use PDO;
+use Throwable;
 
 /**
  * Database migration runner for `database/migrations/*.sql`.
@@ -115,7 +116,7 @@ class MigrationRunner
                 $this->pdo->exec($sql);
                 $this->markApplied($migration['name'], $migration['direction']);
                 $executed[] = ['name' => $migration['name'], 'status' => 'applied'];
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $failed = [
                     'name' => $migration['name'],
                     'message' => $e->getMessage()

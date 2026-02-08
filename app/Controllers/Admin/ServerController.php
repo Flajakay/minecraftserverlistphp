@@ -15,7 +15,7 @@ class ServerController
     /**
      * List servers with admin-only filters.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -88,7 +88,7 @@ class ServerController
     /**
      * Persist changes to a server.
      */
-    public function update($id)
+    public function update($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -133,7 +133,7 @@ class ServerController
     /**
      * Delete a server listing.
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -155,7 +155,7 @@ class ServerController
     /**
      * Perform a server moderation action (activate/deactivate/privacy/highlight/delete).
      */
-    public function action($id)
+    public function action($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

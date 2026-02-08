@@ -13,7 +13,9 @@
                         <?= lang('reset_password_message') ?>
                     </p>
                     
-                    <form method="POST" action="<?= url('/reset-password/' . urlencode($email) . '/' . $code) ?>">
+                    <form method="POST" action="<?= /** @noinspection PhpUndefinedVariableInspection */
+                    /** @noinspection PhpUndefinedVariableInspection */
+                    url('/reset-password/' . urlencode($email) . '/' . $code) ?>">
                         <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                         
                         <div class="mb-3">

@@ -50,7 +50,7 @@ class CategoryController
     /**
      * Create a new category.
      */
-    public function create()
+    public function create(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -108,7 +108,7 @@ class CategoryController
     /**
      * Persist changes to a category.
      */
-    public function update($id)
+    public function update($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -146,7 +146,7 @@ class CategoryController
      *
      * The default/root category cannot be deleted.
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

@@ -44,7 +44,7 @@ class User
         return Database::fetchAll('SELECT COUNT(*) as count FROM servers WHERE user_id = ?', [$userId]);
     }
 
-    public static function isActive($username)
+    public static function isActive($username): bool
     {
         $user = self::findByUsername($username);
         return $user && $user->active == 1;

@@ -15,7 +15,7 @@ class BannerController
     /**
      * Render the banner generator UI.
      */
-    public function show()
+    public function show(): void
     {
         $serverId = $_GET['server_id'] ?? null;
         $server = null;

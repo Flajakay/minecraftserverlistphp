@@ -14,7 +14,7 @@ class UserController
     /**
      * List users with filters.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -71,7 +71,7 @@ class UserController
      *
      * Safety: admins cannot modify their own status/role via this endpoint.
      */
-    public function update($id)
+    public function update($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -113,7 +113,7 @@ class UserController
      *
      * Safety: admins cannot delete themselves.
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -135,7 +135,7 @@ class UserController
     /**
      * Perform a bulk action on a user (activate/deactivate/delete).
      */
-    public function action($id)
+    public function action($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

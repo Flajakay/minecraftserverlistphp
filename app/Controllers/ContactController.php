@@ -15,7 +15,7 @@ class ContactController
     /**
      * Render the contact form page.
      */
-    public function show()
+    public function show(): void
     {
         view('static.contact');
     }
@@ -25,7 +25,7 @@ class ContactController
      *
      * Uses PRG (flash + redirect) to avoid duplicate submissions on refresh.
      */
-    public function send()
+    public function send(): void
     {
         $name = sanitize($_POST['name'] ?? '');
         $email = sanitize($_POST['email'] ?? '');

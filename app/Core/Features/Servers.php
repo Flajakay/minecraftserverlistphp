@@ -4,13 +4,12 @@ namespace App\Core\Features;
 
 use App\Models\Server;
 use App\Models\Category;
-use App\Models\Setting;
 use App\Models\AuditLog;
 use App\Core\Integrations\MinecraftPing;
 
 class Servers
 {
-    public static function canManageServer($user, $server)
+    public static function canManageServer($user, $server): bool
     {
         if (!$user || !$server) {
             return false;
@@ -25,7 +24,7 @@ class Servers
         return $user->type >= 1;
     }
 
-    public static function validateServerData($data, $isUpdate = false)
+    public static function validateServerData($data, $isUpdate = false): array
     {
         $errors = [];
 
@@ -49,7 +48,7 @@ class Servers
         return $errors;
     }
 
-    public static function validateCategories($categoryIds, $primaryCategoryId = null)
+    public static function validateCategories($categoryIds, $primaryCategoryId = null): array
     {
         $errors = [];
 
@@ -72,7 +71,7 @@ class Servers
         return $errors;
     }
 
-    public static function processUploads($files)
+    public static function processUploads($files): array
     {
         $result = ['image' => '', 'icon' => ''];
 
@@ -97,7 +96,7 @@ class Servers
         return $result;
     }
 
-    public static function prepareCustomData($postData, $defaultAddress)
+    public static function prepareCustomData($postData, $defaultAddress): array
     {
         $customData = [];
 
@@ -110,14 +109,14 @@ class Servers
         return $customData;
     }
 
-    public static function buildFiltersFromRequest($request, $perPage, $offset)
+    public static function buildFiltersFromRequest($request, $perPage, $offset): array
     {
         $filters = [
             'limit' => $perPage,
             'offset' => $offset
         ];
 
-        if (isset($request['categories']) && !empty($request['categories'])) {
+        if (!empty($request['categories'])) {
             $categoryIds = explode(',', $request['categories']);
             $categoryIds = array_filter(array_map('intval', $categoryIds));
             if (!empty($categoryIds)) {
@@ -149,9 +148,9 @@ class Servers
         return $filters;
     }
 
-    public static function submitServer($userId, $data, $files)
+    public static function submitServer($userId, $data, $files): array
     {
-        $errors = self::validateServerData($data, false);
+        $errors = self::validateServerData($data);
         $categoryErrors = self::validateCategories($data['category_ids'] ?? [], $data['primary_category_id'] ?? null);
         $errors = array_merge($errors, $categoryErrors);
 
@@ -208,7 +207,7 @@ class Servers
         ];
     }
 
-    public static function updateServer($serverId, $userId, $data, $files)
+    public static function updateServer($serverId, $userId, $data, $files): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId, 'type' => auth() ? auth()->type : 0];
@@ -262,7 +261,7 @@ class Servers
         ];
     }
 
-    public static function performAction($serverId, $userId, $action)
+    public static function performAction($serverId, $userId, $action): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId, 'type' => auth() ? auth()->type : 0];
@@ -292,7 +291,7 @@ class Servers
         }
     }
 
-    public static function getEditPageData($serverId, $userId)
+    public static function getEditPageData($serverId, $userId): array
     {
         $server = Server::find($serverId);
         $user = (object) ['id' => $userId, 'type' => auth() ? auth()->type : 0];
@@ -313,7 +312,7 @@ class Servers
         ];
     }
 
-    public static function updateAdmin($serverId, $userId, $data, $files)
+    public static function updateAdmin($serverId, $userId, $data, $files): array
     {
         $server = Server::find($serverId);
         if (!$server) {
@@ -390,7 +389,7 @@ class Servers
         ];
     }
 
-    public static function performAdminAction($serverId, $userId, $action)
+    public static function performAdminAction($serverId, $userId, $action): array
     {
         $server = Server::find($serverId);
         

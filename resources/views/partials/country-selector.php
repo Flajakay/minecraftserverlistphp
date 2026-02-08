@@ -13,7 +13,8 @@
             <input type="hidden" name="country" id="country" value="<?= $selectedCountry ?? old('country') ?>">
         </div>
         <div class="searchable-select-dropdown" id="country-dropdown">
-            <?php foreach ($countries as $code => $name): ?>
+            <?php /** @noinspection PhpUndefinedVariableInspection */
+            foreach ($countries as $code => $name): ?>
                 <div class="searchable-select-option" data-value="<?= $code ?>">
                     <?= htmlspecialchars($name) ?>
                 </div>

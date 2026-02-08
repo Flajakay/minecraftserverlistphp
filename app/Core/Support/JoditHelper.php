@@ -4,7 +4,8 @@
 
 if (!function_exists('joditAssets')) {
 
-    function joditAssets() {
+    function joditAssets(): void
+    {
         static $included = false;
         if ($included) return;
         $included = true;
@@ -20,32 +21,28 @@ if (!function_exists('joditAssets')) {
 }
 
 if (!function_exists('joditInit')) {
-    function joditInit($selector, $type = 'page', $options = [], $placeholder = null) {
+    function joditInit($selector, $type = 'page', $options = [], $placeholder = null): string
+    {
         $placeholderText = $placeholder ?: lang('content_placeholder', 'Write your content here...');
         
         $jsOptions = '';
         if (!empty($options)) {
             $jsOptions = ', ' . json_encode($options);
         }
-        
-        switch ($type) {
-            case 'blog':
-                $initMethod = 'initBlogEditor';
-                break;
-            case 'page':
-                $initMethod = 'initPageEditor';
-                break;
-            default:
-                $initMethod = 'init';
-                break;
-        }
+
+        $initMethod = match ($type) {
+            'blog' => 'initBlogEditor',
+            'page' => 'initPageEditor',
+            default => 'init',
+        };
         
         return "window.joditHelper.{$initMethod}('{$selector}', '{$placeholderText}'{$jsOptions});";
     }
 }
 
 if (!function_exists('joditValidation')) {
-    function joditValidation($selector, $minLength = 10, $errorMessage = null) {
+    function joditValidation($selector, $minLength = 10, $errorMessage = null): string
+    {
         $errorMsg = $errorMessage ?: lang('blog_content_required', 'Content must be at least 10 characters long');
         
         return "
@@ -59,7 +56,8 @@ if (!function_exists('joditValidation')) {
 }
 
 if (!function_exists('joditScript')) {
-    function joditScript($editors = [], $onReady = '') {
+    function joditScript($editors = [], $onReady = ''): string
+    {
         $script = '<script>' . "\n";
         $script .= 'document.addEventListener("DOMContentLoaded", async function() {' . "\n";
         

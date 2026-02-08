@@ -14,7 +14,7 @@ class ReportController
     /**
      * List reports with optional filters.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -45,7 +45,7 @@ class ReportController
     /**
      * Show a single report with related details.
      */
-    public function view($id)
+    public function view($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -64,7 +64,7 @@ class ReportController
     /**
      * Delete a report.
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -86,7 +86,7 @@ class ReportController
     /**
      * Perform a report moderation action.
      */
-    public function action($id)
+    public function action($id): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');

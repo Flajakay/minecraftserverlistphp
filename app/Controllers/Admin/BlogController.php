@@ -16,7 +16,7 @@ class BlogController
     /**
      * List blog posts with optional filters.
      */
-    public function index()
+    public function index(): void
     {
         if (!isAdmin()) {
             flash('error', 'Access denied');
@@ -56,7 +56,7 @@ class BlogController
      *
      * Supports both AJAX (JSON) and standard form submissions (flash + redirect).
      */
-    public function delete($id)
+    public function delete($id): void
     {
         if (!isAdmin()) {
             echo json_encode(['success' => false, 'message' => 'Access denied']);

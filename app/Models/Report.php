@@ -33,7 +33,7 @@ class Report
         return Database::delete('reports', 'id = ?', [$id]);
     }
 
-    public static function exists($userId, $type, $reportedId)
+    public static function exists($userId, $type, $reportedId): bool
     {
         $report = Database::fetch(
             'SELECT * FROM reports WHERE user_id = ? AND type = ? AND reported_id = ?',

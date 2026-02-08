@@ -8,7 +8,7 @@ use App\Core\System\Database;
 
 class Server
 {
-    public static function getEffectiveOwnerUserId($server)
+    public static function getEffectiveOwnerUserId($server): ?int
     {
         if (!$server) {
             return null;
@@ -21,10 +21,10 @@ class Server
         return !empty($server->user_id) ? (int) $server->user_id : null;
     }
 
-    public static function isEffectiveOwner($server, $userId)
+    public static function isEffectiveOwner($server, $userId): bool
     {
         $effectiveOwnerId = self::getEffectiveOwnerUserId($server);
-        return $effectiveOwnerId && (int) $effectiveOwnerId === (int) $userId;
+        return $effectiveOwnerId && $effectiveOwnerId === (int) $userId;
     }
 
     public static function create($data)
@@ -70,7 +70,7 @@ class Server
             if (!empty($filters['include_subcategories'])) {
                 $allCategoryIds = $categoryIds;
                 foreach ($categoryIds as $categoryId) {
-                    $subcategories = \App\Models\Category::getSubcategories($categoryId);
+                    $subcategories = Category::getSubcategories($categoryId);
                     foreach ($subcategories as $sub) {
                         $allCategoryIds[] = $sub->id;
                     }
@@ -191,7 +191,7 @@ class Server
         return Database::delete('servers', 'id = ?', [$id]);
     }
 
-    public static function exists($address, $port)
+    public static function exists($address, $port): bool
     {
         $server = self::findByAddress($address, $port);
         return $server !== false;
@@ -208,7 +208,7 @@ class Server
             if (!empty($filters['include_subcategories'])) {
                 $allCategoryIds = $categoryIds;
                 foreach ($categoryIds as $categoryId) {
-                    $subcategories = \App\Models\Category::getSubcategories($categoryId);
+                    $subcategories = Category::getSubcategories($categoryId);
                     foreach ($subcategories as $sub) {
                         $allCategoryIds[] = $sub->id;
                     }
@@ -404,7 +404,7 @@ class Server
         ], 'id = ?', [$serverId]);
     }
 
-    public static function canAttemptVerification($serverId, $cooldownSeconds = 30)
+    public static function canAttemptVerification($serverId, $cooldownSeconds = 30): bool
     {
         $row = Database::fetch('SELECT last_verification_attempt_at FROM servers WHERE id = ?', [$serverId]);
         if (!$row || empty($row->last_verification_attempt_at)) {
@@ -450,16 +450,16 @@ class Server
 
     public static function getCategories($serverId)
     {
-        return \App\Models\ServerCategory::getServerCategories($serverId);
+        return ServerCategory::getServerCategories($serverId);
     }
 
-    public static function setCategories($serverId, $categoryIds, $primaryCategoryId = null)
+    public static function setCategories($serverId, $categoryIds, $primaryCategoryId = null): bool
     {
-        return \App\Models\ServerCategory::setServerCategories($serverId, $categoryIds, $primaryCategoryId);
+        return ServerCategory::setServerCategories($serverId, $categoryIds, $primaryCategoryId);
     }
 
     public static function getPrimaryCategory($serverId)
     {
-        return \App\Models\ServerCategory::getPrimaryCategory($serverId);
+        return ServerCategory::getPrimaryCategory($serverId);
     }
 }

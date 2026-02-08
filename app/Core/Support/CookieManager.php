@@ -69,22 +69,5 @@ class CookieManager
         return isset($_COOKIE[$name]);
     }
 
-    public static function setSecure(string $name, string $value, int $days = 30): bool
-    {
-        // NOTE: This is encoding (base64), not encryption. Do not store secrets here.
-        $encryptedValue = base64_encode($value);
-        return self::set($name, $encryptedValue, $days);
-    }
-
-    public static function getSecure(string $name, string $default = null): ?string
-    {
-        // NOTE: This is decoding (base64), not decryption.
-        $value = self::get($name, $default);
-        if ($value === $default) {
-            return $default;
-        }
-        return base64_decode($value);
-    }
 }
 
-?>

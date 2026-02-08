@@ -18,7 +18,7 @@ class ServerClaimController
     /**
      * Render the claim page for a server.
      */
-    public function show($id)
+    public function show($id): void
     {
         if (!isLoggedIn()) {
             flash('error', lang('logged_in_action'));
@@ -46,7 +46,7 @@ class ServerClaimController
     /**
      * Start a new claim by generating a short-lived verification token.
      */
-    public function start($id)
+    public function start($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -71,7 +71,7 @@ class ServerClaimController
     /**
      * Verify ownership by pinging the server and checking the token in the MOTD.
      */
-    public function verify($id)
+    public function verify($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');
@@ -98,7 +98,7 @@ class ServerClaimController
     /**
      * Cancel an in-progress claim.
      */
-    public function cancel($id)
+    public function cancel($id): void
     {
         if (!isLoggedIn()) {
             redirect('/login');

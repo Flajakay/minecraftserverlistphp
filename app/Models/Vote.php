@@ -6,7 +6,7 @@ use App\Core\System\Database;
 
 class Vote
 {
-    public static function canVote($serverId, $ip)
+    public static function canVote($serverId, $ip): bool
     {
         $vote = Database::fetch(
             'SELECT * FROM points WHERE server_id = ? AND ip = ? AND type = 1 AND timestamp > UNIX_TIMESTAMP(NOW() - INTERVAL 1 DAY)',

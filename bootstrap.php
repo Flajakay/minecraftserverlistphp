@@ -1,5 +1,8 @@
 <?php
 
+use App\Core\Support\Language;
+use App\Core\System\Database;
+
 ob_start();
 
 // Configure session security
@@ -14,15 +17,14 @@ session_start();
 // Load Composer's autoloader
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Manually load global functions
+// Manually load global helper functions
 require_once __DIR__ . '/app/Core/Support/Helpers.php';
-require_once __DIR__ . '/app/Core/Support/JoditHelper.php';
 
 // Initialize Language system
-\App\Core\Support\Language::initialize();
+Language::initialize();
 
 // Initialize Database connection
-\App\Core\System\Database::connect();
+Database::connect();
 
-// Initialize Rate Limiting logs directory
+// Initialize Rate Limiting and logs directory
 ensureDirectoryExists(__DIR__ . '/storage/logs');
