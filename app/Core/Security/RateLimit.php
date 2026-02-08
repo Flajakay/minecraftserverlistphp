@@ -14,7 +14,7 @@ use Exception;
  */
 class RateLimit
 {
-    private static RateLimit $instance;
+    private static ?RateLimit $instance = null;
     private LeakyBucket $throttle;
     private mixed $config;
 
