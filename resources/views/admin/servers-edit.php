@@ -1,19 +1,15 @@
 <?php ob_start(); ?>
 
 <div class="container py-5">
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
+		<div class="text-center">
+			<div class="mb-3">
+				<i class="bi bi-pencil-square text-primary" style="font-size: 2.5rem;"></i>
+			</div>
+			<h2 class="h4 fw-bold text-dark mb-1"><?= lang('titles.edit_server') ?></h2>
+			<p class="text-muted mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */htmlspecialchars($server->name) ?></p>
+		</div>
         <div class="col-lg-8">
-            <div class="d-flex align-items-center mb-4">
-                <div class="me-3">
-                    <i class="bi bi-pencil-square text-primary" style="font-size: 2rem;"></i>
-                </div>
-                <div>
-                    <h2 class="h4 fw-bold text-dark mb-1"><?= lang('titles.edit_server') ?></h2>
-                    <p class="text-muted mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
-                        htmlspecialchars($server->name) ?></p>
-                </div>
-            </div>
-
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <?php

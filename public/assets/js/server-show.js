@@ -512,6 +512,35 @@ class ServerShow {
         }
     }
 
+    async deleteComment(commentId) {
+        if (!confirm(window.lang?.confirm_delete_comment || window.lang?.confirm_delete || 'Are you sure you want to delete this comment?')) return;
+
+        try {
+            const response = await this.makeRequest('/comment/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    comment_id: commentId,
+                    csrf_token: this.csrfToken
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                await this.refreshComments();
+                this.showToast(window.lang?.comment_deleted || 'Comment deleted successfully!', 'success');
+            } else {
+                alert(data.message || window.lang?.error_occurred || 'An error occurred');
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            alert(window.lang?.error_occurred || 'An error occurred');
+        }
+    }
+
     async refreshComments() {
         try {
             const response = await this.makeRequest(`/comment/load-more?server_id=${this.serverId}&offset=0&limit=10`);
@@ -747,6 +776,12 @@ window.reportServer = function (serverId) {
 window.deleteBlogPost = function (id) {
     if (window.serverShowInstance) {
         window.serverShowInstance.deleteBlogPost(id);
+    }
+};
+
+window.deleteComment = function (id) {
+    if (window.serverShowInstance) {
+        window.serverShowInstance.deleteComment(id);
     }
 };
 

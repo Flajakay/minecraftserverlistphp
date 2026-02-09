@@ -356,11 +356,20 @@ class Servers
             'description' => trim($data['description'] ?? ''),
             'website' => sanitize($data['website'] ?? ''),
             'country' => sanitize($data['country'] ?? ''),
-            'youtube_id' => sanitize($data['youtube_id'] ?? ''),
-            'active' => isset($data['active']) ? 1 : 0,
-            'private' => isset($data['private']) ? 1 : 0,
-            'highlight' => isset($data['highlight']) ? 1 : 0
+            'youtube_id' => sanitize($data['youtube_id'] ?? '')
         ];
+
+        if (array_key_exists('active', $data)) {
+            $updateData['active'] = !empty($data['active']) ? 1 : 0;
+        }
+
+        if (array_key_exists('private', $data)) {
+            $updateData['private'] = !empty($data['private']) ? 1 : 0;
+        }
+
+        if (array_key_exists('highlight', $data)) {
+            $updateData['highlight'] = !empty($data['highlight']) ? 1 : 0;
+        }
 
         if (isset($files['image']) && $files['image']['error'] === UPLOAD_ERR_OK) {
             $image = uploadFile($files['image'], 'banners');

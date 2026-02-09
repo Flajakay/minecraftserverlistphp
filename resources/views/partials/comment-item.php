@@ -24,30 +24,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-function deleteComment(commentId) {
-    if (!confirm('<?= lang('confirm_delete_comment') ?>')) {
-        return;
-    }
-    
-    fetch('<?= url('/comment/delete') ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            comment_id: commentId,
-            csrf_token: '<?= csrf() ?>'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert(data.message || '<?= lang('error_occurred') ?>');
-        }
-    });
-}
-</script>

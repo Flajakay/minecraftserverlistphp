@@ -3,7 +3,7 @@
 <div class="container py-4">
     <div class="row">
         <div class="col-lg-4">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-body text-center">
                     <?php /** @noinspection PhpUndefinedVariableInspection */
                     if ($user->avatar): ?>
@@ -33,7 +33,7 @@
                 </div>
             </div>
             
-            <div class="card mt-3">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h6 class="mb-0"><?= lang('user_info') ?></h6>
                 </div>
@@ -64,7 +64,7 @@
             </div>
             
             <?php if ($user->facebook || $user->twitter): ?>
-            <div class="card mt-3">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h6 class="mb-0"><?= lang('headers.social_data') ?></h6>
                 </div>

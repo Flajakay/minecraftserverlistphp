@@ -43,7 +43,7 @@ class ContactController
         }
 
         if (strlen($subject) < 3) {
-            $errors[] = lang('subject_required', 'Subject is required');
+            $errors[] = lang('subject_required');
         }
 
         if (strlen($message) < 10) {
@@ -69,9 +69,10 @@ class ContactController
                 ])
                 ->send();
 
-            flash('success', lang('contact_success', 'Your message has been sent successfully!'));
+            flash('success', lang('contact_success'));
         } catch (Exception $e) {
-            flash('error', lang('email_send_failed', 'Failed to send email. Please try again later.'));
+            flash('error', lang('email_send_failed'));
+
         }
 
         redirect('/contact');

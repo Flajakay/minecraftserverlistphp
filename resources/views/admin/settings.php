@@ -14,7 +14,7 @@
     <form method="POST" action="<?= url('/admin/settings') ?>">
         <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
         
-        <div class="row g-4">
+        <div class="row g-4 mt-4">
             <!-- Basic Settings -->
             <div class="col-lg-6">
                 <div class="card border-0 shadow-sm h-100">

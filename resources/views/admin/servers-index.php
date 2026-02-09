@@ -239,11 +239,8 @@
                                                 <?php if (isset($server->categories) && !empty($server->categories)): ?>
                                                     <?php foreach ($server->categories as $index => $category): ?>
                                                         <?php if ($index < 2): ?>
-                                                            <span class="badge bg-light text-dark border me-1 mb-1 <?= $category->is_primary ? 'bg-primary text-white' : '' ?>">
+                                                            <span class="badge bg-light text-dark border me-1 mb-1">
                                                                 <?= htmlspecialchars($category->category_name) ?>
-                                                                <?php if ($category->is_primary): ?>
-                                                                    <i class="bi bi-star-fill ms-1"></i>
-                                                                <?php endif; ?>
                                                             </span>
                                                         <?php elseif ($index == 2): ?>
                                                             <span class="badge bg-secondary text-white me-1 mb-1" title="<?= implode(', ', array_slice(array_column($server->categories, 'category_name'), 2)) ?>">

@@ -110,9 +110,6 @@ class ServerController
             'website' => $_POST['website'] ?? '',
             'country' => $_POST['country'] ?? '',
             'youtube_id' => $_POST['youtube_id'] ?? '',
-            'active' => $_POST['active'] ?? null,
-            'private' => $_POST['private'] ?? null,
-            'highlight' => $_POST['highlight'] ?? null,
             'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
             'votifier_ip' => $_POST['votifier_ip'] ?? '',
             'votifier_port' => $_POST['votifier_port'] ?? 8192

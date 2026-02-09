@@ -72,7 +72,7 @@ $isAdmin = $config['isAdmin'] ?? false;
         <div class="row g-3 mt-2">
             <?php include __DIR__ . '/category-selection.php'; ?>
 
-            <div class="col-md-6">
+            <div class="col-12">
                 <?php $selectedCountry = $server->country; ?>
                 <?php include __DIR__ . '/country-selector.php'; ?>
             </div>

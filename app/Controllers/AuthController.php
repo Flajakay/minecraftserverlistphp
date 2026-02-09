@@ -30,6 +30,7 @@ class AuthController
      */
     public function login(): void
     {
+        
         $username = sanitize($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']);
@@ -83,7 +84,7 @@ class AuthController
         } else if ($result['requiresActivation']) {
             flash('success', lang('registered_successfuly'));
         } else {
-            flash('success', lang('registration_complete', 'Registration successful! You can now login.'));
+            flash('success', lang('registration_complete'));
         }
         
         redirect('/login');
