@@ -47,10 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if (class_exists('App\\Core\\MigrationRunner')) {
-            $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
-            $runner->runAllPending();
-        }
+        $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
+        $runner->runAllPending();
 
         $config = "<?php\n\nreturn [\n";
         $config .= "    'name' => '" . addslashes($siteTitle) . "',\n";

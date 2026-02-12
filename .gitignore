@@ -35,7 +35,7 @@ ngrok.txt
 *.code-workspace
 
 docs
-installed.lock
+/storage/installed.lock
 
 scripts/
 language_templates/

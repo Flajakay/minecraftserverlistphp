@@ -24,6 +24,16 @@ class User
         return Database::fetch('SELECT * FROM users WHERE email = ?', [$email]);
     }
 
+    public static function findByResetCode($email, $code)
+    {
+        return Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+    }
+
+    public static function create($data)
+    {
+        return Database::insert('users', $data);
+    }
+
     public static function activate($email, $code)
     {
         return Database::update('users', 

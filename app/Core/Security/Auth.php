@@ -5,7 +5,7 @@ namespace App\Core\Security;
 use App\Core\Support\CookieManager;
 use App\Core\Security\RateLimit;
 use App\Core\System\Mail;
-use App\Core\System\Database;
+use App\Models\User;
 use Exception;
 
 /**
@@ -18,23 +18,37 @@ class Auth
 {
     public static function user()
     {
-        if (!self::check()) {
-            return null;
+        // Check session first (fastest)
+        if (isset($_SESSION['user_id'])) {
+            $user = User::find($_SESSION['user_id']);
+            if ($user) {
+                return $user;
+            }
+            // User in session does not exist in DB (deleted?), clear session
+            session_unset();
+            session_destroy();
         }
-        
-        $userId = $_SESSION['user_id'] ?? CookieManager::get('user_id') ?? null;
-        if (!$userId) {
-            return null;
-        }
-        
-        return Database::fetch('SELECT * FROM users WHERE id = ?', [$userId]);
-    }
 
-    public static function check(): bool
-    {
-        // Consider a user authenticated if they have an active session OR a remember-me cookie.
-        return isset($_SESSION['user_id']) || 
-               (CookieManager::has('user_id') && CookieManager::has('remember_token'));
+        // Check cookies (slower, requires DB)
+        $userId = CookieManager::get('user_id');
+        $token = CookieManager::get('remember_token');
+
+        if ($userId && $token) {
+            $user = User::find($userId);
+            // Verify token. Use hash_equals to prevent timing attacks.
+            // Ensure stored token is not empty to prevent bypass against users with no token.
+            if ($user && !empty($user->remember_token) && hash_equals($user->remember_token, $token)) {
+                // Token is valid, restore session
+                $_SESSION['user_id'] = $user->id;
+                session_regenerate_id(true);
+                return $user;
+            } else {
+                // Invalid or stale token, clear cookies
+                self::logout();
+            }
+        }
+        
+        return null;
     }
 
     public static function login($user, $remember = false): void
@@ -47,7 +61,7 @@ class Auth
             CookieManager::set('user_id', $user->id);
             CookieManager::set('remember_token', $token);
             
-            Database::update('users', ['remember_token' => $token], 'id = ?', [$user->id]);
+            User::update($user->id, ['remember_token' => $token]);
         }
     }
 
@@ -167,7 +181,7 @@ class Auth
             $ip = $rateLimit->getClientIp();
         }
 
-        $user = Database::fetch('SELECT * FROM users WHERE username = ?', [$username]);
+        $user = User::findByUsername($username);
 
         if ($user && self::verifyPassword($password, $user->password)) {
             // Successful login resets lockouts for both username and IP.
@@ -207,8 +221,7 @@ class Auth
             return lang('username_length_validation');
         }
 
-        $existingUser = Database::fetch('SELECT id FROM users WHERE username = ?', [$username]);
-        if ($existingUser) {
+        if (User::findByUsername($username)) {
             return lang('username_exists');
         }
 
@@ -221,8 +234,7 @@ class Auth
             return lang('invalid_email');
         }
 
-        $existingUser = Database::fetch('SELECT id FROM users WHERE email = ?', [$email]);
-        if ($existingUser) {
+        if (User::findByEmail($email)) {
             return lang('email_used');
         }
 
@@ -284,7 +296,7 @@ class Auth
 
         $activationCode = bin2hex(random_bytes(16));
         
-        $userId = Database::insert('users', [
+        $userId = User::create([
             'username' => $username,
             'email' => $email,
             'password' => self::hashPassword($password),
@@ -316,7 +328,7 @@ class Auth
                 $emailError = lang('email_send_failed', 'Registration successful but activation email could not be sent.');
             }
         } else {
-            Database::update('users', ['active' => 1], 'id = ?', [$userId]);
+            User::update($userId, ['active' => 1]);
         }
 
         return [
@@ -331,13 +343,7 @@ class Auth
 
     public static function activateAccount($email, $code): bool
     {
-        $updated = Database::update('users', 
-            ['active' => 1, 'email_activation_code' => ''], 
-            'email = ? AND email_activation_code = ?', 
-            [$email, $code]
-        );
-
-        return $updated > 0;
+        return User::activate($email, $code) > 0;
     }
 
     public static function initiatePasswordReset($email): array
@@ -350,7 +356,7 @@ class Auth
             ];
         }
 
-        $user = Database::fetch('SELECT * FROM users WHERE email = ?', [$email]);
+        $user = User::findByEmail($email);
         if (!$user) {
             return [
                 'success' => false,
@@ -360,7 +366,7 @@ class Auth
         }
 
         $code = bin2hex(random_bytes(16));
-        Database::update('users', ['lost_password_code' => $code], 'id = ?', [$user->id]);
+        User::update($user->id, ['lost_password_code' => $code]);
 
         try {
             $resetUrl = url('/reset-password/' . urlencode($email) . '/' . $code);
@@ -393,7 +399,7 @@ class Auth
      */
     public static function validateResetLink($email, $code)
     {
-        return Database::fetch('SELECT * FROM users WHERE email = ? AND lost_password_code = ?', [$email, $code]);
+        return User::findByResetCode($email, $code);
     }
 
     public static function resetPassword($email, $code, $newPassword, $confirmPassword): array
@@ -423,8 +429,10 @@ class Auth
         }
 
         $hashedPassword = self::hashPassword($newPassword);
-        Database::update('users', ['password' => $hashedPassword], 'id = ?', [$user->id]);
-        Database::update('users', ['lost_password_code' => ''], 'id = ?', [$user->id]);
+        User::update($user->id, [
+            'password' => $hashedPassword,
+            'lost_password_code' => ''
+        ]);
 
         return [
             'success' => true,
