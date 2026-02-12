@@ -43,7 +43,7 @@
                                                class="form-control border-start-0 ps-0" 
                                                placeholder="<?= lang('search') ?>" 
                                                value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                               htmlspecialchars($search) ?>">
+                                               sanitize($search) ?>">
                                         <button type="submit" class="btn btn-primary ms-2">
                                             <?= lang('search_button') ?>
                                         </button>
@@ -95,23 +95,23 @@
                                                     <td>
                                                         <div>
                                                             <div class="fw-semibold">
-                                                                <?= htmlspecialchars($category->name) ?>
+                                                                <?= sanitize($category->name) ?>
                                                             </div>
                                                             <?php if ($category->description): ?>
                                                                 <small class="text-muted">
-                                                                    <?= htmlspecialchars(substr($category->description, 0, 20)) ?>
+                                                                    <?= sanitize(substr($category->description, 0, 20)) ?>
                                                                     <?php if (strlen($category->description) > 20): ?>...<?php endif; ?>
                                                                 </small>
                                                             <?php endif; ?>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <code class="bg-light px-2 py-1 rounded"><?= htmlspecialchars($category->url) ?></code>
+                                                        <code class="bg-light px-2 py-1 rounded"><?= sanitize($category->url) ?></code>
                                                     </td>
                                                     <td>
                                                         <?php if ($category->parent_name): ?>
                                                             <span class="badge bg-secondary">
-                                                                <i class="bi bi-arrow-up me-1"></i><?= htmlspecialchars($category->parent_name) ?>
+                                                                <i class="bi bi-arrow-up me-1"></i><?= sanitize($category->parent_name) ?>
                                                             </span>
                                                         <?php else: ?>
                                                             <span class="badge bg-primary">
@@ -272,7 +272,7 @@
                                             <option value="0"><?= lang('none_root_category') ?></option>
                                             <?php /** @noinspection PhpUndefinedVariableInspection */
                                             foreach ($parentCategories as $parent): ?>
-                                                <option value="<?= $parent->id ?>"><?= htmlspecialchars($parent->name) ?></option>
+                                                <option value="<?= $parent->id ?>"><?= sanitize($parent->name) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

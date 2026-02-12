@@ -9,14 +9,14 @@ ob_start();
 
 <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
     <p><strong><?= lang('name') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
-        htmlspecialchars($name) ?></p>
+        sanitize($name) ?></p>
     <p><strong><?= lang('email') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
-        htmlspecialchars($email) ?></p>
+        sanitize($email) ?></p>
     <p><strong><?= lang('subject') ?>:</strong> <?= /** @noinspection PhpUndefinedVariableInspection */
-        htmlspecialchars($messageSubject) ?></p>
+        sanitize($messageSubject) ?></p>
     <p><strong><?= lang('message') ?>:</strong></p>
     <p><?= /** @noinspection PhpUndefinedVariableInspection */
-        nl2br(htmlspecialchars($message)) ?></p>
+        nl2br(sanitize($message)) ?></p>
 </div>
 
 <p><?= lang('contact_form_reply') ?></p>

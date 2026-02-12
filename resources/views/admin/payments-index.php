@@ -44,7 +44,7 @@
                                            class="form-control border-start-0 ps-0"
                                            placeholder="<?= lang('search_payments') ?>"
                                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                           htmlspecialchars($search) ?>">
+                                           sanitize($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -132,14 +132,14 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold">
-                                                            <?= htmlspecialchars($payment->username) ?>
+                                                            <?= sanitize($payment->username) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold">
-                                                    <?= htmlspecialchars($payment->server_name) ?>
+                                                    <?= sanitize($payment->server_name) ?>
                                                 </div>
                                                 <small class="text-muted">Payment ID: <?= $payment->id ?></small>
                                             </td>
@@ -155,7 +155,7 @@
                                             </td>
                                             <td>
                                                 <span class="text-muted small">
-                                                    <?= htmlspecialchars($payment->email) ?>
+                                                    <?= sanitize($payment->email) ?>
                                                 </span>
                                             </td>
                                             <td>

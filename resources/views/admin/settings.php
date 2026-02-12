@@ -35,7 +35,7 @@
                                        id="title" 
                                        name="title" 
                                        value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                       htmlspecialchars($settings->title) ?>"
+                                       sanitize($settings->title) ?>"
                                        placeholder="<?= lang('minecraft_server_list') ?>"
                                        required>
                             </div>
@@ -51,7 +51,7 @@
                                        class="form-control border-start-0 ps-0" 
                                        id="url" 
                                        name="url" 
-                                       value="<?= htmlspecialchars($settings->url) ?>" 
+                                       value="<?= sanitize($settings->url) ?>" 
                                        placeholder="<?= lang('site_url_placeholder') ?>"
                                        required>
                             </div>
@@ -68,7 +68,7 @@
                                        class="form-control border-start-0 ps-0" 
                                        id="contact_email" 
                                        name="contact_email" 
-                                       value="<?= htmlspecialchars($settings->contact_email) ?>" 
+                                       value="<?= sanitize($settings->contact_email) ?>" 
                                        placeholder="<?= lang('contact_email_placeholder') ?>"
                                        required>
                             </div>
@@ -166,7 +166,7 @@
                                    class="form-control border-start-0 ps-0" 
                                    id="smtp_host" 
                                    name="smtp_host" 
-                                   value="<?= htmlspecialchars($settings->smtp_host ?? '') ?>" 
+                                   value="<?= sanitize($settings->smtp_host ?? '') ?>" 
                                    placeholder="<?= lang('smtp_gmail_example') ?>">
                         </div>
                     </div>
@@ -181,7 +181,7 @@
                                    class="form-control border-start-0 ps-0" 
                                    id="smtp_port" 
                                    name="smtp_port" 
-                                   value="<?= htmlspecialchars($settings->smtp_port ?? '') ?>" 
+                                   value="<?= sanitize($settings->smtp_port ?? '') ?>" 
                                    placeholder="587">
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                                    class="form-control border-start-0 ps-0" 
                                    id="smtp_user" 
                                    name="smtp_user" 
-                                   value="<?= htmlspecialchars($settings->smtp_user ?? '') ?>"
+                                   value="<?= sanitize($settings->smtp_user ?? '') ?>"
                                    placeholder="<?= lang('smtp_email_example') ?>">
                         </div>
                     </div>
@@ -213,7 +213,7 @@
                                    class="form-control border-start-0 ps-0" 
                                    id="smtp_pass" 
                                    name="smtp_pass" 
-                                   value="<?= htmlspecialchars($settings->smtp_pass ?? '') ?>"
+                                   value="<?= sanitize($settings->smtp_pass ?? '') ?>"
                                    placeholder="<?= lang('app_password_placeholder') ?>">
                         </div>
                     </div>
@@ -256,7 +256,7 @@
                                    class="form-control border-start-0 ps-0"
                                    id="paypal_email"
                                    name="paypal_email"
-                                   value="<?= htmlspecialchars($settings->paypal_email ?? '') ?>"
+                                   value="<?= sanitize($settings->paypal_email ?? '') ?>"
                                    placeholder="your-paypal@example.com">
                         </div>
                         <small class="text-muted">PayPal account email for receiving payments</small>
@@ -290,7 +290,7 @@
                                    class="form-control border-start-0 ps-0"
                                    id="paypal_client_id"
                                    name="paypal_client_id"
-                                   value="<?= htmlspecialchars($settings->paypal_client_id ?? '') ?>"
+                                   value="<?= sanitize($settings->paypal_client_id ?? '') ?>"
                                    placeholder="Your PayPal Client ID">
                         </div>
                     </div>
@@ -305,7 +305,7 @@
                                    class="form-control border-start-0 ps-0"
                                    id="paypal_client_secret"
                                    name="paypal_client_secret"
-                                   value="<?= htmlspecialchars($settings->paypal_client_secret ?? '') ?>"
+                                   value="<?= sanitize($settings->paypal_client_secret ?? '') ?>"
                                    placeholder="Your PayPal Client Secret">
                         </div>
                     </div>

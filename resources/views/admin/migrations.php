@@ -85,14 +85,14 @@
                                         <tr>
                                             <td>
                                                 <?php if (empty($item['applied'])): ?>
-                                                    <input class="form-check-input" type="checkbox" name="migrations[]" value="<?= htmlspecialchars($item['name']) ?>">
+                                                    <input class="form-check-input" type="checkbox" name="migrations[]" value="<?= sanitize($item['name']) ?>">
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <code><?= htmlspecialchars($item['name']) ?></code>
+                                                <code><?= sanitize($item['name']) ?></code>
                                             </td>
                                             <td>
-                                                <span class="badge bg-light text-dark text-uppercase"><?= htmlspecialchars($item['direction']) ?></span>
+                                                <span class="badge bg-light text-dark text-uppercase"><?= sanitize($item['direction']) ?></span>
                                             </td>
                                             <td>
                                                 <?php if (!empty($item['applied'])): ?>
@@ -106,7 +106,7 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <small class="text-muted"><?= !empty($item['applied_at']) ? htmlspecialchars($item['applied_at']) : '-' ?></small>
+                                                <small class="text-muted"><?= !empty($item['applied_at']) ? sanitize($item['applied_at']) : '-' ?></small>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

@@ -47,7 +47,7 @@
                                        class="form-control border-start-0 ps-0" 
                                        placeholder="<?= lang('search_users_actions') ?>" 
                                        value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                       htmlspecialchars($search) ?>">
+                                       sanitize($search) ?>">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -75,7 +75,7 @@
                         <h5 class="text-muted mt-3 mb-2"><?= lang('no_results') ?></h5>
                         <p class="text-muted mb-3">
                             <?php if (!empty($search)): ?>
-                                <?= sprintf(lang('no_matching_logs'), htmlspecialchars($search)) ?>
+                                <?= sprintf(lang('no_matching_logs'), sanitize($search)) ?>
                             <?php else: ?>
                                 <?= lang('no_audit_logs') ?>
                             <?php endif; ?>
@@ -154,7 +154,7 @@
                                                     <?php endif; ?>
                                                 </div>
                                                 <div>
-                                                    <div class="fw-semibold"><?= htmlspecialchars($log->username ?? 'System') ?></div>
+                                                    <div class="fw-semibold"><?= sanitize($log->username ?? 'System') ?></div>
                                                     <small class="text-muted">
                                                         <?= $log->username ? lang('user_action') : lang('system_action') ?>
                                                     </small>
@@ -183,7 +183,7 @@
                                         </td>
                                         <td class="py-3">
                                             <span class="badge bg-light text-dark border">
-                                                <?= htmlspecialchars($log->table_name) ?>
+                                                <?= sanitize($log->table_name) ?>
                                             </span>
                                         </td>
                                         <td class="py-3">
@@ -196,9 +196,9 @@
                                         <td class="py-3">
                                             <?php if ($log->details): ?>
                                                 <div class="text-truncate" style="max-width: 200px;" 
-                                                     title="<?= htmlspecialchars($log->details) ?>"
+                                                     title="<?= sanitize($log->details) ?>"
                                                      data-bs-toggle="tooltip">
-                                                    <small class="text-muted"><?= htmlspecialchars($log->details) ?></small>
+                                                    <small class="text-muted"><?= sanitize($log->details) ?></small>
                                                 </div>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
@@ -208,7 +208,7 @@
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-geo-alt text-muted me-1"></i>
                                                 <span class="badge bg-light text-dark border font-monospace">
-                                                    <?= htmlspecialchars($log->ip_address) ?>
+                                                    <?= sanitize($log->ip_address) ?>
                                                 </span>
                                             </div>
                                         </td>

@@ -26,7 +26,7 @@
                                    id="title" 
                                    name="title" 
                                    value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                   htmlspecialchars($blog_post->title) ?>"
+                                   sanitize($blog_post->title) ?>"
                                    maxlength="255" 
                                    required>
                         </div>
@@ -36,7 +36,7 @@
                             <textarea id="content" 
                                       name="content" 
                                       class="form-control"
-                                      required><?= htmlspecialchars($blog_post->content) ?></textarea>
+                                      required><?= sanitize($blog_post->content) ?></textarea>
                         </div>
                         
                         <div class="d-flex gap-2">
@@ -71,5 +71,5 @@ window.lang = {
 </script>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('edit_blog_post') . ' - ' . htmlspecialchars($server->name); ?>
+<?php $title = lang('edit_blog_post') . ' - ' . sanitize($server->name); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

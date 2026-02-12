@@ -84,27 +84,27 @@ class SEO
         $output = '';
         
         // Escape all values to prevent injection through settings/user content.
-        $output .= '<title>' . htmlspecialchars(self::getTitle()) . '</title>' . "\n";
-        $output .= '<meta name="description" content="' . htmlspecialchars(self::getDescription()) . '">' . "\n";
+        $output .= '<title>' . sanitize(self::getTitle()) . '</title>' . "\n";
+        $output .= '<meta name="description" content="' . sanitize(self::getDescription()) . '">' . "\n";
         
         if (!empty(self::$keywords)) {
-            $output .= '<meta name="keywords" content="' . htmlspecialchars(self::getKeywords()) . '">' . "\n";
+            $output .= '<meta name="keywords" content="' . sanitize(self::getKeywords()) . '">' . "\n";
         }
         
-        $output .= '<meta name="robots" content="' . htmlspecialchars(self::getRobots()) . '">' . "\n";
-        $output .= '<link rel="canonical" href="' . htmlspecialchars(self::getCanonical()) . '">' . "\n";
+        $output .= '<meta name="robots" content="' . sanitize(self::getRobots()) . '">' . "\n";
+        $output .= '<link rel="canonical" href="' . sanitize(self::getCanonical()) . '">' . "\n";
         
-        $output .= '<meta property="og:title" content="' . htmlspecialchars(self::getTitle()) . '">' . "\n";
-        $output .= '<meta property="og:description" content="' . htmlspecialchars(self::getDescription()) . '">' . "\n";
-        $output .= '<meta property="og:image" content="' . htmlspecialchars(self::getOgImage()) . '">' . "\n";
-        $output .= '<meta property="og:url" content="' . htmlspecialchars(self::getCanonical()) . '">' . "\n";
+        $output .= '<meta property="og:title" content="' . sanitize(self::getTitle()) . '">' . "\n";
+        $output .= '<meta property="og:description" content="' . sanitize(self::getDescription()) . '">' . "\n";
+        $output .= '<meta property="og:image" content="' . sanitize(self::getOgImage()) . '">' . "\n";
+        $output .= '<meta property="og:url" content="' . sanitize(self::getCanonical()) . '">' . "\n";
         $output .= '<meta property="og:type" content="website">' . "\n";
-        $output .= '<meta property="og:site_name" content="' . htmlspecialchars(setting('title', 'Minecraft Server List')) . '">' . "\n";
+        $output .= '<meta property="og:site_name" content="' . sanitize(setting('title', 'Minecraft Server List')) . '">' . "\n";
         
         $output .= '<meta name="twitter:card" content="summary_large_image">' . "\n";
-        $output .= '<meta name="twitter:title" content="' . htmlspecialchars(self::getTitle()) . '">' . "\n";
-        $output .= '<meta name="twitter:description" content="' . htmlspecialchars(self::getDescription()) . '">' . "\n";
-        $output .= '<meta name="twitter:image" content="' . htmlspecialchars(self::getOgImage()) . '">' . "\n";
+        $output .= '<meta name="twitter:title" content="' . sanitize(self::getTitle()) . '">' . "\n";
+        $output .= '<meta name="twitter:description" content="' . sanitize(self::getDescription()) . '">' . "\n";
+        $output .= '<meta name="twitter:image" content="' . sanitize(self::getOgImage()) . '">' . "\n";
         
         return $output;
     }

@@ -1,7 +1,7 @@
 <div class="blog-post-item mb-4" data-blog-id="<?= /** @noinspection PhpUndefinedVariableInspection */
 $blogPost->id ?>">
     <div class="d-flex justify-content-between align-items-start mb-2">
-        <h5 class="mb-1 fw-semibold"><?= htmlspecialchars($blogPost->title) ?></h5>
+        <h5 class="mb-1 fw-semibold"><?= sanitize($blogPost->title) ?></h5>
         <div class="d-flex align-items-center gap-2">
             <small class="text-muted"><?= timeAgo($blogPost->created_at) ?></small>
             <?php if (isLoggedIn() && (auth()->id == $blogPost->user_id || auth()->type >= 1)): ?>
@@ -29,7 +29,7 @@ $blogPost->id ?>">
     <div class="blog-meta mt-3 pt-2 border-top">
         <small class="text-muted">
             <i class="bi bi-person me-1"></i>
-            <?= lang('by') ?> <?= htmlspecialchars($blogPost->name ?? $blogPost->username) ?>
+            <?= lang('by') ?> <?= sanitize($blogPost->name ?? $blogPost->username) ?>
             <?php if ($blogPost->updated_at !== $blogPost->created_at): ?>
                 <span class="ms-2">
                     <i class="bi bi-pencil me-1"></i>

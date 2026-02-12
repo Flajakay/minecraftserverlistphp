@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
-                        sprintf(lang('editing_category'), htmlspecialchars($category->name)) ?></h5>
+                        sprintf(lang('editing_category'), sanitize($category->name)) ?></h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -21,26 +21,26 @@
                         <div class="mb-3">
                             <label for="name" class="form-label"><?= lang('admin_add_category_name') ?> *</label>
                             <input type="text" class="form-control" id="name" name="name" 
-                                   value="<?= htmlspecialchars($category->name) ?>" required>
+                                   value="<?= sanitize($category->name) ?>" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="url" class="form-label"><?= lang('admin_add_category_url') ?> *</label>
                             <input type="text" class="form-control" id="url" name="url" 
-                                   value="<?= htmlspecialchars($category->url) ?>" required>
+                                   value="<?= sanitize($category->url) ?>" required>
                             <small class="text-muted"><?= lang('admin_add_category_url_help') ?></small>
                         </div>
 
                         <div class="mb-3">
                             <label for="title" class="form-label"><?= lang('admin_add_category_title') ?></label>
                             <input type="text" class="form-control" id="title" name="title" 
-                                   value="<?= htmlspecialchars($category->title) ?>">
+                                   value="<?= sanitize($category->title) ?>">
                             <small class="text-muted"><?= lang('admin_add_category_title_help') ?></small>
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label"><?= lang('admin_add_category_description') ?></label>
-                            <textarea class="form-control" id="description" name="description" rows="3"><?= htmlspecialchars($category->description) ?></textarea>
+                            <textarea class="form-control" id="description" name="description" rows="3"><?= sanitize($category->description) ?></textarea>
                             <small class="text-muted"><?= lang('admin_add_category_description_help') ?></small>
                         </div>
 
@@ -52,7 +52,7 @@
                                 foreach ($parentCategories as $parent): ?>
                                     <?php if ($parent->id != $category->id): ?>
                                         <option value="<?= $parent->id ?>" <?= $category->parent_id == $parent->id ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($parent->name) ?>
+                                            <?= sanitize($parent->name) ?>
                                         </option>
                                     <?php endif; ?>
                                 <?php endforeach; ?>

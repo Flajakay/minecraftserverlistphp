@@ -49,7 +49,7 @@ class SitemapController
     private function addUrl($url, $priority = '0.5', $changefreq = 'weekly', $lastmod = null): string
     {
         $xml = "  <url>\n";
-        $xml .= "    <loc>" . htmlspecialchars($url) . "</loc>\n";
+        $xml .= "    <loc>" . sanitize($url) . "</loc>\n";
         $xml .= "    <priority>{$priority}</priority>\n";
         $xml .= "    <changefreq>{$changefreq}</changefreq>\n";
         

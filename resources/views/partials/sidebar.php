@@ -5,7 +5,7 @@
         <?php foreach ($categories as $category): ?>
             <li class="mb-2">
                 <a href="<?= url('/category/' . $category->url) ?>" class="text-decoration-none">
-                    <?= htmlspecialchars($category->name) ?>
+                    <?= sanitize($category->name) ?>
                     <span class="badge bg-secondary"><?= $category->server_count ?></span>
                 </a>
             </li>

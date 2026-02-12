@@ -45,7 +45,7 @@
                                            class="form-control border-start-0 ps-0" 
                                            placeholder="<?= lang('search') ?>" 
                                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                           htmlspecialchars($search) ?>">
+                                           sanitize($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -56,7 +56,7 @@
                         <!-- Filter Form -->
                         <div class="col-md-6">
                             <form method="GET" class="d-flex gap-2 flex-wrap">
-                                <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                                <input type="hidden" name="search" value="<?= sanitize($search) ?>">
                                 
                                 <div class="input-group" style="max-width: 200px;">
                                     <span class="input-group-text bg-light border-end-0">
@@ -161,7 +161,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold small">
-                                                            <?= htmlspecialchars($report->reporter_name) ?>
+                                                            <?= sanitize($report->reporter_name) ?>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -177,7 +177,7 @@
                                                         </div>
                                                         <div>
                                                             <div class="fw-semibold small">
-                                                                <?= htmlspecialchars($report->reported_name) ?>
+                                                                <?= sanitize($report->reported_name) ?>
                                                             </div>
                                                         </div>
                                                     <?php else: ?>
@@ -188,9 +188,9 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="text-truncate" style="max-width: 250px;" title="<?= htmlspecialchars($report->message) ?>">
+                                                <div class="text-truncate" style="max-width: 250px;" title="<?= sanitize($report->message) ?>">
                                                     <i class="bi bi-quote text-muted me-1"></i>
-                                                    <?= htmlspecialchars($report->message) ?>
+                                                    <?= sanitize($report->message) ?>
                                                 </div>
                                             </td>
                                             <td>

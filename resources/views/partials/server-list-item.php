@@ -7,7 +7,7 @@
                  width="48" 
                  height="48" 
                  style="object-fit: cover;"
-                 alt="<?= htmlspecialchars($server->name) ?>">
+                 alt="<?= sanitize($server->name) ?>">
         <?php else: ?>
             <div class="bg-secondary rounded d-flex align-items-center justify-content-center shadow-sm" 
                  style="width: 48px; height: 48px;">
@@ -22,7 +22,7 @@
                 <h6 class="mb-1 fw-semibold">
                     <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" 
                        class="text-decoration-none text-dark stretched-link">
-                        <?= htmlspecialchars($server->name) ?>
+                        <?= sanitize($server->name) ?>
                     </a>
                     <?php if ($server->highlight): ?>
                         <i class="bi bi-star-fill text-warning ms-1" title="<?= lang('premium_server') ?>"></i>

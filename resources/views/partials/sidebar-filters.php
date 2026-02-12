@@ -16,7 +16,7 @@ $wrapInCard = $wrapInCard ?? true;
         <form action="<?= url('/servers') ?>" method="GET" id="<?= $formId ?>">
             <!-- Keep existing query params -->
             <?php if (isset($_GET['q'])): ?>
-                <input type="hidden" name="q" value="<?= htmlspecialchars($_GET['q']) ?>">
+                <input type="hidden" name="q" value="<?= sanitize($_GET['q']) ?>">
             <?php endif; ?>
 
             <div class="mb-3">
@@ -42,7 +42,7 @@ $wrapInCard = $wrapInCard ?? true;
                                        <?= $isParentSelected ? 'checked' : '' ?>
                                        style="width: 1.1em; height: 1.1em;">
                                 <label class="form-check-label fw-bold text-dark ms-2 small text-uppercase" for="<?= $catId ?>">
-                                    <?= htmlspecialchars($cat->name) ?>
+                                    <?= sanitize($cat->name) ?>
                                 </label>
                             </div>
                             <?php if (!empty($subcategories)): ?>
@@ -54,7 +54,7 @@ $wrapInCard = $wrapInCard ?? true;
                                                    value="<?= $subcat->id ?>" id="<?= $subCatId ?>"
                                                    <?= in_array($subcat->id, $selectedCats) ? 'checked' : '' ?>>
                                             <label class="form-check-label small text-secondary" for="<?= $subCatId ?>">
-                                                <?= htmlspecialchars($subcat->name) ?>
+                                                <?= sanitize($subcat->name) ?>
                                             </label>
                                         </div>
                                     <?php endforeach; ?>
@@ -64,7 +64,7 @@ $wrapInCard = $wrapInCard ?? true;
                     <?php endforeach; ?>
                 </div>
                 <!-- Hidden input to store comma-separated IDs -->
-                <input type="hidden" name="categories" id="<?= $prefix ?>categoriesInput" value="<?= htmlspecialchars($_GET['categories'] ?? '') ?>">
+                <input type="hidden" name="categories" id="<?= $prefix ?>categoriesInput" value="<?= sanitize($_GET['categories'] ?? '') ?>">
             </div>
 
             <script>

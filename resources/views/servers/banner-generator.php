@@ -17,7 +17,7 @@
                         <?php endif; ?>
                     </div>
                     <?php if ($server): ?>
-                        <p class="text-muted mb-0 mt-2">Creating banner for: <strong><?= htmlspecialchars($server->name) ?></strong></p>
+                        <p class="text-muted mb-0 mt-2">Creating banner for: <strong><?= sanitize($server->name) ?></strong></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -210,7 +210,7 @@ window.bannerConfig = {
     serverId: <?= $server ? $server->id : 'null' ?>,
     serverAddress: <?= $server ? "'" . $server->address . "'" : 'null' ?>,
     serverPort: <?= $server ? $server->port : 'null' ?>,
-    serverName: <?= $server ? "'" . htmlspecialchars($server->name, ENT_QUOTES) . "'" : 'null' ?>,
+    serverName: <?= $server ? "'" . sanitize($server->name, ENT_QUOTES) . "'" : 'null' ?>,
     backgrounds: <?= json_encode($backgrounds) ?>,
     assetUrl: '<?= url('/') ?>'
 };

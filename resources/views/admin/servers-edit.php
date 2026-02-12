@@ -7,7 +7,7 @@
 				<i class="bi bi-pencil-square text-primary" style="font-size: 2.5rem;"></i>
 			</div>
 			<h2 class="h4 fw-bold text-dark mb-1"><?= lang('titles.edit_server') ?></h2>
-			<p class="text-muted mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */htmlspecialchars($server->name) ?></p>
+			<p class="text-muted mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */sanitize($server->name) ?></p>
 		</div>
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">

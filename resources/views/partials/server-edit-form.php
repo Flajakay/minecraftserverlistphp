@@ -24,7 +24,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            id="address" 
                            <?= $isAdmin ? 'name="address"' : '' ?>
                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                           htmlspecialchars($server->address) ?>"
+                           sanitize($server->address) ?>"
                            <?= $isAdmin ? 'required' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>
@@ -62,7 +62,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0" 
                            id="name" 
                            name="name" 
-                           value="<?= htmlspecialchars($server->name) ?>" 
+                           value="<?= sanitize($server->name) ?>" 
                            required 
                            maxlength="64">
                 </div>
@@ -106,7 +106,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0" 
                            id="website" 
                            name="website" 
-                           value="<?= htmlspecialchars($server->website) ?>" 
+                           value="<?= sanitize($server->website) ?>" 
                            maxlength="128"
                            placeholder="https://yourserver.com">
                 </div>
@@ -122,7 +122,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0" 
                            id="youtube_id" 
                            name="youtube_id" 
-                           value="<?= htmlspecialchars($server->youtube_id) ?>" 
+                           value="<?= sanitize($server->youtube_id) ?>" 
                            maxlength="32"
                            placeholder="dQw4w9WgXcQ">
                 </div>
@@ -211,7 +211,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                       id="votifier_public_key" 
                       name="votifier_public_key" 
                       rows="6"
-                      placeholder="<?= lang('votifier_key_placeholder') ?>"><?= htmlspecialchars($customData['votifier_public_key'] ?? '') ?></textarea>
+                      placeholder="<?= lang('votifier_key_placeholder') ?>"><?= sanitize($customData['votifier_public_key'] ?? '') ?></textarea>
             <small class="text-muted"><?= lang('server_votifier_public_key_help') ?></small>
         </div>
         
@@ -226,7 +226,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0" 
                            id="votifier_ip" 
                            name="votifier_ip" 
-                           value="<?= htmlspecialchars($customData['votifier_ip'] ?? '') ?>"
+                           value="<?= sanitize($customData['votifier_ip'] ?? '') ?>"
                            placeholder="<?= lang('votifier_ip_placeholder') ?>">
                 </div>
                 <small class="text-muted"><?= lang('server_votifier_ip_help') ?></small>

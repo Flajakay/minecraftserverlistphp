@@ -28,7 +28,7 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2"><?= lang('reported_by') ?></h6>
-                            <p class="mb-0"><?= htmlspecialchars($report->reporter_name) ?></p>
+                            <p class="mb-0"><?= sanitize($report->reporter_name) ?></p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2"><?= lang('reported_at') ?></h6>
@@ -36,7 +36,7 @@
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">Reported Item</h6>
-                            <p class="mb-0"><?= htmlspecialchars($report->reported_name ?? 'Deleted') ?></p>
+                            <p class="mb-0"><?= sanitize($report->reported_name ?? 'Deleted') ?></p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2"><?= lang('report_type') ?></h6>
@@ -45,7 +45,7 @@
                         <div class="col-12">
                             <h6 class="text-muted mb-2"><?= lang('report_reason') ?></h6>
                             <div class="bg-light p-3 rounded">
-                                <p class="mb-0"><?= nl2br(htmlspecialchars($report->message)) ?></p>
+                                <p class="mb-0"><?= nl2br(sanitize($report->message)) ?></p>
                             </div>
                         </div>
                     </div>

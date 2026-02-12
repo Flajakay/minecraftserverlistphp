@@ -46,7 +46,7 @@
                                            class="form-control border-start-0 ps-0" 
                                            placeholder="<?= lang('search') ?>" 
                                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                           htmlspecialchars($search) ?>">
+                                           sanitize($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -57,7 +57,7 @@
                         <!-- Filter Form -->
                         <div class="col-lg-8">
                             <form method="GET" class="d-flex gap-2 flex-wrap">
-                                <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                                <input type="hidden" name="search" value="<?= sanitize($search) ?>">
                                 
                                 <div class="input-group" style="max-width: 180px;">
                                     <span class="input-group-text bg-light border-end-0">
@@ -69,7 +69,7 @@
                                         foreach ($categories as $category): ?>
                                             <option value="<?= $category->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */
                                             $filters['category_id'] == $category->id ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($category->name) ?>
+                                                <?= sanitize($category->name) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -194,7 +194,7 @@
                                                                  width="32" 
                                                                  height="32" 
                                                                  style="object-fit: cover;"
-                                                                 alt="<?= htmlspecialchars($server->name) ?>">
+                                                                 alt="<?= sanitize($server->name) ?>">
                                                         <?php else: ?>
                                                             <div class="bg-secondary rounded d-flex align-items-center justify-content-center" 
                                                                  style="width: 32px; height: 32px;">
@@ -204,7 +204,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold">
-                                                            <?= htmlspecialchars($server->name) ?>
+                                                            <?= sanitize($server->name) ?>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-1">
                                                             <?php if ($server->highlight): ?>
@@ -219,7 +219,7 @@
                                             </td>
                                             <td>
                                                 <code class="bg-light px-2 py-1 rounded">
-                                                    <?= htmlspecialchars($server->address) ?>:<?= $server->port ?>
+                                                    <?= sanitize($server->address) ?>:<?= $server->port ?>
                                                 </code>
                                             </td>
                                             <td>
@@ -232,7 +232,7 @@
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <span class="text-muted"><?= htmlspecialchars($server->owner_username) ?></span>
+                                                    <span class="text-muted"><?= sanitize($server->owner_username) ?></span>
                                                 </div>
                                             </td>
                                             <td>
@@ -240,7 +240,7 @@
                                                     <?php foreach ($server->categories as $index => $category): ?>
                                                         <?php if ($index < 2): ?>
                                                             <span class="badge bg-light text-dark border me-1 mb-1">
-                                                                <?= htmlspecialchars($category->category_name) ?>
+                                                                <?= sanitize($category->category_name) ?>
                                                             </span>
                                                         <?php elseif ($index == 2): ?>
                                                             <span class="badge bg-secondary text-white me-1 mb-1" title="<?= implode(', ', array_slice(array_column($server->categories, 'category_name'), 2)) ?>">

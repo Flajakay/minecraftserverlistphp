@@ -90,14 +90,14 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold">
-                                                            <?= htmlspecialchars($payment->username) ?>
+                                                            <?= sanitize($payment->username) ?>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold">
-                                                    <?= htmlspecialchars($payment->server_name) ?>
+                                                    <?= sanitize($payment->server_name) ?>
                                                 </div>
                                                 <small class="text-muted">Payment ID: <?= $payment->id ?></small>
                                             </td>
@@ -113,7 +113,7 @@
                                             </td>
                                             <td>
                                                 <span class="text-muted small">
-                                                    <?= htmlspecialchars($payment->email) ?>
+                                                    <?= sanitize($payment->email) ?>
                                                 </span>
                                             </td>
                                             <td>

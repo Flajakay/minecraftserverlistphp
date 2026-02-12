@@ -13,7 +13,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
         <div class="position-relative banner-container">
             <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
                  class="card-img-top server-banner" 
-                 alt="<?= htmlspecialchars($server->name) ?>" 
+                 alt="<?= sanitize($server->name) ?>" 
                  loading="lazy">
             <div class="position-absolute top-0 end-0 p-2">
                 <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> shadow">
@@ -38,7 +38,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
         <h5 class="card-title mb-2">
             <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" 
                class="text-decoration-none text-dark stretched-link">
-                <?= htmlspecialchars($server->name) ?>
+                <?= sanitize($server->name) ?>
             </a>
         </h5>
         
@@ -66,7 +66,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
         </div>
         
         <p class="card-text text-muted small flex-grow-1">
-            <?= htmlspecialchars(substr(strip_tags(displayHtml($server->description)), 0, 100)) ?>
+            <?= sanitize(substr(strip_tags(displayHtml($server->description)), 0, 100)) ?>
             <?php if (strlen(strip_tags(displayHtml($server->description))) > 100): ?>...<?php endif; ?>
         </p>
         

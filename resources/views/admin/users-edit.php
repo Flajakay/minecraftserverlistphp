@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0"><?= /** @noinspection PhpUndefinedVariableInspection */
-                        sprintf(lang('editing_user'), htmlspecialchars($user->username)) ?></h5>
+                        sprintf(lang('editing_user'), sanitize($user->username)) ?></h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -22,36 +22,36 @@
                             <div class="col-md-6">
                                 <label for="username" class="form-label"><?= lang('username') ?> *</label>
                                 <input type="text" class="form-control" id="username" name="username" 
-                                       value="<?= htmlspecialchars($user->username) ?>" required>
+                                       value="<?= sanitize($user->username) ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="email" class="form-label"><?= lang('email') ?> *</label>
                                 <input type="email" class="form-control" id="email" name="email" 
-                                       value="<?= htmlspecialchars($user->email) ?>" required>
+                                       value="<?= sanitize($user->email) ?>" required>
                             </div>
                         </div>
 
                         <div class="mt-3">
                             <label for="name" class="form-label"><?= lang('name') ?> *</label>
                             <input type="text" class="form-control" id="name" name="name" 
-                                   value="<?= htmlspecialchars($user->name) ?>" required>
+                                   value="<?= sanitize($user->name) ?>" required>
                         </div>
 
                         <div class="mt-3">
                             <label for="about" class="form-label"><?= lang('about') ?></label>
-                            <textarea class="form-control" id="about" name="about" rows="3" maxlength="128"><?= htmlspecialchars($user->about) ?></textarea>
+                            <textarea class="form-control" id="about" name="about" rows="3" maxlength="128"><?= sanitize($user->about) ?></textarea>
                         </div>
 
                         <div class="row g-3 mt-3">
                             <div class="col-md-6">
                                 <label for="website" class="form-label"><?= lang('website') ?></label>
                                 <input type="url" class="form-control" id="website" name="website" 
-                                       value="<?= htmlspecialchars($user->website) ?>">
+                                       value="<?= sanitize($user->website) ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="location" class="form-label"><?= lang('location') ?></label>
                                 <input type="text" class="form-control" id="location" name="location" 
-                                       value="<?= htmlspecialchars($user->location) ?>" maxlength="64">
+                                       value="<?= sanitize($user->location) ?>" maxlength="64">
                             </div>
                         </div>
 

@@ -11,7 +11,7 @@
                 <h2 class="h3 fw-bold text-dark"><?= lang('server_claim_title') ?></h2>
                 <p class="text-muted mb-0">
                     <?= /** @noinspection PhpUndefinedVariableInspection */
-                    htmlspecialchars($server->name) ?>
+                    sanitize($server->name) ?>
                     <span class="ms-2">(<?= $server->address ?><?= $server->port != 25565 ? ':' . $server->port : '' ?>)</span>
                 </p>
             </div>
@@ -27,11 +27,11 @@
                             <div class="mb-2">
                                 <span class="text-muted"><?= lang('server_claim_token_label') ?></span>
                                 <div class="d-flex align-items-center gap-2 mt-1">
-                                    <code class="bg-light px-3 py-2 rounded flex-grow-1"><?= htmlspecialchars($server->verification_token) ?></code>
+                                    <code class="bg-light px-3 py-2 rounded flex-grow-1"><?= sanitize($server->verification_token) ?></code>
                                 </div>
                                 <?php if (!empty($server->verification_token_expires_at)): ?>
                                     <div class="small text-muted mt-2">
-                                        <?= lang('server_claim_token_expires') ?>: <?= htmlspecialchars($server->verification_token_expires_at) ?>
+                                        <?= lang('server_claim_token_expires') ?>: <?= sanitize($server->verification_token_expires_at) ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

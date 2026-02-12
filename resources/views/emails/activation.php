@@ -6,7 +6,7 @@ ob_start();
 <h2><?= lang('activation_email_title') ?></h2>
 
 <p><?= lang('activation_email_greeting') ?> <strong><?= /** @noinspection PhpUndefinedVariableInspection */
-        htmlspecialchars($name) ?></strong>,</p>
+        sanitize($name) ?></strong>,</p>
 
 <p><?= lang('activation_email_message') ?></p>
 

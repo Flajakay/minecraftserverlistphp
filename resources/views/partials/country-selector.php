@@ -16,7 +16,7 @@
             <?php /** @noinspection PhpUndefinedVariableInspection */
             foreach ($countries as $code => $name): ?>
                 <div class="searchable-select-option" data-value="<?= $code ?>">
-                    <?= htmlspecialchars($name) ?>
+                    <?= sanitize($name) ?>
                 </div>
             <?php endforeach; ?>
         </div>

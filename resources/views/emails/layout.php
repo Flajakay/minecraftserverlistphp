@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($subject ?? '') ?></title>
+    <title><?= sanitize($subject ?? '') ?></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,7 +61,7 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1><?= htmlspecialchars(setting('title')) ?></h1>
+            <h1><?= sanitize(setting('title')) ?></h1>
         </div>
         
         <div class="content">

@@ -38,7 +38,7 @@
                                            name="search"
                                            class="form-control border-start-0 ps-0"
                                            placeholder="<?= lang('search_posts_authors_servers') ?>"
-                                           value="<?= /** @noinspection PhpUndefinedVariableInspection */htmlspecialchars($search) ?>">
+                                           value="<?= /** @noinspection PhpUndefinedVariableInspection */sanitize($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -48,7 +48,7 @@
 
                         <div class="col-lg-8">
                             <form method="GET" class="d-flex gap-2 flex-wrap">
-                                <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                                <input type="hidden" name="search" value="<?= sanitize($search) ?>">
 
                                 <div class="input-group" style="max-width: 260px;">
                                     <span class="input-group-text bg-light border-end-0">
@@ -58,7 +58,7 @@
                                         <option value=""><?= lang('all_servers') ?></option>
                                         <?php /** @noinspection PhpUndefinedVariableInspection */foreach ($servers as $server): ?>
                                             <option value="<?= $server->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */$filters['server_id'] == $server->id ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($server->name) ?>
+                                                <?= sanitize($server->name) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -72,7 +72,7 @@
                                         <option value=""><?= lang('all_authors') ?></option>
                                         <?php /** @noinspection PhpUndefinedVariableInspection */foreach ($users as $user): ?>
                                             <option value="<?= $user->id ?>" <?= /** @noinspection PhpUndefinedVariableInspection */$filters['user_id'] == $user->id ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($user->username) ?>
+                                                <?= sanitize($user->username) ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -135,9 +135,9 @@
                                         <span class="badge bg-light text-dark"><?= $post->id ?></span>
                                     </td>
                                     <td>
-                                        <div class="fw-semibold"><?= htmlspecialchars($post->title) ?></div>
+                                        <div class="fw-semibold"><?= sanitize($post->title) ?></div>
                                         <div class="text-muted small">
-                                            <?= htmlspecialchars(substr(strip_tags($post->content), 0, 100)) ?>...
+                                            <?= sanitize(substr(strip_tags($post->content), 0, 100)) ?>...
                                         </div>
                                     </td>
                                     <td>
@@ -150,14 +150,14 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="fw-semibold"><?= htmlspecialchars($post->name ?? $post->username) ?></div>
-                                                <div class="text-muted small">@<?= htmlspecialchars($post->username) ?></div>
+                                                <div class="fw-semibold"><?= sanitize($post->name ?? $post->username) ?></div>
+                                                <div class="text-muted small">@<?= sanitize($post->username) ?></div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         <a href="<?= url("/server/{$post->address}:{$post->port}") ?>" class="text-decoration-none">
-                                            <?= htmlspecialchars($post->server_name) ?>
+                                            <?= sanitize($post->server_name) ?>
                                         </a>
                                         <div class="text-muted small"><?= $post->address ?>:<?= $post->port ?></div>
                                     </td>

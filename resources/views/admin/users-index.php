@@ -45,7 +45,7 @@
                                            class="form-control border-start-0 ps-0" 
                                            placeholder="<?= lang('search') ?>" 
                                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                                           htmlspecialchars($search) ?>">
+                                           sanitize($search) ?>">
                                     <button type="submit" class="btn btn-primary ms-2">
                                         <i class="bi bi-search me-1"></i><?= lang('search_button') ?>
                                     </button>
@@ -56,7 +56,7 @@
                         <!-- Filter Form -->
                         <div class="col-md-8">
                             <form method="GET" class="d-flex gap-2 flex-wrap">
-                                <input type="hidden" name="search" value="<?= htmlspecialchars($search) ?>">
+                                <input type="hidden" name="search" value="<?= sanitize($search) ?>">
                                 
                                 <div class="input-group" style="max-width: 200px;">
                                     <span class="input-group-text bg-light border-end-0">
@@ -164,7 +164,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold">
-                                                            <?= htmlspecialchars($user->username) ?>
+                                                            <?= sanitize($user->username) ?>
                                                             <?php if ($user->private): ?>
                                                                 <i class="bi bi-lock text-warning ms-1" title="<?= lang('private') ?>"></i>
                                                             <?php endif; ?>
@@ -173,10 +173,10 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="text-muted"><?= htmlspecialchars($user->email) ?></span>
+                                                <span class="text-muted"><?= sanitize($user->email) ?></span>
                                             </td>
                                             <td>
-                                                <?= htmlspecialchars($user->name) ?>
+                                                <?= sanitize($user->name) ?>
                                             </td>
                                             <td>
                                                 <?php if ($user->type == 2): ?>

@@ -298,7 +298,7 @@ function resizeImage($source, $destination, $width, $height): bool
 }
 
 function auth()
-{`
+{
     return Auth::user();
 }
 
@@ -425,7 +425,7 @@ function joditScript($editors = [], $onReady = ''): string
     $script .= 'document.addEventListener("DOMContentLoaded", async function() {' . "\n";
     
     foreach ($editors as $config) {
-        $selector = $config['selector'];
+        $selector = isset($config['selector']) ? $config['selector'] : '';
         $type = $config['type'] ?? 'page';
         $options = $config['options'] ?? [];
         $placeholder = $config['placeholder'] ?? null;

@@ -29,7 +29,7 @@
                                     <?php /** @noinspection PhpUndefinedVariableInspection */
                                     foreach ($servers as $server): ?>
                                         <option value="<?= $server->id ?>" <?= $server->highlight ? 'disabled' : '' ?>>
-                                            <?= htmlspecialchars($server->name) ?> (<?= $server->address ?>:<?= $server->port ?>)
+                                            <?= sanitize($server->name) ?> (<?= $server->address ?>:<?= $server->port ?>)
                                             <?php if ($server->highlight): ?>
                                                 <span class="text-warning">- <?= lang('already_highlighted') ?></span>
                                             <?php endif; ?>
@@ -125,7 +125,7 @@
 </div>
 
 <?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>
-<script src="https://www.paypal.com/sdk/js?client-id=<?= htmlspecialchars(setting('paypal_client_id')) ?>&currency=<?= $currency ?>&intent=capture"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?= sanitize(setting('paypal_client_id')) ?>&currency=<?= $currency ?>&intent=capture"></script>
 <?php endif; ?>
 
 <?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>

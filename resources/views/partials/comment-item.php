@@ -3,10 +3,10 @@
         <div class="flex-grow-1">
             <div class="d-flex align-items-center mb-1">
                 <strong class="me-2"><?= /** @noinspection PhpUndefinedVariableInspection */
-                    htmlspecialchars($comment->name ?: $comment->username) ?></strong>
+                    sanitize($comment->name ?: $comment->username) ?></strong>
                 <small class="text-muted"><?= timeAgo($comment->created_at) ?></small>
             </div>
-            <p class="mb-0"><?= nl2br(htmlspecialchars($comment->comment)) ?></p>
+            <p class="mb-0"><?= nl2br(sanitize($comment->comment)) ?></p>
         </div>
         <?php if (isLoggedIn()): ?>
             <?php 

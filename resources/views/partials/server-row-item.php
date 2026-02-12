@@ -14,7 +14,7 @@
                         <img src="<?= url('/uploads/icons/' . $server->icon) ?>"
                             class="server-icon-responsive rounded-3 shadow-sm bg-light"
                             style="width: 80px; height: 80px; object-fit: cover;"
-                            alt="<?= htmlspecialchars($server->name) ?>">
+                            alt="<?= sanitize($server->name) ?>">
                     <?php else: ?>
                         <div class="server-icon-responsive rounded-3 d-flex align-items-center justify-content-center shadow-sm bg-light text-secondary"
                             style="width: 80px; height: 80px;">
@@ -39,7 +39,7 @@
                     <h5 class="mb-0 fw-bold text-truncate pe-2">
                         <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>"
                             class="text-decoration-none text-dark stretched-link">
-                            <?= htmlspecialchars($server->name) ?>
+                            <?= sanitize($server->name) ?>
                         </a>
                         <?php if ($server->highlight): ?>
                             <i class="bi bi-patch-check-fill text-warning ms-1 small" title="<?= lang('premium_server') ?>"></i>
@@ -65,7 +65,7 @@
                     <?php if (isset($server->categories) && !empty($server->categories)): ?>
                         <?php foreach (array_slice($server->categories, 0, 2) as $category): ?>
                             <span class="badge bg-secondary bg-opacity-10 text-secondary border-0 fw-normal d-none d-sm-inline-block">
-                                <?= htmlspecialchars($category->category_name) ?>
+                                <?= sanitize($category->category_name) ?>
                             </span>
                         <?php endforeach; ?>
                     <?php endif; ?>

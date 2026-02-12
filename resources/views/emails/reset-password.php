@@ -6,7 +6,7 @@ ob_start();
 <h2><?= lang('reset_password_email_title') ?></h2>
 
 <p><?= lang('reset_password_email_greeting') ?> <strong><?= /** @noinspection PhpUndefinedVariableInspection */
-        htmlspecialchars($name) ?></strong>,</p>
+        sanitize($name) ?></strong>,</p>
 
 <p><?= lang('reset_password_email_message') ?></p>
 

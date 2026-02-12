@@ -10,12 +10,12 @@
                     <div class="position-relative">
                         <img src="<?= url('/uploads/banners/' . $server->image) ?>" 
                              class="card-img-top" 
-                             alt="<?= htmlspecialchars($server->name) ?> <?= lang('banner') ?>"
+                             alt="<?= sanitize($server->name) ?> <?= lang('banner') ?>"
                              style="height: 200px; object-fit: cover;">
                         <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-25"></div>
                         <div class="position-absolute bottom-0 start-0 p-4 text-white">
                             <div class="d-flex align-items-center mb-2">
-                                <h1 class="h2 fw-bold mb-0 me-3"><?= htmlspecialchars($server->name) ?></h1>
+                                <h1 class="h2 fw-bold mb-0 me-3"><?= sanitize($server->name) ?></h1>
                                 <?php if ($server->highlight): ?>
                                     <span class="badge bg-warning text-dark">
                                     <i class="bi bi-star-fill me-1"></i><?= lang('premium_server') ?>
@@ -50,7 +50,7 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <div class="d-flex align-items-center mb-2">
-                                    <h1 class="h2 fw-bold mb-0 me-3"><?= htmlspecialchars($server->name) ?></h1>
+                                    <h1 class="h2 fw-bold mb-0 me-3"><?= sanitize($server->name) ?></h1>
                                     <?php if ($server->highlight): ?>
                                         <span class="badge bg-warning text-dark">
                                         <i class="bi bi-star-fill me-1"></i><?= lang('premium_server') ?>
@@ -182,13 +182,13 @@
                                                 ?>
                                                 <?php foreach ($displayCategories as $index => $cat): ?>
                                                     <a href="<?= url('/servers?categories=' . $cat->category_id) ?>" class="text-decoration-none">
-                                                        <?= htmlspecialchars($cat->category_name) ?>
+                                                        <?= sanitize($cat->category_name) ?>
                                                     </a><?php if ($index < count($displayCategories) - 1): ?>, <?php endif; ?>
                                                 <?php endforeach; ?>
                                                 <?php if ($remainingCount > 0): ?>
                                                     <?php
                                                     $popoverContent = implode(', ', array_map(function($c) {
-                                                        return '<a href="' . url('/servers?categories=' . $c->category_id) . '" class="text-decoration-none">' . htmlspecialchars($c->category_name) . '</a>';
+                                                        return '<a href="' . url('/servers?categories=' . $c->category_id) . '" class="text-decoration-none">' . sanitize($c->category_name) . '</a>';
                                                     }, array_slice($categories, $displayLimit)));
                                                     ?>
                                                     <a href="#" 
@@ -207,7 +207,7 @@
                                             <span class="text-muted">
                                                 <i class="bi bi-person me-2"></i><?= lang('owner') ?>
                                             </span>
-                                            <span><?= htmlspecialchars($server->owner_username) ?></span>
+                                            <span><?= sanitize($server->owner_username) ?></span>
                                         </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
                                             <span class="text-muted">
@@ -225,11 +225,11 @@
                                                     <i class="bi bi-link me-2"></i><?= lang('website') ?>
                                                 </span>
                                                 <span>
-                                                <a href="<?= htmlspecialchars($server->website) ?>" 
+                                                <a href="<?= sanitize($server->website) ?>" 
                                                     target="_blank" 
                                                     rel="noopener" 
                                                     class="text-decoration-none">
-                                                    <?= htmlspecialchars($server->website) ?>
+                                                    <?= sanitize($server->website) ?>
                                                     <i class="bi bi-box-arrow-up-right ms-1"></i>
                                                 </a>  
                                                 </span>
@@ -257,7 +257,7 @@
                                                 <span class="text-muted">
                                                     <i class="bi bi-tag me-2"></i><?= lang('version') ?>
                                                 </span>
-                                                <span class="badge bg-light text-dark"><?= htmlspecialchars($server->version) ?></span>
+                                                <span class="badge bg-light text-dark"><?= sanitize($server->version) ?></span>
                                             </div>
                                         <?php endif; ?>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
@@ -302,7 +302,7 @@
                                         <i class="bi bi-play-circle text-primary me-2"></i><?= lang('server_showcase') ?>
                                     </div>
                                     <div class="ratio ratio-16x9">
-                                        <iframe src="https://www.youtube.com/embed/<?= htmlspecialchars($server->youtube_id) ?>" 
+                                        <iframe src="https://www.youtube.com/embed/<?= sanitize($server->youtube_id) ?>" 
                                                 allowfullscreen 
                                                 class="rounded"></iframe>
                                     </div>
@@ -702,5 +702,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = htmlspecialchars($server->name) . ' - ' . lang('minecraft_server') . ' - ' . setting('title'); ?>
+<?php $title = sanitize($server->name) . ' - ' . lang('minecraft_server') . ' - ' . setting('title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>
