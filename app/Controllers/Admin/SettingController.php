@@ -22,6 +22,15 @@ class SettingController
         }
 
         $settings = Setting::get();
+        
+        // Merge PayPal config from app.php for the view
+        $config = require __DIR__ . '/../../../config/app.php';
+        if (isset($config['paypal'])) {
+            $settings->paypal_email = $config['paypal']['email'] ?? '';
+            $settings->paypal_client_id = $config['paypal']['client_id'] ?? '';
+            $settings->paypal_client_secret = $config['paypal']['client_secret'] ?? '';
+            $settings->paypal_sandbox = $config['paypal']['sandbox'] ?? true;
+        }
 
         view('admin.settings', ['settings' => $settings]);
     }

@@ -175,8 +175,17 @@ function uploadFile($file, $directory, $resize = null): false|string
         return false;
     }
     
+    // Content-based MIME type validation
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']);
+    
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($file['type'], $allowedTypes)) {
+    if (!in_array($mimeType, $allowedTypes)) {
+        return false;
+    }
+
+    // Verify it's actually an image
+    if (!getimagesize($file['tmp_name'])) {
         return false;
     }
     
@@ -186,6 +195,12 @@ function uploadFile($file, $directory, $resize = null): false|string
     }
     
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    // Whitelist extensions
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array(strtolower($extension), $allowedExtensions)) {
+        return false;
+    }
+
     $filename = uniqid() . '.' . $extension;
     $path = __DIR__ . '/../../../public/uploads/' . $directory;
     
@@ -448,4 +463,160 @@ function joditScript($editors = [], $onReady = ''): string
     $script .= '</script>' . "\n";
     
     return $script;
+}
+
+/**
+ * Validates if a host/IP is safe for outbound connections (prevents SSRF).
+ * Blocks private/internal IP ranges.
+ */
+function resolveSafeHostIp($host): ?string
+{
+    $host = is_string($host) ? trim($host) : '';
+    if ($host === '') {
+        return null;
+    }
+
+    if (strpbrk($host, " \t\r\n/\\@#?") !== false) {
+        return null;
+    }
+
+    $reservedRanges = [
+        '127.0.0.0/8',
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '192.168.0.0/16',
+        '169.254.0.0/16',
+        '0.0.0.0/8',
+        '100.64.0.0/10',
+        '192.0.0.0/24',
+        '192.0.2.0/24',
+        '198.18.0.0/15',
+        '198.51.100.0/24',
+        '203.0.113.0/24',
+        '224.0.0.0/4',
+        '240.0.0.0/4',
+        '::1/128',
+        'fc00::/7',
+        'fe80::/10',
+    ];
+
+    $ips = [];
+
+    if (filter_var($host, FILTER_VALIDATE_IP)) {
+        $ips[] = $host;
+    } else {
+        $records = @dns_get_record($host, DNS_A | DNS_AAAA);
+        if (!is_array($records) || empty($records)) {
+            return null;
+        }
+
+        foreach ($records as $record) {
+            if (!is_array($record) || empty($record['type'])) {
+                continue;
+            }
+
+            if ($record['type'] === 'A' && !empty($record['ip']) && filter_var($record['ip'], FILTER_VALIDATE_IP)) {
+                $ips[] = $record['ip'];
+                continue;
+            }
+
+            if ($record['type'] === 'AAAA' && !empty($record['ipv6']) && filter_var($record['ipv6'], FILTER_VALIDATE_IP)) {
+                $ips[] = $record['ipv6'];
+                continue;
+            }
+        }
+    }
+
+    $ips = array_values(array_unique($ips));
+    if (empty($ips)) {
+        return null;
+    }
+
+    foreach ($ips as $ip) {
+        foreach ($reservedRanges as $range) {
+            if (ipInInRange($ip, $range)) {
+                return null;
+            }
+        }
+    }
+
+    foreach ($ips as $ip) {
+        if (!str_contains($ip, ':')) {
+            return $ip;
+        }
+    }
+
+    return $ips[0];
+}
+
+function isSafeHost($host): bool
+{
+    return resolveSafeHostIp($host) !== null;
+}
+
+/**
+ * Check if an IP address is within a specified CIDR range.
+ */
+function ipInInRange($ip, $range): bool
+{
+    if (str_contains($range, '/')) {
+        [$subnet, $bits] = explode('/', $range, 2);
+        $bits = (int) $bits;
+
+        $ipIsV6 = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+        $subnetIsV6 = filter_var($subnet, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+
+        if ($ipIsV6 !== $subnetIsV6) {
+            return false;
+        }
+
+        if ($subnetIsV6) {
+            if ($bits < 0 || $bits > 128) {
+                return false;
+            }
+
+            $ipBinary = inet_pton($ip);
+            $subnetBinary = inet_pton($subnet);
+            if ($ipBinary === false || $subnetBinary === false) {
+                return false;
+            }
+
+            $bytesFull = intdiv($bits, 8);
+            $bitsLeft = $bits % 8;
+
+            for ($i = 0; $i < $bytesFull; $i++) {
+                if ($ipBinary[$i] !== $subnetBinary[$i]) {
+                    return false;
+                }
+            }
+
+            if ($bitsLeft > 0) {
+                $mask = ~(0xff >> $bitsLeft);
+                if ((ord($ipBinary[$bytesFull]) & $mask) !== (ord($subnetBinary[$bytesFull]) & $mask)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if ($bits < 0 || $bits > 32) {
+            return false;
+        }
+
+        $ipLong = ip2long($ip);
+        $subnetLong = ip2long($subnet);
+        if ($ipLong === false || $subnetLong === false) {
+            return false;
+        }
+
+        if ($bits === 0) {
+            return true;
+        }
+
+        $mask = -1 << (32 - $bits);
+        return ($ipLong & $mask) === ($subnetLong & $mask);
+    }
+    
+    return $ip === $range;
 }

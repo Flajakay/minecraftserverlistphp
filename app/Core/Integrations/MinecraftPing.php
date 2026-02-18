@@ -58,8 +58,13 @@ class MinecraftPing
 
     private function connect(): bool
     {
+        $ip = resolveSafeHostIp($this->address);
+        if (!$ip) {
+            return false;
+        }
+
         // Suppress warnings; the caller treats any failure as "offline".
-        $this->socket = @fsockopen($this->address, $this->port, $errno, $errstr, $this->timeout);
+        $this->socket = @fsockopen($ip, $this->port, $errno, $errstr, $this->timeout);
 
         if (!$this->socket) {
             return false;
@@ -96,12 +101,13 @@ class MinecraftPing
             }
 
             $k = ord($k);
-            $i |= ($k & 0x7F) << $j++ * 7;
-
-            // VarInt is at most 5 bytes for 32-bit values.
-            if ($j > 5) {
+            
+            // Check for potential integer overflow before shifting
+            if ($j >= 5) {
                 return 0;
             }
+            
+            $i |= ($k & 0x7F) << $j++ * 7;
 
             if (($k & 0x80) != 128) {
                 break;

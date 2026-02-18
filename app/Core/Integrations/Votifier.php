@@ -15,7 +15,13 @@ class Votifier
     public static function sendVote($publicKey, $host, $port, $username): bool
     {
         try {
-            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            $ip = resolveSafeHostIp($host);
+            if (!$ip) {
+                return false;
+            }
+
+            $socketFamily = str_contains($ip, ':') ? AF_INET6 : AF_INET;
+            $socket = socket_create($socketFamily, SOCK_STREAM, SOL_TCP);
             
             if (!$socket) {
                 return false;
@@ -24,7 +30,7 @@ class Votifier
             socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec' => 5, 'usec' => 0]);
             socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec' => 5, 'usec' => 0]);
             
-            $result = socket_connect($socket, $host, $port);
+            $result = socket_connect($socket, $ip, $port);
             
             if (!$result) {
                 socket_close($socket);

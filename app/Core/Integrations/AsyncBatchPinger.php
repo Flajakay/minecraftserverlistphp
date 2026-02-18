@@ -33,8 +33,18 @@ class AsyncBatchPinger
             while (count($sockets) < $concurrency && !empty($queue)) {
                 $server = array_shift($queue);
 
+                $ip = resolveSafeHostIp($server->address);
+                if (!$ip) {
+                    $results[$server->id] = $this->getOfflineResult();
+                    continue;
+                }
+
+                $target = str_contains($ip, ':')
+                    ? "tcp://[{$ip}]:{$server->port}"
+                    : "tcp://{$ip}:{$server->port}";
+
                 $socket = @stream_socket_client(
-                    "tcp://{$server->address}:{$server->port}",
+                    $target,
                     $errno,
                     $errstr,
                     $timeout,

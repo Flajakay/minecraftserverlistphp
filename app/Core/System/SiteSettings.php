@@ -24,15 +24,21 @@ class SiteSettings
             'smtp_user' => sanitize($data['smtp_user'] ?? ''),
             'smtp_pass' => sanitize($data['smtp_pass'] ?? ''),
             'smtp_secure' => sanitize($data['smtp_secure'] ?? ''),
-            'paypal_email' => sanitize($data['paypal_email'] ?? ''),
-            'paypal_client_id' => sanitize($data['paypal_client_id'] ?? ''),
-            'paypal_client_secret' => sanitize($data['paypal_client_secret'] ?? ''),
-            'paypal_sandbox' => isset($data['paypal_sandbox']) ? 1 : 0,
             'payment_currency' => sanitize($data['payment_currency'] ?? 'USD'),
             'per_day_cost' => (float)($data['per_day_cost'] ?? 0.00),
             'minimum_days' => (int)($data['minimum_days'] ?? 1),
             'maximum_days' => (int)($data['maximum_days'] ?? 30)
         ];
+
+        // Update PayPal configuration in app.php
+        self::updateAppConfig([
+            'paypal' => [
+                'email' => sanitize($data['paypal_email'] ?? ''),
+                'client_id' => sanitize($data['paypal_client_id'] ?? ''),
+                'client_secret' => sanitize($data['paypal_client_secret'] ?? ''),
+                'sandbox' => isset($data['paypal_sandbox']),
+            ]
+        ]);
 
         Setting::update($settingsData);
 
@@ -40,6 +46,18 @@ class SiteSettings
             'success' => true,
             'message' => lang('settings_updated_successfully')
         ];
+    }
+
+    private static function updateAppConfig(array $newConfig): void
+    {
+        $configPath = __DIR__ . '/../../../config/app.php';
+        $config = require $configPath;
+
+        // Recursively merge new config
+        $config = array_replace_recursive($config, $newConfig);
+
+        $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
+        file_put_contents($configPath, $content);
     }
 
     public static function resetVotes($initiatorId): array

@@ -33,9 +33,12 @@ class PayPalService
 
     private function getClient(): PaypalServerSdkClient
     {
-        $clientId = Setting::getValue('paypal_client_id');
-        $clientSecret = Setting::getValue('paypal_client_secret');
-        $isSandbox = Setting::getValue('paypal_sandbox', 1);
+        $config = require __DIR__ . '/../../../config/app.php';
+        $paypalConfig = $config['paypal'] ?? [];
+
+        $clientId = $paypalConfig['client_id'] ?? '';
+        $clientSecret = $paypalConfig['client_secret'] ?? '';
+        $isSandbox = $paypalConfig['sandbox'] ?? true;
 
         if (!$clientId || !$clientSecret) {
             throw new Exception('PayPal client credentials not configured');
@@ -74,8 +77,8 @@ class PayPalService
                 'prefer' => 'return=representation'
             ]);
         } catch (Exception $e) {
-            error_log('PayPal order creation failed: ' . $e->getMessage());
-            throw $e;
+            error_log('PayPal order creation failed: [REDACTED]');
+            throw new Exception('Failed to create PayPal order');
         }
     }
 
@@ -87,16 +90,19 @@ class PayPalService
                 'prefer' => 'return=representation'
             ]);
         } catch (Exception $e) {
-            error_log('PayPal payment capture failed: ' . $e->getMessage());
-            throw $e;
+            error_log('PayPal payment capture failed: [REDACTED]');
+            throw new Exception('Payment capture failed');
         }
     }
 
     public function validateConfiguration(): bool
     {
-        $clientId = Setting::getValue('paypal_client_id');
-        $clientSecret = Setting::getValue('paypal_client_secret');
-        $email = Setting::getValue('paypal_email');
+        $config = require __DIR__ . '/../../../config/app.php';
+        $paypalConfig = $config['paypal'] ?? [];
+
+        $clientId = $paypalConfig['client_id'] ?? '';
+        $clientSecret = $paypalConfig['client_secret'] ?? '';
+        $email = $paypalConfig['email'] ?? '';
 
         return !empty($clientId) && !empty($clientSecret) && !empty($email);
     }
