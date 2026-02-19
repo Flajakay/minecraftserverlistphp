@@ -122,5 +122,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.migrations') . ' - ' . lang('admin_panel'); ?>
+<?php $title = lang('titles.migrations'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

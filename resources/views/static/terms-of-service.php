@@ -61,5 +61,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('terms-of-service') . ' - ' . setting('title'); ?>
+<?php $title = lang('terms-of-service'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

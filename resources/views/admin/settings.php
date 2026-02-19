@@ -463,5 +463,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.website_settings') . ' - ' . lang('admin_panel'); ?>
+<?php $title = lang('titles.website_settings'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

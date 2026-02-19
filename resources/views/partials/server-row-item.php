@@ -9,7 +9,7 @@
         <!-- 1. Icon Section (Fixed Width) -->
         <div class="col-auto">
             <div class="server-icon-wrapper position-relative d-inline-block">
-                <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>">
+                <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" aria-label="<?= lang('view_details') ?>: <?= sanitize($server->name) ?>">
                     <?php if ($server->icon): ?>
                         <img src="<?= url('/uploads/icons/' . $server->icon) ?>"
                             class="server-icon-responsive rounded-3 shadow-sm bg-light"
@@ -18,13 +18,15 @@
                     <?php else: ?>
                         <div class="server-icon-responsive rounded-3 d-flex align-items-center justify-content-center shadow-sm bg-light text-secondary"
                             style="width: 80px; height: 80px;">
-                            <i class="bi bi-controller fs-2"></i>
+                            <i class="bi bi-controller fs-2" aria-hidden="true"></i>
                         </div>
                     <?php endif; ?>
                 </a>
 
                 <!-- Status Dot (Replaces the text badge) -->
                 <span class="status-dot bg-<?= $server->status ? 'success' : 'danger' ?>"
+                    role="img"
+                    aria-label="<?= $server->status ? lang('online') : lang('offline') ?>"
                     title="<?= $server->status ? lang('online') : lang('offline') ?>">
                 </span>
             </div>
@@ -42,7 +44,8 @@
                             <?= sanitize($server->name) ?>
                         </a>
                         <?php if ($server->highlight): ?>
-                            <i class="bi bi-patch-check-fill text-warning ms-1 small" title="<?= lang('premium_server') ?>"></i>
+                            <i class="bi bi-patch-check-fill text-warning ms-1 small" aria-hidden="true"></i>
+                            <span class="visually-hidden"><?= lang('premium_server') ?></span>
                         <?php endif; ?>
                     </h5>
 
@@ -93,7 +96,7 @@
                     class="btn btn-sm btn-outline-primary position-relative z-2"> <!-- z-2 needed for stretched-link -->
                     <?= lang('view_details') ?>
                 </a>
-                <button class="btn btn-sm btn-light position-relative z-2" title="<?= lang('copy_ip') ?>"
+                <button type="button" class="btn btn-sm btn-light position-relative z-2" title="<?= lang('copy_ip') ?>" aria-label="<?= lang('copy_ip') ?>"
                     onclick="copyToClipboard('<?= $server->address ?>')">
                     <i class="bi bi-clipboard"></i>
                 </button>

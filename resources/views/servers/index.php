@@ -24,7 +24,7 @@
                 <div class="d-flex gap-2">
                     <!-- Mobile Filter Toggle -->
                     <button type="button" class="btn btn-primary d-md-none" data-bs-toggle="modal"
-                        data-bs-target="#filterModal" aria-label="<?= lang('filters') ?>">
+                        data-bs-target="#filterModal" aria-label="<?= lang('filters') ?>" aria-controls="filterModal" aria-haspopup="dialog">
                         <i class="bi bi-funnel"></i>
                     </button>
 
@@ -70,7 +70,7 @@
 
                             <?php for ($i = max(1, $current_page - 2); $i <= min($total_pages, $current_page + 2); $i++): ?>
                                 <li class="page-item <?= $i === $current_page ? 'active' : '' ?>">
-                                    <a class="page-link" href="<?= url('/servers/' . $i) . $queryString ?>"><?= $i ?></a>
+                                    <a class="page-link" href="<?= url('/servers/' . $i) . $queryString ?>" <?= $i === $current_page ? 'aria-current="page"' : '' ?>><?= $i ?></a>
                                 </li>
                             <?php endfor; ?>
 
@@ -129,5 +129,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.servers') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.servers'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

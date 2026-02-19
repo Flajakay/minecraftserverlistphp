@@ -18,6 +18,25 @@ body {
     min-height: 100vh;
 }
 
+.skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    color: #0d6efd;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    transform: translateY(-250%);
+    transition: transform 0.2s ease;
+    z-index: 2000;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    transform: translateY(0);
+}
+
 /* Hero Section */
 .hero-section {
     background: var(--primary-gradient);

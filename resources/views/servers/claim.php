@@ -76,5 +76,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('server_claim_title') . ' - ' . setting('title'); ?>
+<?php $title = lang('server_claim_title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

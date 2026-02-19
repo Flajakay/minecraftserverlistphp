@@ -43,6 +43,6 @@
 ]); ?>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.edit_server') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.edit_server'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

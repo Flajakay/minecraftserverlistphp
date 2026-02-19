@@ -3,6 +3,7 @@
 $language = array();
 
 $language['_jodit_code'] = "pl";
+$language['_html_lang'] = "pl";
 $language['about'] = "O mnie";
 $language['about_help'] = "Maksymalnie 128 znaków";
 $language['about_placeholder'] = "Opowiedz nam trochę o sobie...";

@@ -117,5 +117,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.contact') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.contact'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

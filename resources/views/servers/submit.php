@@ -218,5 +218,5 @@
 ]); ?>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.submit') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.submit'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

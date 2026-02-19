@@ -253,6 +253,6 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.reports_management') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.reports_management'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

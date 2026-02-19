@@ -312,5 +312,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.user_profile') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.user_profile'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

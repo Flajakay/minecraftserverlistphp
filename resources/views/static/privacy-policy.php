@@ -76,5 +76,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('privacy-policy') . ' - ' . setting('title'); ?>
+<?php $title = lang('privacy-policy'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

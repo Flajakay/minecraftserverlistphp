@@ -90,14 +90,16 @@
             <!-- Main Content Tabs -->
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
-                    <ul class="nav nav-pills nav-fill" id="serverTabs" role="tablist">
+                    <ul class="nav nav-pills nav-fill" id="serverTabs" role="tablist" aria-label="<?= lang('server_information') ?>">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active rounded-pill" 
                                     id="general-tab" 
                                     data-bs-toggle="pill" 
                                     data-bs-target="#general" 
                                     type="button" 
-                                    role="tab">
+                                    role="tab"
+                                    aria-controls="general"
+                                    aria-selected="true">
                                 <i class="bi bi-info-circle me-1"></i><?= lang('general') ?>
                             </button>
                         </li>
@@ -107,7 +109,9 @@
                                     data-bs-toggle="pill" 
                                     data-bs-target="#statistics" 
                                     type="button" 
-                                    role="tab">
+                                    role="tab"
+                                    aria-controls="statistics"
+                                    aria-selected="false">
                                 <i class="bi bi-bar-chart me-1"></i><?= lang('statistics') ?>
                             </button>
                         </li>
@@ -117,7 +121,9 @@
                                     data-bs-toggle="pill" 
                                     data-bs-target="#comments" 
                                     type="button" 
-                                    role="tab">
+                                    role="tab"
+                                    aria-controls="comments"
+                                    aria-selected="false">
                                 <i class="bi bi-chat-dots me-1"></i><?= lang('comments') ?> (<?= /** @noinspection PhpUndefinedVariableInspection */
                                 count($comments) ?>)
                             </button>
@@ -128,7 +134,9 @@
                                     data-bs-toggle="pill" 
                                     data-bs-target="#blog" 
                                     type="button" 
-                                    role="tab">
+                                    role="tab"
+                                    aria-controls="blog"
+                                    aria-selected="false">
                                 <i class="bi bi-journal-text me-1"></i><?= lang('blog') ?> (<?= /** @noinspection PhpUndefinedVariableInspection */
                                 $blog_posts_count ?>)
                             </button>
@@ -139,7 +147,9 @@
                                     data-bs-toggle="pill" 
                                     data-bs-target="#banners" 
                                     type="button" 
-                                    role="tab">
+                                    role="tab"
+                                    aria-controls="banners"
+                                    aria-selected="false">
                                 <i class="bi bi-image me-1"></i><?= lang('banners') ?>
                             </button>
                         </li>
@@ -149,7 +159,7 @@
                 <div class="card-body p-4">
                     <div class="tab-content" id="serverTabsContent">
                         <!-- Overview Tab -->
-                        <div class="tab-pane fade show active" id="general" role="tabpanel">
+                        <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="h6 fw-semibold text-dark mb-3">
@@ -191,15 +201,15 @@
                                                         return '<a href="' . url('/servers?categories=' . $c->category_id) . '" class="text-decoration-none">' . sanitize($c->category_name) . '</a>';
                                                     }, array_slice($categories, $displayLimit)));
                                                     ?>
-                                                    <a href="#" 
-                                                       class="text-decoration-none text-muted ms-1" 
+                                                    <button type="button" 
+                                                       class="btn btn-link p-0 text-decoration-none text-muted ms-1 align-baseline" 
                                                        data-bs-toggle="popover" 
                                                        data-bs-trigger="hover focus"
                                                        data-bs-placement="bottom"
                                                        data-bs-html="true"
                                                        data-bs-content='<?= $popoverContent ?>'>
                                                         +<?= $remainingCount ?> <?= lang('more') ?>
-                                                    </a>
+                                                    </button>
                                                 <?php endif; ?>
                                             </span>
                                         </div>
@@ -215,7 +225,7 @@
                                             </span>
                                             <span>
                                                 <img src="<?= url('/assets/flags/' . $server->country . '.png') ?>" 
-                                                     width="16" height="11" alt="<?= $server->country ?>" class="me-1">
+                                                     width="16" height="11" alt="<?= getCountryName($server->country) ?>" class="me-1">
                                                 <?= getCountryName($server->country) ?>
                                             </span>
                                         </div>
@@ -303,6 +313,7 @@
                                     </div>
                                     <div class="ratio ratio-16x9">
                                         <iframe src="https://www.youtube.com/embed/<?= sanitize($server->youtube_id) ?>" 
+                                                title="<?= sanitize($server->name) ?> - <?= lang('server_showcase') ?>"
                                                 allowfullscreen 
                                                 class="rounded"></iframe>
                                     </div>
@@ -311,7 +322,7 @@
                         </div>
                         
                         <!-- Statistics Tab -->
-                        <div class="tab-pane fade" id="statistics" role="tabpanel">
+                        <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics-tab" tabindex="0">
                             <div class="h6 fw-semibold text-dark mb-4">
                                 <i class="bi bi-bar-chart text-primary me-2"></i><?= lang('server_performance') ?>
                             </div>
@@ -324,7 +335,7 @@
                         </div>
                         
                         <!-- Comments Tab -->
-                        <div class="tab-pane fade" id="comments" role="tabpanel">
+                        <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
                             <?php if (isLoggedIn()): ?>
                                 <div class="card border-0 bg-light mb-4">
                                     <div class="card-body">
@@ -380,7 +391,7 @@
                             <?php endif; ?>
                         </div>
                         <!-- Blog Tab -->
-                        <div class="tab-pane fade" id="blog" role="tabpanel">
+                        <div class="tab-pane fade" id="blog" role="tabpanel" aria-labelledby="blog-tab" tabindex="0">
                             <?php /** @noinspection PhpUndefinedVariableInspection */
                             if ($is_owner): ?>
                                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -433,7 +444,7 @@
                         </div>
                         
                         <!-- Banners Tab -->
-                        <div class="tab-pane fade" id="banners" role="tabpanel">
+                        <div class="tab-pane fade" id="banners" role="tabpanel" aria-labelledby="banners-tab" tabindex="0">
                             <div class="h6 fw-semibold text-dark mb-3">
                                 <i class="bi bi-megaphone text-primary me-2"></i><?= lang('promote_server') ?>
                             </div>
@@ -466,6 +477,7 @@
                                                 <textarea class="form-control small" 
                                                           rows="3" 
                                                           readonly 
+                                                          aria-label="<?= $banner['name'] ?> HTML"
                                                           onclick="this.select()">&lt;a href="<?= $serverUrl ?>" target="_blank"&gt;&lt;img src="<?= url('/assets/vote-buttons/' . $banner['file']) ?>"&gt;&lt;/a&gt;</textarea>
                                             </div>
                                         </div>
@@ -555,14 +567,14 @@
 </div>
 
 <!-- Blog Modal -->
-<div class="modal fade" id="blogModal" tabindex="-1">
+<div class="modal fade" id="blogModal" tabindex="-1" aria-labelledby="blogModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-semibold">
+                <h5 class="modal-title fw-semibold" id="blogModalLabel">
                     <i class="bi bi-journal-text text-primary me-2"></i><?= lang('create_blog_post') ?>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="blogForm">
                 <div class="modal-body">
@@ -597,14 +609,14 @@
 </div>
 
 <!-- Report Modal -->
-<div class="modal fade" id="reportModal" tabindex="-1">
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-semibold">
+                <h5 class="modal-title fw-semibold" id="reportModalLabel">
                     <i class="bi bi-flag text-warning me-2"></i><?= lang('report_server') ?>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="reportForm">
                 <div class="modal-body">
@@ -660,42 +672,74 @@ document.addEventListener('DOMContentLoaded', function() {
         const popover = new bootstrap.Popover(popoverTriggerEl, {
             trigger: 'manual'
         });
-        
+
         let isHoveringTrigger = false;
         let isHoveringPopover = false;
-        
-        popoverTriggerEl.addEventListener('mouseenter', function() {
-            isHoveringTrigger = true;
+
+        const showPopover = () => {
+            popoverTriggerEl.setAttribute('aria-expanded', 'true');
             popover.show();
-            
+
             setTimeout(function() {
                 const popoverElement = document.querySelector('.popover');
-                if (popoverElement) {
-                    popoverElement.addEventListener('mouseenter', function() {
-                        isHoveringPopover = true;
-                    });
-                    
-                    popoverElement.addEventListener('mouseleave', function() {
-                        isHoveringPopover = false;
-                        setTimeout(function() {
-                            if (!isHoveringTrigger && !isHoveringPopover) {
-                                popover.hide();
-                            }
-                        }, 100);
-                    });
-                }
+                if (!popoverElement) return;
+
+                popoverElement.addEventListener('mouseenter', function() {
+                    isHoveringPopover = true;
+                });
+
+                popoverElement.addEventListener('mouseleave', function() {
+                    isHoveringPopover = false;
+                    setTimeout(function() {
+                        if (!isHoveringTrigger && !isHoveringPopover) {
+                            hidePopover();
+                        }
+                    }, 100);
+                });
             }, 10);
+        };
+
+        const hidePopover = () => {
+            popoverTriggerEl.setAttribute('aria-expanded', 'false');
+            popover.hide();
+        };
+
+        popoverTriggerEl.setAttribute('aria-haspopup', 'true');
+        popoverTriggerEl.setAttribute('aria-expanded', 'false');
+
+        popoverTriggerEl.addEventListener('mouseenter', function() {
+            isHoveringTrigger = true;
+            showPopover();
         });
-        
+
         popoverTriggerEl.addEventListener('mouseleave', function() {
             isHoveringTrigger = false;
             setTimeout(function() {
                 if (!isHoveringTrigger && !isHoveringPopover) {
-                    popover.hide();
+                    hidePopover();
                 }
             }, 100);
         });
-        
+
+        popoverTriggerEl.addEventListener('focus', function() {
+            showPopover();
+        });
+
+        popoverTriggerEl.addEventListener('blur', function() {
+            setTimeout(function() {
+                if (!isHoveringTrigger && !isHoveringPopover) {
+                    hidePopover();
+                }
+            }, 100);
+        });
+
+        popoverTriggerEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hidePopover();
+                popoverTriggerEl.blur();
+            }
+        });
+
         return popover;
     });
 });

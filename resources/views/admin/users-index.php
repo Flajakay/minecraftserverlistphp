@@ -261,6 +261,6 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.users_management') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.users_management'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

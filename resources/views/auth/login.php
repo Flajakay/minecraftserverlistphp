@@ -5,9 +5,9 @@
         <div class="col-md-5 col-lg-4">
             <div class="text-center mb-4">
                 <div class="mb-3">
-                    <i class="bi bi-controller text-primary" style="font-size: 2.5rem;"></i>
+                    <i class="bi bi-controller text-primary" style="font-size: 2.5rem;" aria-hidden="true"></i>
                 </div>
-                <h2 class="h3 fw-bold text-dark"><?= lang('welcome_back') ?></h2>
+                <h1 class="h3 fw-bold text-dark"><?= lang('welcome_back') ?></h1>
                 <p class="text-muted"><?= lang('sign_in_subtitle') ?></p>
             </div>
 
@@ -20,7 +20,7 @@
                             <label for="username" class="form-label fw-semibold"><?= lang('username') ?></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-person text-muted"></i>
+                                    <i class="bi bi-person text-muted" aria-hidden="true"></i>
                                 </span>
                                 <input type="text" 
                                        class="form-control border-start-0 ps-0" 
@@ -28,6 +28,10 @@
                                        name="username" 
                                        value="<?= old('username') ?>" 
                                        placeholder="<?= lang('enter_username') ?>"
+                                       autocomplete="username"
+                                       autocapitalize="none"
+                                       spellcheck="false"
+                                       autofocus
                                        required>
                             </div>
                         </div>
@@ -36,13 +40,14 @@
                             <label for="password" class="form-label fw-semibold"><?= lang('password') ?></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-lock text-muted"></i>
+                                    <i class="bi bi-lock text-muted" aria-hidden="true"></i>
                                 </span>
                                 <input type="password" 
                                        class="form-control border-start-0 ps-0" 
                                        id="password" 
                                        name="password" 
                                        placeholder="<?= lang('enter_password') ?>"
+                                       autocomplete="current-password"
                                        required>
                             </div>
                         </div>
@@ -57,7 +62,7 @@
                         </div>
                         
                         <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mb-3">
-                            <i class="bi bi-box-arrow-in-right me-2"></i><?= lang('sign_in') ?>
+                            <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i><?= lang('sign_in') ?>
                         </button>
                         
                         <div class="text-center">
@@ -82,5 +87,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.login') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.login'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

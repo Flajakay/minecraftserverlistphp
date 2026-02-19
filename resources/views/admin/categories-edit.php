@@ -73,5 +73,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.edit_category') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.edit_category'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

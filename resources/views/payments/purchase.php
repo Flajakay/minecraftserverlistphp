@@ -261,6 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.purchase_highlight') . ' - ' . setting('title'); ?>
+<?php $title = lang('titles.purchase_highlight'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

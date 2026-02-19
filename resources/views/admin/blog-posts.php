@@ -272,5 +272,5 @@ function showAlert(type, message) {
 </script>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('titles.blog_posts_management') . ' - ' . setting('title');  ?>
+<?php $title = lang('titles.blog_posts_management'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

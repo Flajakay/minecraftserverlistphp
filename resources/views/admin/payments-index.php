@@ -180,6 +180,6 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('payments_management') . ' - ' . setting('title'); ?>
+<?php $title = lang('payments_management'); ?>
 
 <?php include __DIR__ . '/../layouts/app.php'; ?>

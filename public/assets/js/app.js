@@ -26,13 +26,21 @@ document.addEventListener('DOMContentLoaded', function () {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
+    const firstAlert = document.querySelector('#flash-messages [role="alert"]');
+    if (firstAlert) {
+        firstAlert.setAttribute('tabindex', '-1');
+        firstAlert.focus();
+    }
+
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function () {
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
+                form.setAttribute('aria-busy', 'true');
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+                submitBtn.setAttribute('aria-disabled', 'true');
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Loading...';
             }
         });
     });
@@ -81,5 +89,4 @@ function formatRelativeTime(timestamp) {
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     return 'Just now';
 }
-
 

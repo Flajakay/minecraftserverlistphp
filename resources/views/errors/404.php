@@ -20,5 +20,5 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = lang('page_not_found_title') . ' - ' . setting('title'); ?>
+<?php $title = lang('page_not_found_title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>
