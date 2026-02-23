@@ -7,14 +7,40 @@ class SearchableSelect {
         this.options = Array.from(container.querySelectorAll('.searchable-select-option'));
         this.highlightedIndex = -1;
         this.isOpen = false;
+        this.optionIdPrefix = `ss_opt_${Math.random().toString(36).slice(2)}_`;
         
         this.init();
     }
 
     init() {
+        this.ensureAria();
         this.setInitialValue();
         this.bindEvents();
         this.updateOptionsVisibility();
+    }
+
+    ensureAria() {
+        if (!this.input || !this.dropdown) return;
+
+        if (!this.dropdown.id) {
+            this.dropdown.id = `ss_list_${Math.random().toString(36).slice(2)}`;
+        }
+
+        this.input.setAttribute('role', 'combobox');
+        this.input.setAttribute('aria-autocomplete', 'list');
+        this.input.setAttribute('aria-haspopup', 'listbox');
+        this.input.setAttribute('aria-controls', this.dropdown.id);
+        this.input.setAttribute('aria-expanded', 'false');
+
+        this.dropdown.setAttribute('role', 'listbox');
+
+        this.options.forEach((opt, index) => {
+            if (!opt.id) {
+                opt.id = `${this.optionIdPrefix}${index}`;
+            }
+            opt.setAttribute('role', 'option');
+            opt.setAttribute('aria-selected', opt.classList.contains('selected') ? 'true' : 'false');
+        });
     }
 
     setInitialValue() {
@@ -24,6 +50,7 @@ class SearchableSelect {
         if (selectedOption) {
             this.input.value = selectedOption.textContent.trim();
             selectedOption.classList.add('selected');
+            selectedOption.setAttribute('aria-selected', 'true');
         }
     }
 
@@ -110,7 +137,13 @@ class SearchableSelect {
         
         const visibleOptions = this.options.filter(opt => !opt.classList.contains('hidden'));
         if (this.highlightedIndex >= 0 && visibleOptions[this.highlightedIndex]) {
-            visibleOptions[this.highlightedIndex].classList.add('highlighted');
+            const highlighted = visibleOptions[this.highlightedIndex];
+            highlighted.classList.add('highlighted');
+            if (highlighted.id) {
+                this.input.setAttribute('aria-activedescendant', highlighted.id);
+            }
+        } else {
+            this.input.removeAttribute('aria-activedescendant');
         }
     }
 
@@ -129,6 +162,9 @@ class SearchableSelect {
     selectOption(option) {
         this.options.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
+
+        this.options.forEach(opt => opt.setAttribute('aria-selected', 'false'));
+        option.setAttribute('aria-selected', 'true');
         
         this.input.value = option.textContent.trim();
         this.hiddenInput.value = option.dataset.value;
@@ -139,6 +175,7 @@ class SearchableSelect {
     open() {
         this.isOpen = true;
         this.dropdown.classList.add('show');
+        this.input.setAttribute('aria-expanded', 'true');
         this.updateOptionsVisibility();
         this.highlightedIndex = -1;
         this.updateHighlight();
@@ -147,7 +184,8 @@ class SearchableSelect {
     close() {
         this.isOpen = false;
         this.dropdown.classList.remove('show');
-        this.input.blur();
+        this.input.setAttribute('aria-expanded', 'false');
+        this.input.removeAttribute('aria-activedescendant');
     }
 
     updateOptionsVisibility() {

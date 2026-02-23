@@ -16,8 +16,8 @@
 
     <h6><?= lang('filters') ?></h6>
     <div class="mb-3">
-        <label class="form-label"><?= lang('order_by') ?>:</label>
-        <select class="form-select form-select-sm" onchange="updateFilter('order_by', this.value)">
+        <label class="form-label" for="sidebarOrderBy"><?= lang('order_by') ?>:</label>
+        <select class="form-select form-select-sm" id="sidebarOrderBy" onchange="updateFilter('order_by', this.value)">
             <option value=""><?= lang('order_by_latest') ?></option>
             <option value="votes"><?= lang('order_by_votes') ?></option>
             <option value="players"><?= lang('order_by_players') ?></option>
@@ -25,8 +25,8 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label"><?= lang('filter_status') ?>:</label>
-        <select class="form-select form-select-sm" onchange="updateFilter('status', this.value)">
+        <label class="form-label" for="sidebarStatus"><?= lang('filter_status') ?>:</label>
+        <select class="form-select form-select-sm" id="sidebarStatus" onchange="updateFilter('status', this.value)">
             <option value=""><?= lang('all') ?></option>
             <option value="1"><?= lang('filter_online') ?></option>
             <option value="0"><?= lang('filter_offline') ?></option>
@@ -34,8 +34,8 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label"><?= lang('filter_country') ?>:</label>
-        <select class="form-select form-select-sm" onchange="updateFilter('country', this.value)">
+        <label class="form-label" for="sidebarCountry"><?= lang('filter_country') ?>:</label>
+        <select class="form-select form-select-sm" id="sidebarCountry" onchange="updateFilter('country', this.value)">
             <option value=""><?= lang('all_countries') ?></option>
             <?php foreach (getCountries() as $code => $name): ?>
                 <option value="<?= $code ?>"><?= $name ?></option>

@@ -4,6 +4,7 @@ class CategoryCloud {
         this.expandedParents = new Set();
         this.categories = {};
         this.subcategories = {};
+        this.lastFocusedId = null;
         this.init();
     }
 
@@ -45,17 +46,31 @@ class CategoryCloud {
         });
 
         this.updateHiddenInputs();
+
+        if (this.lastFocusedId !== null) {
+            const focused = container.querySelector(`[data-category-id="${this.lastFocusedId}"]`);
+            if (focused && typeof focused.focus === 'function') {
+                focused.focus();
+            }
+        }
     }
 
     renderMainCategory(container, category) {
-        const tag = document.createElement('div');
+        const tag = document.createElement('button');
+        tag.type = 'button';
         tag.className = `category-tag main-category ${this.selectedCategories.has(category.id) ? 'selected' : ''}`;
         tag.dataset.categoryId = category.id;
         tag.dataset.categoryType = 'main';
+        tag.setAttribute('aria-pressed', this.selectedCategories.has(category.id) ? 'true' : 'false');
+
+        const hasSubcats = !!(this.subcategories[category.id] && this.subcategories[category.id].length > 0);
+        if (hasSubcats) {
+            tag.setAttribute('aria-expanded', this.expandedParents.has(category.id) ? 'true' : 'false');
+        }
 
         tag.innerHTML = `
             ${category.name}
-            <span class="checkmark">✓</span>
+            <span class="checkmark" aria-hidden="true">✓</span>
         `;
 
         container.appendChild(tag);
@@ -69,15 +84,17 @@ class CategoryCloud {
         if (!parentTag) return;
 
         subcats.forEach(subcat => {
-            const tag = document.createElement('div');
+            const tag = document.createElement('button');
+            tag.type = 'button';
             tag.className = `category-tag sub-category ${this.selectedCategories.has(subcat.id) ? 'selected' : ''}`;
             tag.dataset.categoryId = subcat.id;
             tag.dataset.categoryType = 'sub';
             tag.dataset.parentId = parentId;
+            tag.setAttribute('aria-pressed', this.selectedCategories.has(subcat.id) ? 'true' : 'false');
 
             tag.innerHTML = `
                 ${subcat.name}
-                <span class="checkmark">✓</span>
+                <span class="checkmark" aria-hidden="true">✓</span>
             `;
 
             parentTag.insertAdjacentElement('afterend', tag);
@@ -94,6 +111,7 @@ class CategoryCloud {
 
             const categoryId = parseInt(tag.dataset.categoryId);
             const categoryType = tag.dataset.categoryType;
+            this.lastFocusedId = categoryId;
 
             if (categoryType === 'main') {
                 this.toggleMainCategory(categoryId);

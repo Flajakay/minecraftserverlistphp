@@ -3,7 +3,7 @@
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-controller text-primary fs-3 me-2"></i>
+                    <i class="bi bi-controller text-primary fs-3 me-2" aria-hidden="true"></i>
                     <h5 class="mb-0 text-white"><?= setting('title') ?></h5>
                 </div>
                 <p class="text-muted mb-0">
@@ -17,12 +17,12 @@
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
                                 <a href="<?= url('/servers') ?>" class="text-decoration-none text-muted">
-                                    <i class="bi bi-server me-1"></i><?= lang('menu.home') ?>
+                                    <i class="bi bi-server me-1" aria-hidden="true"></i><?= lang('menu.home') ?>
                                 </a>
                             </li>
                             <li class="mb-2">
                                 <a href="<?= url('/submit') ?>" class="text-decoration-none text-muted">
-                                    <i class="bi bi-plus-circle me-1"></i><?= lang('menu.submit') ?>
+                                    <i class="bi bi-plus-circle me-1" aria-hidden="true"></i><?= lang('menu.submit') ?>
                                 </a>
                             </li>
                         </ul>
@@ -31,13 +31,13 @@
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
                                 <a href="<?= url('/contact') ?>" class="text-decoration-none text-muted">
-                                    <i class="bi bi-envelope me-1"></i><?= lang('contact') ?>
+                                    <i class="bi bi-envelope me-1" aria-hidden="true"></i><?= lang('contact') ?>
                                 </a>
                             </li>
                             <?php if (!isLoggedIn()): ?>
                             <li class="mb-2">
                                 <a href="<?= url('/register') ?>" class="text-decoration-none text-muted">
-                                    <i class="bi bi-person-plus me-1"></i><?= lang('menu.register') ?>
+                                    <i class="bi bi-person-plus me-1" aria-hidden="true"></i><?= lang('menu.register') ?>
                                 </a>
                             </li>
                             <?php endif; ?>

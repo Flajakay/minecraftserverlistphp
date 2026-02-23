@@ -9,7 +9,7 @@ $isAdmin = $config['isAdmin'] ?? false;
     
     <div class="mb-4">
         <h5 class="fw-semibold text-dark mb-3">
-            <i class="bi bi-server text-primary me-2"></i><?= lang('server_details') ?>
+            <i class="bi bi-server text-primary me-2" aria-hidden="true"></i><?= lang('server_details') ?>
         </h5>
         
         <div class="row g-3">
@@ -17,7 +17,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="address" class="form-label fw-semibold"><?= lang('server_address') ?></label>
                 <div class="input-group">
                     <span class="input-group-text <?= $isAdmin ? 'bg-light' : 'bg-secondary' ?> border-end-0">
-                        <i class="bi bi-globe <?= $isAdmin ? 'text-muted' : 'text-white' ?>"></i>
+                        <i class="bi bi-globe <?= $isAdmin ? 'text-muted' : 'text-white' ?>" aria-hidden="true"></i>
                     </span>
                     <input type="text" 
                            class="form-control border-start-0 ps-0 <?= $isAdmin ? '' : 'bg-light' ?>" 
@@ -25,10 +25,11 @@ $isAdmin = $config['isAdmin'] ?? false;
                            <?= $isAdmin ? 'name="address"' : '' ?>
                            value="<?= /** @noinspection PhpUndefinedVariableInspection */
                            sanitize($server->address) ?>"
+                           autocomplete="off"
                            <?= $isAdmin ? 'required' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>
-                        <small class="text-muted"><?= lang('server_address_readonly') ?></small>
+                        <small class="text-muted" id="addressHelp"><?= lang('server_address_readonly') ?></small>
                 <?php endif; ?>
             </div>
             
@@ -36,17 +37,18 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="port" class="form-label fw-semibold"><?= lang('server_connection_port') ?></label>
                 <div class="input-group">
                     <span class="input-group-text <?= $isAdmin ? 'bg-light' : 'bg-secondary' ?> border-end-0">
-                        <i class="bi bi-hash <?= $isAdmin ? 'text-muted' : 'text-white' ?>"></i>
+                        <i class="bi bi-hash <?= $isAdmin ? 'text-muted' : 'text-white' ?>" aria-hidden="true"></i>
                     </span>
                     <input type="number" 
                            class="form-control border-start-0 ps-0 <?= $isAdmin ? '' : 'bg-light' ?>" 
                            id="port" 
                            <?= $isAdmin ? 'name="port"' : '' ?>
                            value="<?= $server->port ?>" 
+                           autocomplete="off"
                            <?= $isAdmin ? 'min="1" max="65535"' : 'readonly' ?>>
                 </div>
                 <?php if (!$isAdmin): ?>
-                        <small class="text-muted"><?= lang('port_readonly') ?></small>
+                        <small class="text-muted" id="portHelp"><?= lang('port_readonly') ?></small>
                 <?php endif; ?>
             </div>
         </div>
@@ -56,13 +58,14 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="name" class="form-label fw-semibold"><?= lang('server_name') ?> *</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-card-text text-muted"></i>
+                        <i class="bi bi-card-text text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="text" 
                            class="form-control border-start-0 ps-0" 
                            id="name" 
                            name="name" 
                            value="<?= sanitize($server->name) ?>" 
+                           autocomplete="off"
                            required 
                            maxlength="64">
                 </div>
@@ -81,7 +84,7 @@ $isAdmin = $config['isAdmin'] ?? false;
 
     <div class="mb-4">
         <h5 class="fw-semibold text-dark mb-3">
-            <i class="bi bi-file-text text-primary me-2"></i><?= lang('description_media') ?>
+            <i class="bi bi-file-text text-primary me-2" aria-hidden="true"></i><?= lang('description_media') ?>
         </h5>
         
         <div class="mb-3">
@@ -91,8 +94,9 @@ $isAdmin = $config['isAdmin'] ?? false;
                       name="description" 
                       rows="5" 
                       maxlength="2560" 
+                      aria-describedby="descriptionHelp"
                       placeholder="<?= lang('description_placeholder') ?>"><?= $server->description ?></textarea>
-            <small class="text-muted"><?= lang('description_help') ?></small>
+            <small class="text-muted" id="descriptionHelp"><?= lang('description_help') ?></small>
         </div>
 
         <div class="row g-3">
@@ -100,7 +104,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="website" class="form-label fw-semibold"><?= lang('website') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-link text-muted"></i>
+                        <i class="bi bi-link text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="url" 
                            class="form-control border-start-0 ps-0" 
@@ -108,6 +112,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            name="website" 
                            value="<?= sanitize($server->website) ?>" 
                            maxlength="128"
+                           autocomplete="url"
                            placeholder="https://yourserver.com">
                 </div>
             </div>
@@ -116,7 +121,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="youtube_id" class="form-label fw-semibold"><?= lang('youtube_video') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-youtube text-muted"></i>
+                        <i class="bi bi-youtube text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="text" 
                            class="form-control border-start-0 ps-0" 
@@ -124,9 +129,10 @@ $isAdmin = $config['isAdmin'] ?? false;
                            name="youtube_id" 
                            value="<?= sanitize($server->youtube_id) ?>" 
                            maxlength="32"
+                           aria-describedby="youtubeHelp"
                            placeholder="dQw4w9WgXcQ">
                 </div>
-                <small class="text-muted"><?= lang('youtube_help') ?></small>
+                <small class="text-muted" id="youtubeHelp"><?= lang('youtube_help') ?></small>
             </div>
         </div>
 
@@ -137,27 +143,29 @@ $isAdmin = $config['isAdmin'] ?? false;
                     <div class="position-relative d-inline-block">
                         <img id="bannerPreview" 
                              src="<?= $server->image ? url('/uploads/banners/' . $server->image) : '' ?>" 
-                             alt="Banner preview" 
+                             alt="<?= lang('server_banner') ?>" 
                              class="img-fluid rounded shadow-sm preview-image-banner">
                         <button type="button" 
                                 class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 preview-close-btn-banner" 
+                                aria-label="<?= lang('delete') ?>"
                                 onclick="clearImagePreview('image', 'bannerPreview', 'bannerPreviewBox')">
-                            <i class="bi bi-trash"></i>
+                            <i class="bi bi-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-image text-muted"></i>
+                        <i class="bi bi-image text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="file" 
                            class="form-control border-start-0" 
                            id="image" 
                            name="image" 
                            accept="image/*"
+                           aria-describedby="bannerHelp"
                            onchange="previewImage(this, 'bannerPreview', 'bannerPreviewBox')">
                 </div>
-                <small class="text-muted d-block mt-2"><?= lang('server_banner_help') ?></small>
+                <small class="text-muted d-block mt-2" id="bannerHelp"><?= lang('server_banner_help') ?></small>
             </div>
         </div>
 
@@ -168,27 +176,29 @@ $isAdmin = $config['isAdmin'] ?? false;
                     <div class="position-relative d-inline-block">
                         <img id="iconPreview" 
                              src="<?= $server->icon ? url('/uploads/icons/' . $server->icon) : '' ?>" 
-                             alt="Icon preview" 
+                             alt="<?= lang('server_icon') ?>" 
                              class="rounded shadow-sm preview-image-icon">
                         <button type="button" 
                                 class="btn btn-sm btn-danger position-absolute preview-close-btn-icon" 
+                                aria-label="<?= lang('delete') ?>"
                                 onclick="clearImagePreview('icon', 'iconPreview', 'iconPreviewBox')">
-                            <i class="bi bi-trash"></i>
+                            <i class="bi bi-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-box-seam text-muted"></i>
+                        <i class="bi bi-box-seam text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="file" 
                            class="form-control border-start-0" 
                            id="icon" 
                            name="icon" 
                            accept="image/*"
+                           aria-describedby="iconHelp"
                            onchange="previewImage(this, 'iconPreview', 'iconPreviewBox')">
                 </div>
-                <small class="text-muted d-block mt-2"><?= lang('server_icon_help') ?></small>
+                <small class="text-muted d-block mt-2" id="iconHelp"><?= lang('server_icon_help') ?></small>
             </div>
         </div>
     </div>
@@ -196,7 +206,7 @@ $isAdmin = $config['isAdmin'] ?? false;
     <div class="mb-4">
         <div class="d-flex align-items-center mb-3">
             <h5 class="fw-semibold text-dark mb-0 me-2">
-                <i class="bi bi-shield-check text-primary me-2"></i><?= lang('votifier_settings') ?>
+                <i class="bi bi-shield-check text-primary me-2" aria-hidden="true"></i><?= lang('votifier_settings') ?>
             </h5>
             <span class="badge bg-light text-dark"><?= lang('optional') ?></span>
         </div>
@@ -211,8 +221,9 @@ $isAdmin = $config['isAdmin'] ?? false;
                       id="votifier_public_key" 
                       name="votifier_public_key" 
                       rows="6"
+                      aria-describedby="votifierKeyHelp"
                       placeholder="<?= lang('votifier_key_placeholder') ?>"><?= sanitize($customData['votifier_public_key'] ?? '') ?></textarea>
-            <small class="text-muted"><?= lang('server_votifier_public_key_help') ?></small>
+            <small class="text-muted" id="votifierKeyHelp"><?= lang('server_votifier_public_key_help') ?></small>
         </div>
         
         <div class="row g-3">
@@ -220,23 +231,24 @@ $isAdmin = $config['isAdmin'] ?? false;
                 <label for="votifier_ip" class="form-label fw-semibold"><?= lang('server_votifier_ip') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-globe text-muted"></i>
+                        <i class="bi bi-globe text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="text" 
                            class="form-control border-start-0 ps-0" 
                            id="votifier_ip" 
                            name="votifier_ip" 
                            value="<?= sanitize($customData['votifier_ip'] ?? '') ?>"
+                           aria-describedby="votifierIpHelp"
                            placeholder="<?= lang('votifier_ip_placeholder') ?>">
                 </div>
-                <small class="text-muted"><?= lang('server_votifier_ip_help') ?></small>
+                <small class="text-muted" id="votifierIpHelp"><?= lang('server_votifier_ip_help') ?></small>
             </div>
             
             <div class="col-md-4">
                 <label for="votifier_port" class="form-label fw-semibold"><?= lang('server_votifier_port') ?></label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
-                        <i class="bi bi-hash text-muted"></i>
+                        <i class="bi bi-hash text-muted" aria-hidden="true"></i>
                     </span>
                     <input type="number" 
                            class="form-control border-start-0 ps-0" 
@@ -253,10 +265,10 @@ $isAdmin = $config['isAdmin'] ?? false;
 
     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 pt-3 border-top">
         <a href="<?= $isAdmin ? '/admin/servers' : url('/profile/' . auth()->username) ?>" class="btn btn-outline-secondary px-4">
-            <i class="bi bi-arrow-left me-2"></i><?= $isAdmin ? lang('back_to_servers') : lang('back_to_my_profile') ?>
+            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i><?= $isAdmin ? lang('back_to_servers') : lang('back_to_my_profile') ?>
         </a>
         <button type="submit" class="btn btn-primary px-4 fw-semibold">
-            <i class="bi bi-<?= $isAdmin ? 'check-lg' : 'save' ?> me-2"></i><?= $isAdmin ? lang('submit') : lang('update_server') ?>
+            <i class="bi bi-<?= $isAdmin ? 'check-lg' : 'save' ?> me-2" aria-hidden="true"></i><?= $isAdmin ? lang('submit') : lang('update_server') ?>
         </button>
     </div>
 </form>
@@ -273,14 +285,6 @@ function previewImage(input, previewId, previewBoxId) {
         reader.onload = function(e) {
             previewImg.src = e.target.result;
             previewBox.classList.remove('d-none');
-            
-            // Update the info text to show it's a new upload
-            const infoText = previewBox.querySelector('.text-muted i').nextSibling;
-            if (previewId === 'bannerPreview') {
-                infoText.textContent = '<?= lang('new_banner_preview') ?? 'New banner preview' ?>';
-            } else {
-                infoText.textContent = '<?= lang('new_icon_preview') ?? 'New icon preview' ?>';
-            }
         };
         
         reader.readAsDataURL(file);

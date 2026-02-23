@@ -166,21 +166,21 @@
                                         <i class="bi bi-server text-primary me-2"></i><?= lang('server_information') ?>
                                     </div>
                                     <div class="list-group list-group-flush">
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_address') ?>: <?= $server->address ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-link-45deg me-2"></i><?= lang('server_address') ?>
+                                                <i class="bi bi-link-45deg me-2" aria-hidden="true"></i><?= lang('server_address') ?>
                                             </span>
                                             <code class="bg-light px-2 py-1 rounded"><?= $server->address ?></code>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_connection_port') ?>: <?= $server->port ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-hdd-network me-2"></i><?= lang('server_connection_port') ?>
+                                                <i class="bi bi-hdd-network me-2" aria-hidden="true"></i><?= lang('server_connection_port') ?>
                                             </span>
                                             <span><?= $server->port ?></span>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_category') ?>: <?= sanitize(implode(', ', array_map(fn($c) => $c->category_name, $categories ?? [])), ENT_QUOTES) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-folder me-2"></i><?= lang('server_category') ?>
+                                                <i class="bi bi-folder me-2" aria-hidden="true"></i><?= lang('server_category') ?>
                                             </span>
                                             <span>
                                                 <?php 
@@ -207,21 +207,22 @@
                                                        data-bs-trigger="hover focus"
                                                        data-bs-placement="bottom"
                                                        data-bs-html="true"
-                                                       data-bs-content='<?= $popoverContent ?>'>
+                                                       data-bs-content='<?= $popoverContent ?>'
+                                                       aria-label="<?= lang('more') ?> <?= lang('categories') ?>">
                                                         +<?= $remainingCount ?> <?= lang('more') ?>
                                                     </button>
                                                 <?php endif; ?>
                                             </span>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('owner') ?>: <?= sanitize($server->owner_username, ENT_QUOTES) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-person me-2"></i><?= lang('owner') ?>
+                                                <i class="bi bi-person me-2" aria-hidden="true"></i><?= lang('owner') ?>
                                             </span>
                                             <span><?= sanitize($server->owner_username) ?></span>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('location') ?>: <?= getCountryName($server->country) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-geo-alt me-2"></i><?= lang('location') ?>
+                                                <i class="bi bi-geo-alt me-2" aria-hidden="true"></i><?= lang('location') ?>
                                             </span>
                                             <span>
                                                 <img src="<?= url('/assets/flags/' . $server->country . '.png') ?>" 
@@ -230,9 +231,9 @@
                                             </span>
                                         </div>
                                         <?php if ($server->website): ?>
-                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('website') ?>: <?= sanitize($server->website, ENT_QUOTES) ?>">
                                                 <span class="text-muted">
-                                                    <i class="bi bi-link me-2"></i><?= lang('website') ?>
+                                                    <i class="bi bi-link me-2" aria-hidden="true"></i><?= lang('website') ?>
                                                 </span>
                                                 <span>
                                                 <a href="<?= sanitize($server->website) ?>" 
@@ -240,7 +241,7 @@
                                                     rel="noopener" 
                                                     class="text-decoration-none">
                                                     <?= sanitize($server->website) ?>
-                                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                                    <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
                                                 </a>  
                                                 </span>
                                             </div>
@@ -257,35 +258,35 @@
                                     </div>
                                     <div class="list-group list-group-flush">
                                         <?php if ($server->status): ?>
-                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('players_online') ?>: <?= $server->players ?>/<?= $server->max_players ?>">
                                                 <span class="text-muted">
-                                                    <i class="bi bi-people me-2"></i><?= lang('players_online') ?>
+                                                    <i class="bi bi-people me-2" aria-hidden="true"></i><?= lang('players_online') ?>
                                                 </span>
                                                 <span><?= $server->players ?>/<?= $server->max_players ?></span>
                                             </div>
-                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('version') ?>: <?= sanitize($server->version, ENT_QUOTES) ?>">
                                                 <span class="text-muted">
-                                                    <i class="bi bi-tag me-2"></i><?= lang('version') ?>
+                                                    <i class="bi bi-tag me-2" aria-hidden="true"></i><?= lang('version') ?>
                                                 </span>
                                                 <span class="badge bg-light text-dark"><?= sanitize($server->version) ?></span>
                                             </div>
                                         <?php endif; ?>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('total_votes') ?>: <?= number_format($server->votes) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-arrow-up me-2"></i><?= lang('total_votes') ?>
+                                                <i class="bi bi-arrow-up me-2" aria-hidden="true"></i><?= lang('total_votes') ?>
                                             </span>
                                             <span class="text-success fw-semibold"><?= number_format($server->votes) ?></span>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('monthly_views') ?>: <?= number_format($monthly_hits) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-eye me-2"></i><?= lang('monthly_views') ?>
+                                                <i class="bi bi-eye me-2" aria-hidden="true"></i><?= lang('monthly_views') ?>
                                             </span>
                                             <span><?= /** @noinspection PhpUndefinedVariableInspection */
                                                 number_format($monthly_hits) ?></span>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('last_check') ?>: <?= timeAgo($server->last_check) ?>">
                                             <span class="text-muted">
-                                                <i class="bi bi-clock me-2"></i><?= lang('last_check') ?>
+                                                <i class="bi bi-clock me-2" aria-hidden="true"></i><?= lang('last_check') ?>
                                             </span>
                                             <span><?= timeAgo($server->last_check) ?></span>
                                         </div>
@@ -300,7 +301,10 @@
                                     <div class="h6 fw-semibold text-dark mb-3">
                                         <i class="bi bi-file-text text-primary me-2"></i><?= lang('about_server') ?>
                                     </div>
-                                    <div class="p-3 bg-light rounded jodit-content">
+                                    <?php
+                                    $serverDescriptionPlain = trim(preg_replace('/\s+/', ' ', strip_tags(displayHtml($server->description))));
+                                    ?>
+                                    <div class="p-3 bg-light rounded jodit-content" tabindex="0" role="region" aria-label="<?= lang('about_server') ?>: <?= sanitize($serverDescriptionPlain, ENT_QUOTES) ?>">
                                         <?= displayHtml($server->description) ?>
                                     </div>
                                 </div>
@@ -382,7 +386,7 @@
                             
                             <?php if (count($comments) >= 10): ?>
                                 <div class="text-center mt-4">
-                                    <button id="loadMoreComments" 
+                                    <button type="button" id="loadMoreComments" 
                                             class="btn btn-outline-primary" 
                                             data-offset="10">
                                         <?= lang('load_more_comments') ?>
@@ -434,7 +438,7 @@
                             <?php /** @noinspection PhpUndefinedVariableInspection */
                             if (count($blog_posts) >= 5): ?>
                                 <div class="text-center mt-4">
-                                    <button id="loadMoreBlogPosts" 
+                                    <button type="button" id="loadMoreBlogPosts" 
                                             class="btn btn-outline-primary" 
                                             data-offset="5">
                                         <?= lang('load_more_posts') ?>

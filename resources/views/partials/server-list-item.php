@@ -11,7 +11,7 @@
         <?php else: ?>
             <div class="bg-secondary rounded d-flex align-items-center justify-content-center shadow-sm" 
                  style="width: 48px; height: 48px;">
-                <i class="bi bi-controller text-white"></i>
+                <i class="bi bi-controller text-white" aria-hidden="true"></i>
             </div>
         <?php endif; ?>
     </div>
@@ -25,30 +25,31 @@
                         <?= sanitize($server->name) ?>
                     </a>
                     <?php if ($server->highlight): ?>
-                        <i class="bi bi-star-fill text-warning ms-1" title="<?= lang('premium_server') ?>"></i>
+                        <i class="bi bi-star-fill text-warning ms-1" aria-hidden="true"></i>
+                        <span class="visually-hidden"><?= lang('premium_server') ?></span>
                     <?php endif; ?>
                 </h6>
                 
                 <div class="mb-1">
                     <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-1">
-                        <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
+                        <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1" aria-hidden="true"></i>
                         <?= $server->status ? lang('active') : lang('inactive') ?>
                     </span>
                     <?php if ($server->status && $server->max_players > 0): ?>
                         <span class="badge bg-info me-1">
-                            <i class="bi bi-people me-1"></i>
+                            <i class="bi bi-people me-1" aria-hidden="true"></i>
                             <?= $server->players ?>/<?= $server->max_players ?>
                         </span>
                     <?php endif; ?>
                     <span class="badge bg-light text-dark border">
-                        <i class="bi bi-geo-alt me-1"></i>
+                        <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
                         <?= getCountryName($server->country) ?>
                     </span>
                 </div>
                 
                 <div class="d-flex align-items-center text-muted small">
                     <span>
-                        <i class="bi bi-arrow-up text-success me-1"></i>
+                        <i class="bi bi-arrow-up text-success me-1" aria-hidden="true"></i>
                         <?= number_format($server->votes) ?>
                     </span>
                 </div>

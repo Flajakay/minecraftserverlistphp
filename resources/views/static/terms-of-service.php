@@ -5,9 +5,9 @@
         <div class="col-lg-8">
             <div class="text-center mb-4">
                 <div class="mb-3">
-                    <i class="bi bi-file-text text-primary" style="font-size: 2.5rem;"></i>
+                    <i class="bi bi-file-text text-primary" style="font-size: 2.5rem;" aria-hidden="true"></i>
                 </div>
-                <h2 class="h3 fw-bold text-dark"><?= lang('terms-of-service') ?></h2>
+                <h1 class="h3 fw-bold text-dark"><?= lang('terms-of-service') ?></h1>
                 <p class="text-muted"><?= sprintf(lang('last_updated'), 'September 17, 2025') ?></p>
             </div>
 

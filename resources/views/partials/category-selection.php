@@ -1,14 +1,16 @@
 <div class="col-12">
-    <label class="form-label fw-semibold"><?= lang('server_category') ?> *</label>
+    <fieldset class="mb-0">
+        <legend class="form-label fw-semibold mb-2"><?= lang('server_category') ?> *</legend>
 
-    <div class="category-cloud-container">
-        <div id="category-cloud" class="category-cloud"></div>
-        <div id="hidden-category-inputs"></div>
-    </div>
+        <div class="category-cloud-container" aria-describedby="categoryHelp">
+            <div id="category-cloud" class="category-cloud" role="group" aria-label="<?= lang('server_category') ?>"></div>
+            <div id="hidden-category-inputs"></div>
+        </div>
 
-    <small class="text-muted">
-        <?= lang('how_to_select_categories'); ?>
-    </small>
+        <small class="text-muted" id="categoryHelp">
+            <?= lang('how_to_select_categories'); ?>
+        </small>
+    </fieldset>
 </div>
 
 <script>

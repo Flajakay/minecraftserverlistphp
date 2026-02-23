@@ -5,28 +5,28 @@
         <div class="col-lg-8">
             <div class="text-center mb-4">
                 <div class="mb-3">
-                    <i class="bi bi-person-gear text-primary" style="font-size: 2.5rem;"></i>
+                    <i class="bi bi-person-gear text-primary" style="font-size: 2.5rem;" aria-hidden="true"></i>
                 </div>
-                <h2 class="h3 fw-bold text-dark"><?= lang('titles.settings') ?></h2>
+                <h1 class="h3 fw-bold text-dark"><?= lang('titles.settings') ?></h1>
                 <p class="text-muted"><?= lang('profile_settings_subtitle') ?></p>
             </div>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 py-3">
-                    <ul class="nav nav-pills justify-content-center" id="settingsTabs" role="tablist">
+                    <ul class="nav nav-pills justify-content-center" id="settingsTabs" role="tablist" aria-label="<?= lang('titles.settings') ?>">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active px-4" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
-                                <i class="bi bi-person me-2"></i><?= lang('menu.profile_settings') ?>
+                            <button class="nav-link active px-4" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                                <i class="bi bi-person me-2" aria-hidden="true"></i><?= lang('menu.profile_settings') ?>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4" id="design-tab" data-bs-toggle="tab" data-bs-target="#design" type="button" role="tab">
-                                <i class="bi bi-palette me-2"></i><?= lang('menu.design_settings') ?>
+                            <button class="nav-link px-4" id="design-tab" data-bs-toggle="tab" data-bs-target="#design" type="button" role="tab" aria-controls="design" aria-selected="false">
+                                <i class="bi bi-palette me-2" aria-hidden="true"></i><?= lang('menu.design_settings') ?>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link px-4" href="<?= url('/settings/password') ?>">
-                                <i class="bi bi-key me-2"></i><?= lang('menu.change_password') ?>
+                            <a class="nav-link px-4" href="<?= url('/settings/password') ?>" role="tab" aria-selected="false">
+                                <i class="bi bi-key me-2" aria-hidden="true"></i><?= lang('menu.change_password') ?>
                             </a>
                         </li>
                     </ul>
@@ -35,14 +35,14 @@
                 <div class="card-body p-4">
                     <div class="tab-content" id="settingsTabContent">
                         <!-- Profile Settings Tab -->
-                        <div class="tab-pane fade show active" id="profile" role="tabpanel">
+                        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                             <form method="POST" action="<?= url('/settings/profile') ?>">
                                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                                 
                                 <!-- Basic Information Section -->
                                 <div class="mb-4">
                                     <h5 class="fw-semibold text-dark mb-3">
-                                        <i class="bi bi-person text-primary me-2"></i><?= lang('basic_information') ?>
+                                        <i class="bi bi-person text-primary me-2" aria-hidden="true"></i><?= lang('basic_information') ?>
                                     </h5>
                                     
                                     <div class="row g-3">
@@ -50,7 +50,7 @@
                                             <label for="name" class="form-label fw-semibold"><?= lang('name') ?> *</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-card-text text-muted"></i>
+                                                    <i class="bi bi-card-text text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="text" 
                                                        class="form-control border-start-0 ps-0" 
@@ -58,6 +58,7 @@
                                                        name="name" 
                                                        value="<?= /** @noinspection PhpUndefinedVariableInspection */
                                                        sanitize($user->name) ?>"
+                                                       autocomplete="name"
                                                        placeholder="<?= lang('display_name_placeholder') ?>"
                                                        required>
                                             </div>
@@ -67,14 +68,18 @@
                                             <label for="username" class="form-label fw-semibold"><?= lang('username') ?></label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-secondary border-end-0">
-                                                    <i class="bi bi-at text-white"></i>
+                                                    <i class="bi bi-at text-white" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="text" 
                                                        class="form-control border-start-0 ps-0 bg-light" 
+                                                       id="username"
+                                                       name="username"
                                                        value="<?= sanitize($user->username) ?>" 
+                                                       aria-describedby="usernameHelp"
+                                                       autocomplete="username"
                                                        readonly>
                                             </div>
-                                            <small class="text-muted"><?= lang('username_readonly') ?></small>
+                                            <small class="text-muted" id="usernameHelp"><?= lang('username_readonly') ?></small>
                                         </div>
                                     </div>
                                     
@@ -82,13 +87,14 @@
                                         <label for="email" class="form-label fw-semibold"><?= lang('email') ?> *</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-envelope text-muted"></i>
+                                                <i class="bi bi-envelope text-muted" aria-hidden="true"></i>
                                             </span>
                                             <input type="email" 
                                                    class="form-control border-start-0 ps-0" 
                                                    id="email" 
                                                    name="email" 
                                                    value="<?= sanitize($user->email) ?>" 
+                                                   autocomplete="email"
                                                    placeholder="<?= lang('email_placeholder') ?>"
                                                    required>
                                         </div>
@@ -101,15 +107,16 @@
                                                   name="about" 
                                                   rows="3" 
                                                   maxlength="128"
+                                                  aria-describedby="aboutHelp"
                                                   placeholder="<?= lang('about_placeholder') ?>"><?= sanitize($user->about) ?></textarea>
-                                        <small class="text-muted"><?= lang('about_help') ?></small>
+                                        <small class="text-muted" id="aboutHelp"><?= lang('about_help') ?></small>
                                     </div>
                                 </div>
 
                                 <!-- Contact Information Section -->
                                 <div class="mb-4">
                                     <h5 class="fw-semibold text-dark mb-3">
-                                        <i class="bi bi-globe text-primary me-2"></i><?= lang('contact_information') ?>
+                                        <i class="bi bi-globe text-primary me-2" aria-hidden="true"></i><?= lang('contact_information') ?>
                                     </h5>
                                     
                                     <div class="row g-3">
@@ -117,13 +124,14 @@
                                             <label for="website" class="form-label fw-semibold"><?= lang('website') ?></label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-link text-muted"></i>
+                                                    <i class="bi bi-link text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="url" 
                                                        class="form-control border-start-0 ps-0" 
                                                        id="website" 
                                                        name="website" 
                                                        value="<?= sanitize($user->website) ?>"
+                                                       autocomplete="url"
                                                        placeholder="<?= lang('website_placeholder') ?>">
                                             </div>
                                         </div>
@@ -132,7 +140,7 @@
                                             <label for="location" class="form-label fw-semibold"><?= lang('location') ?></label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-geo-alt text-muted"></i>
+                                                    <i class="bi bi-geo-alt text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="text" 
                                                        class="form-control border-start-0 ps-0" 
@@ -140,6 +148,7 @@
                                                        name="location" 
                                                        value="<?= sanitize($user->location) ?>" 
                                                        maxlength="64"
+                                                       autocomplete="address-level2"
                                                        placeholder="<?= lang('location_placeholder') ?>">
                                             </div>
                                         </div>
@@ -149,7 +158,7 @@
                                 <!-- Social Media Section -->
                                 <div class="mb-4">
                                     <h5 class="fw-semibold text-dark mb-3">
-                                        <i class="bi bi-share text-primary me-2"></i><?= lang('social_media') ?>
+                                        <i class="bi bi-share text-primary me-2" aria-hidden="true"></i><?= lang('social_media') ?>
                                     </h5>
                                     
                                     <div class="row g-3">
@@ -157,32 +166,34 @@
                                             <label for="facebook" class="form-label fw-semibold"><?= lang('facebook') ?></label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-facebook text-muted"></i>
+                                                    <i class="bi bi-facebook text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="text" 
                                                        class="form-control border-start-0 ps-0" 
                                                        id="facebook" 
                                                        name="facebook" 
                                                        value="<?= sanitize($user->facebook) ?>" 
+                                                       aria-describedby="facebookHelp"
                                                        placeholder="<?= lang('social_placeholder') ?>">
                                             </div>
-                                            <small class="text-muted"><?= lang('social_help') ?></small>
+                                            <small class="text-muted" id="facebookHelp"><?= lang('social_help') ?></small>
                                         </div>
                                         
                                         <div class="col-md-6">
                                             <label for="twitter" class="form-label fw-semibold"><?= lang('twitter') ?></label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-twitter text-muted"></i>
+                                                    <i class="bi bi-twitter text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="text" 
                                                        class="form-control border-start-0 ps-0" 
                                                        id="twitter" 
                                                        name="twitter" 
                                                        value="<?= sanitize($user->twitter) ?>" 
+                                                       aria-describedby="twitterHelp"
                                                        placeholder="<?= lang('social_placeholder') ?>">
                                             </div>
-                                            <small class="text-muted"><?= lang('social_help') ?></small>
+                                            <small class="text-muted" id="twitterHelp"><?= lang('social_help') ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -190,16 +201,17 @@
                                 <!-- Privacy Settings Section -->
                                 <div class="mb-4">
                                     <h5 class="fw-semibold text-dark mb-3">
-                                        <i class="bi bi-shield-check text-primary me-2"></i><?= lang('privacy_settings') ?>
+                                        <i class="bi bi-shield-check text-primary me-2" aria-hidden="true"></i><?= lang('privacy_settings') ?>
                                     </h5>
                                     
                                     <div class="form-check p-3 bg-light rounded">
                                         <input class="form-check-input" type="checkbox" id="private" name="private" 
+                                               aria-describedby="privateHelp"
                                                <?= $user->private ? 'checked' : '' ?>>
                                         <label class="form-check-label fw-semibold" for="private">
-                                            <i class="bi bi-lock me-2"></i><?= lang('private_profile') ?>
+                                            <i class="bi bi-lock me-2" aria-hidden="true"></i><?= lang('private_profile') ?>
                                         </label>
-                                        <div class="text-muted small mt-1">
+                                        <div class="text-muted small mt-1" id="privateHelp">
                                             <?= lang('private_profile_help') ?>
                                         </div>
                                     </div>
@@ -207,21 +219,21 @@
                                 
                                 <div class="text-center pt-3 border-top">
                                     <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">
-                                        <i class="bi bi-check-lg me-2"></i><?= lang('submit') ?>
+                                        <i class="bi bi-check-lg me-2" aria-hidden="true"></i><?= lang('submit') ?>
                                     </button>
                                 </div>
                             </form>
                         </div>
                         
                         <!-- Design Settings Tab -->
-                        <div class="tab-pane fade" id="design" role="tabpanel">
+                        <div class="tab-pane fade" id="design" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
                             <form method="POST" action="<?= url('/settings/profile') ?>" enctype="multipart/form-data">
                                 <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
                                 
                                 <!-- Profile Images Section -->
                                 <div class="mb-4">
                                     <h5 class="fw-semibold text-dark mb-3">
-                                        <i class="bi bi-image text-primary me-2"></i><?= lang('profile_images') ?>
+                                        <i class="bi bi-image text-primary me-2" aria-hidden="true"></i><?= lang('profile_images') ?>
                                     </h5>
                                     
                                     <div class="row g-4">
@@ -239,7 +251,7 @@
                                                 <?php else: ?>
                                                     <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm" 
                                                          style="width: 120px; height: 120px;">
-                                                        <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
+                                                         <i class="bi bi-person-fill text-white" style="font-size: 3rem;" aria-hidden="true"></i>
                                                     </div>
                                                 <?php endif; ?>
                                                 
@@ -250,15 +262,16 @@
                                             
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-person-circle text-muted"></i>
+                                                      <i class="bi bi-person-circle text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="file" 
                                                        class="form-control border-start-0" 
                                                        id="avatar" 
                                                        name="avatar" 
+                                                         aria-describedby="avatarHelp"
                                                        accept="image/*">
                                             </div>
-                                            <small class="text-muted"><?= lang('avatar_help') ?></small>
+                                              <small class="text-muted" id="avatarHelp"><?= lang('avatar_help') ?></small>
                                         </div>
                                         
                                         <div class="col-md-6">
@@ -273,7 +286,7 @@
                                                 <?php else: ?>
                                                     <div class="bg-secondary border rounded d-flex align-items-center justify-content-center" 
                                                          style="height: 120px;">
-                                                        <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
+                                                         <i class="bi bi-image text-white" style="font-size: 3rem;" aria-hidden="true"></i>
                                                     </div>
                                                 <?php endif; ?>
                                                 
@@ -284,22 +297,23 @@
                                             
                                             <div class="input-group">
                                                 <span class="input-group-text bg-light border-end-0">
-                                                    <i class="bi bi-image text-muted"></i>
+                                                      <i class="bi bi-image text-muted" aria-hidden="true"></i>
                                                 </span>
                                                 <input type="file" 
                                                        class="form-control border-start-0" 
                                                        id="cover" 
                                                        name="cover" 
+                                                         aria-describedby="coverHelp"
                                                        accept="image/*">
                                             </div>
-                                            <small class="text-muted"><?= lang('cover_help') ?></small>
+                                              <small class="text-muted" id="coverHelp"><?= lang('cover_help') ?></small>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="text-center pt-3 border-top">
                                     <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">
-                                        <i class="bi bi-upload me-2"></i><?= lang('submit') ?>
+                                          <i class="bi bi-upload me-2" aria-hidden="true"></i><?= lang('submit') ?>
                                     </button>
                                 </div>
                             </form>

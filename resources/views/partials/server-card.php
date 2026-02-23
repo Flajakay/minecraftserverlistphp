@@ -3,7 +3,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
     <?php if ($server->highlight): ?>
         <div class="card-header bg-warning text-dark py-2 border-0">
             <div class="d-flex align-items-center justify-content-center">
-                <i class="bi bi-star-fill me-1"></i>
+                <i class="bi bi-star-fill me-1" aria-hidden="true"></i>
                 <small class="fw-semibold"><?= lang('premium_server') ?></small>
             </div>
         </div>
@@ -17,17 +17,17 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
                  loading="lazy">
             <div class="position-absolute top-0 end-0 p-2">
                 <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> shadow">
-                    <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
+                    <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1" aria-hidden="true"></i>
                     <?= $server->status ? lang('active') : lang('inactive') ?>
                 </span>
             </div>
         </div>
     <?php else: ?>
         <div class="bg-light d-flex align-items-center justify-content-center position-relative banner-container" style="height: 120px;">
-            <i class="bi bi-controller text-muted" style="font-size: 3rem;"></i>
+            <i class="bi bi-controller text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
             <div class="position-absolute top-0 end-0 p-2">
                 <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> shadow">
-                    <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
+                    <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1" aria-hidden="true"></i>
                     <?= $server->status ? lang('active') : lang('inactive') ?>
                 </span>
             </div>
@@ -49,7 +49,10 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
                         <div class="progress" style="height: 6px;">
                             <div class="progress-bar bg-info" 
                                  role="progressbar" 
-                                 style="width: <?= $server->max_players > 0 ? ($server->players / $server->max_players * 100) : 0 ?>%">
+                                 style="width: <?= $server->max_players > 0 ? ($server->players / $server->max_players * 100) : 0 ?>%"
+                                 aria-valuemin="0"
+                                 aria-valuemax="<?= $server->max_players ?>"
+                                 aria-valuenow="<?= $server->players ?>">
                             </div>
                         </div>
                     </div>
@@ -60,7 +63,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
             <?php endif; ?>
             
             <span class="badge bg-light text-dark border me-1">
-                <i class="bi bi-geo-alt me-1"></i>
+                <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>
                 <?= getCountryName($server->country) ?>
             </span>
         </div>
@@ -73,7 +76,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
         <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
             <div class="d-flex align-items-center">
                 <span class="text-success">
-                    <i class="bi bi-arrow-up me-1"></i>
+                    <i class="bi bi-arrow-up me-1" aria-hidden="true"></i>
                     <small><?= number_format($server->votes) ?></small>
                 </span>
             </div>

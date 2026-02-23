@@ -1,14 +1,14 @@
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-transparent border-0 py-3">
         <h6 class="fw-semibold mb-0">
-            <i class="bi bi-activity text-primary me-2"></i><?= lang('server_status') ?>
+            <i class="bi bi-activity text-primary me-2" aria-hidden="true"></i><?= lang('server_status') ?>
         </h6>
     </div>
     <div class="card-body">
         <div class="d-flex align-items-center mb-3">
             <span class="badge bg-<?= /** @noinspection PhpUndefinedVariableInspection */
             $server->status ? 'success' : 'danger' ?> me-2">
-                <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
+                <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1" aria-hidden="true"></i>
                 <?= $server->status ? lang('active') : lang('inactive') ?>
             </span>
             <?php if ($server->status): ?>
@@ -18,13 +18,13 @@
         
         <div class="row text-center g-3">
             <div class="col-6">
-                <div class="p-3 bg-light rounded">
+                <div class="p-3 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('votes') ?>: <?= number_format($server->votes) ?>">
                     <div class="h5 text-success mb-0"><?= number_format($server->votes) ?></div>
                     <small class="text-muted"><?= lang('votes') ?></small>
                 </div>
             </div>
             <div class="col-6">
-                <div class="p-3 bg-light rounded">
+                <div class="p-3 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('server_status') ?>: <?= $server->active ? lang('active') : lang('inactive') ?>">
                     <div class="h5 text-<?= $server->active ? 'success' : 'warning' ?> mb-0">
                         <?= $server->active ? lang('active') : lang('inactive') ?>
                     </div>
@@ -34,9 +34,9 @@
         </div>
         
         <?php if ($server->last_check): ?>
-            <div class="mt-3 p-2 bg-light rounded">
+            <div class="mt-3 p-2 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('last_checked') ?>: <?= timeAgo($server->last_check) ?>">
                 <small class="text-muted">
-                    <i class="bi bi-clock me-1"></i><?= lang('last_checked') ?>: <?= timeAgo($server->last_check) ?>
+                    <i class="bi bi-clock me-1" aria-hidden="true"></i><?= lang('last_checked') ?>: <?= timeAgo($server->last_check) ?>
                 </small>
             </div>
         <?php endif; ?>
@@ -46,27 +46,27 @@
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-transparent border-0 py-3">
         <h6 class="fw-semibold mb-0">
-            <i class="bi bi-gear text-primary me-2"></i><?= lang('server_settings') ?>
+            <i class="bi bi-gear text-primary me-2" aria-hidden="true"></i><?= lang('server_settings') ?>
         </h6>
     </div>
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('visibility') ?>: <?= $server->private ? lang('private') : lang('public') ?>">
             <span class="fw-semibold"><?= lang('visibility') ?></span>
             <span class="badge bg-<?= $server->private ? 'warning' : 'success' ?>">
-                <i class="bi bi-<?= $server->private ? 'lock' : 'unlock' ?> me-1"></i>
+                <i class="bi bi-<?= $server->private ? 'lock' : 'unlock' ?> me-1" aria-hidden="true"></i>
                 <?= $server->private ? lang('private') : lang('public') ?>
             </span>
         </div>
         
-        <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('premium_status') ?>: <?= $server->highlight ? lang('premium') : lang('standard') ?>">
             <span class="fw-semibold"><?= lang('premium_status') ?></span>
             <span class="badge bg-<?= $server->highlight ? 'warning' : 'secondary' ?>">
-                <i class="bi bi-<?= $server->highlight ? 'star-fill' : 'star' ?> me-1"></i>
+                <i class="bi bi-<?= $server->highlight ? 'star-fill' : 'star' ?> me-1" aria-hidden="true"></i>
                 <?= $server->highlight ? lang('premium') : lang('standard') ?>
             </span>
         </div>
         
-        <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+        <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded a11y-focusable" tabindex="0" role="group" aria-label="<?= lang('created') ?>: <?= date('M j, Y', strtotime($server->created_at)) ?>">
             <span class="fw-semibold"><?= lang('created') ?></span>
             <small class="text-muted"><?= date('M j, Y', strtotime($server->created_at)) ?></small>
         </div>
@@ -76,13 +76,13 @@
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-transparent border-0 py-3">
         <h6 class="fw-semibold mb-0">
-            <i class="bi bi-lightning text-primary me-2"></i><?= lang('quick_actions') ?>
+            <i class="bi bi-lightning text-primary me-2" aria-hidden="true"></i><?= lang('quick_actions') ?>
         </h6>
     </div>
     <div class="card-body">
         <a href="<?= url('/server/' . $server->address . ':' . $server->port) ?>" 
            class="btn btn-primary w-100 mb-2">
-            <i class="bi bi-eye me-2"></i><?= lang('view_server_page') ?>
+            <i class="bi bi-eye me-2" aria-hidden="true"></i><?= lang('view_server_page') ?>
         </a>
         
         <?php if (isset($isAdmin) && $isAdmin): ?>
@@ -92,7 +92,7 @@
                 <button type="submit" 
                         class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= $server->active ? lang('confirm_deactivate') : lang('confirm_activate') ?>')">
-                    <i class="bi bi-<?= $server->active ? 'pause' : 'play' ?> me-2"></i><?= $server->active ? lang('deactivate') : lang('activate') ?>
+                    <i class="bi bi-<?= $server->active ? 'pause' : 'play' ?> me-2" aria-hidden="true"></i><?= $server->active ? lang('deactivate') : lang('activate') ?>
                 </button>
             </form>
             
@@ -101,7 +101,7 @@
                 <input type="hidden" name="action" value="<?= $server->highlight ? 'remove_highlight' : 'add_highlight' ?>">
                 <button type="submit" 
                         class="btn btn-outline-warning w-100 mb-2">
-                    <i class="bi bi-<?= $server->highlight ? 'star-fill' : 'star' ?> me-2"></i><?= $server->highlight ? lang('server_remove_highlight') : lang('server_highlight') ?>
+                    <i class="bi bi-<?= $server->highlight ? 'star-fill' : 'star' ?> me-2" aria-hidden="true"></i><?= $server->highlight ? lang('server_remove_highlight') : lang('server_highlight') ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -113,7 +113,7 @@
                 <button type="submit" 
                         class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= lang('confirm_make_public') ?>')">
-                    <i class="bi bi-unlock me-2"></i><?= lang('make_public') ?>
+                    <i class="bi bi-unlock me-2" aria-hidden="true"></i><?= lang('make_public') ?>
                 </button>
             </form>
         <?php else: ?>
@@ -123,7 +123,7 @@
                 <button type="submit" 
                         class="btn btn-outline-secondary w-100 mb-2" 
                         onclick="return confirm('<?= lang('confirm_make_private') ?>')">
-                    <i class="bi bi-lock me-2"></i><?= lang('make_private') ?>
+                    <i class="bi bi-lock me-2" aria-hidden="true"></i><?= lang('make_private') ?>
                 </button>
             </form>
         <?php endif; ?>
@@ -134,7 +134,7 @@
             <button type="submit" 
                     class="btn btn-outline-danger w-100" 
                     onclick="return confirm('<?= lang('confirm_delete_server') ?>')">
-                <i class="bi bi-trash me-2"></i><?= lang('server_delete') ?>
+                <i class="bi bi-trash me-2" aria-hidden="true"></i><?= lang('server_delete') ?>
             </button>
         </form>
     </div>

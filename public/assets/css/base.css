@@ -37,6 +37,12 @@ body {
     transform: translateY(0);
 }
 
+.a11y-focusable:focus-visible {
+    outline: 3px solid rgba(13, 110, 253, 0.9);
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+}
+
 /* Hero Section */
 .hero-section {
     background: var(--primary-gradient);

@@ -444,3 +444,11 @@ p.text-clamp-2 {
     color: #6c757d;
     font-style: italic;
 }
+
+.list-group-item[tabindex="0"]:focus-visible,
+.comment-item[tabindex="0"]:focus-visible,
+.blog-post-item[tabindex="0"]:focus-visible {
+    outline: 3px solid rgba(13, 110, 253, 0.9);
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+}
