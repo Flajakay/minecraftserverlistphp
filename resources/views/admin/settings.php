@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <form method="POST" action="<?= url('/admin/settings') ?>">
+    <form method="POST" action="<?= url('/admin/settings') ?>" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= csrf() ?>">
         
         <div class="row g-4 mt-4">
@@ -141,6 +141,50 @@
                                 </label>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favicon Settings -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-transparent border-0 py-3">
+                <h5 class="fw-semibold mb-1">
+                    <i class="bi bi-star text-primary me-2"></i><?= lang('favicon_settings') ?>
+                </h5>
+                <p class="text-muted mb-0 small"><?= lang('favicon_settings_help') ?></p>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-3">
+                        <div class="border rounded bg-light d-flex align-items-center justify-content-center" style="width: 96px; height: 96px;">
+                            <?php if (!empty($settings->favicon_source)): ?>
+                                <img src="<?= asset('favicons/apple-touch-icon.png') ?>?v=<?= (int)($settings->favicon_version ?? 1) ?>"
+                                     alt="<?= lang('current_favicon') ?>"
+                                     class="img-fluid rounded"
+                                     style="max-width: 72px; max-height: 72px;">
+                            <?php else: ?>
+                                <i class="bi bi-star text-muted" style="font-size: 2rem;"></i>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <label for="favicon" class="form-label fw-semibold"><?= lang('favicon_source_image') ?></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-image text-muted"></i>
+                            </span>
+                            <input type="file"
+                                   class="form-control border-start-0"
+                                   id="favicon"
+                                   name="favicon"
+                                   accept="image/jpeg,image/png,image/gif"
+                                   aria-describedby="faviconHelp">
+                        </div>
+                        <small class="text-muted d-block mt-2" id="faviconHelp"><?= lang('favicon_upload_help') ?></small>
+                        <?php if (!empty($settings->favicon_source)): ?>
+                            <small class="text-muted d-block mt-1"><?= lang('favicon_current_active') ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

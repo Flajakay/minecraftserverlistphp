@@ -45,9 +45,9 @@ class SettingController
             redirect('/');
         }
 
-        $result = SiteSettings::update($_POST);
+        $result = SiteSettings::update($_POST, $_FILES);
 
-        flash('success', $result['message']);
+        flash($result['success'] ? 'success' : 'error', $result['message']);
         redirect('/admin/settings');
     }
 

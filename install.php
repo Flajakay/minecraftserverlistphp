@@ -49,7 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
-        $runner->runAllPending();
+        $migrationResult = $runner->runAllPending();
+        if (!empty($migrationResult['failed'])) {
+            throw new RuntimeException(formatMigrationFailure($migrationResult['failed']));
+        }
 
         Env::writeValues(__DIR__ . '/.env', [
             'APP_NAME' => $siteTitle,
@@ -77,6 +80,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+function formatMigrationFailure(array $failed): string
+{
+    $message = 'Migration failed';
+    if (!empty($failed['name'])) {
+        $message .= ': ' . $failed['name'];
+    }
+
+    if (!empty($failed['statement_index'])) {
+        $message .= ' statement #' . $failed['statement_index'];
+    }
+
+    if (!empty($failed['message'])) {
+        $message .= ' - ' . $failed['message'];
+    }
+
+    return $message;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

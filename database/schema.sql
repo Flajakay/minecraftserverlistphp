@@ -204,6 +204,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `smtp_user` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `smtp_pass` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `smtp_secure` varchar(8) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `favicon_source` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `favicon_version` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

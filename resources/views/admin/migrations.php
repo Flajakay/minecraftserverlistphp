@@ -39,6 +39,10 @@
                             <?= (int)($status['pending'] ?? 0) ?>
                         </span>
                     </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span class="text-muted"><?= lang('migrations_ignored') ?></span>
+                        <span class="badge bg-light text-dark"><?= (int)($status['ignored'] ?? 0) ?></span>
+                    </div>
 
                     <div class="mt-4">
                         <form method="POST" action="<?= url('/admin/migrations/run-all') ?>">
@@ -118,6 +122,108 @@
                 </div>
             </div>
         </div>
+
+        <?php if (!empty($lastResult)): ?>
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h6 class="fw-semibold mb-0">
+                            <i class="bi bi-clipboard-data text-primary me-2"></i><?= lang('migration_last_result') ?>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($lastResult['failed'])): ?>
+                            <?php $failed = $lastResult['failed']; ?>
+                            <div class="alert alert-danger mb-3">
+                                <div class="fw-semibold mb-1"><?= lang('migration_failed') ?>: <?= sanitize($failed['name'] ?? '') ?></div>
+                                <div class="small"><?= sanitize($failed['message'] ?? '') ?></div>
+                                <div class="small text-muted mt-1">
+                                    <?= lang('migration_statement') ?>: <?= sanitize((string)($failed['statement_index'] ?? '-')) ?>
+                                    <?php if (!empty($failed['sqlstate'])): ?>
+                                        | SQLSTATE: <?= sanitize((string)$failed['sqlstate']) ?>
+                                    <?php endif; ?>
+                                    <?php if (!empty($failed['driver_code'])): ?>
+                                        | <?= lang('migration_driver_code') ?>: <?= sanitize((string)$failed['driver_code']) ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php if (!empty($failed['statement'])): ?>
+                                <pre class="bg-light border rounded p-3 mb-0 small text-break"><code><?= sanitize($failed['statement']) ?></code></pre>
+                            <?php endif; ?>
+                        <?php elseif (!empty($lastResult['executed'])): ?>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th><?= lang('migration') ?></th>
+                                            <th><?= lang('migration_status') ?></th>
+                                            <th><?= lang('migration_statements') ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($lastResult['executed'] as $migrationResult): ?>
+                                            <?php
+                                            $statementCount = count($migrationResult['statements'] ?? []);
+                                            $skippedCount = count(array_filter($migrationResult['statements'] ?? [], static fn ($statement) => ($statement['status'] ?? '') === 'skipped_idempotent'));
+                                            ?>
+                                            <tr>
+                                                <td><code><?= sanitize($migrationResult['name'] ?? '') ?></code></td>
+                                                <td>
+                                                    <?php if (($migrationResult['status'] ?? '') === 'applied'): ?>
+                                                        <span class="badge bg-success"><?= lang('applied') ?></span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-secondary"><?= lang('migration_skipped_idempotent') ?></span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        <?= sprintf(lang('migration_statement_summary'), $statementCount, $skippedCount) ?>
+                                                    </small>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-muted mb-0"><?= lang('migration_no_changes') ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($status['ignored_items'])): ?>
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h6 class="fw-semibold mb-0">
+                            <i class="bi bi-skip-forward text-secondary me-2"></i><?= lang('migrations_ignored_files') ?>
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><?= lang('migration') ?></th>
+                                        <th><?= lang('reason') ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($status['ignored_items'] as $item): ?>
+                                        <tr>
+                                            <td><code><?= sanitize($item['name']) ?></code></td>
+                                            <td><small class="text-muted"><?= lang('migration_down_ignored') ?></small></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

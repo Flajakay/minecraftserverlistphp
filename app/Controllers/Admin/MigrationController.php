@@ -25,9 +25,12 @@ class MigrationController
 
         $runner = new MigrationRunner();
         $status = $runner->status();
+        $lastResult = $_SESSION['migration_result'] ?? null;
+        unset($_SESSION['migration_result']);
 
         view('admin.migrations', [
-            'status' => $status
+            'status' => $status,
+            'lastResult' => $lastResult
         ]);
     }
 
@@ -43,13 +46,9 @@ class MigrationController
 
         $runner = new MigrationRunner();
         $result = $runner->runAllPending();
+        $this->storeResult($result);
 
-        if (!empty($result['failed'])) {
-            flash('error', lang('migration_failed') . ': ' . $result['failed']['name']);
-        } else {
-            $count = count($result['executed'] ?? []);
-            flash('success', sprintf(lang('migrations_ran_successfully'), $count));
-        }
+        $this->flashResult($result);
 
         if (class_exists(AuditLog::class)) {
             try {
@@ -79,13 +78,9 @@ class MigrationController
             $selected = [];
         }
         $result = $runner->runSelected($selected);
+        $this->storeResult($result);
 
-        if (!empty($result['failed'])) {
-            flash('error', lang('migration_failed') . ': ' . $result['failed']['name']);
-        } else {
-            $count = count($result['executed'] ?? []);
-            flash('success', sprintf(lang('migrations_ran_successfully'), $count));
-        }
+        $this->flashResult($result);
 
         if (class_exists(AuditLog::class)) {
             try {
@@ -97,5 +92,30 @@ class MigrationController
         }
 
         redirect('/admin/migrations');
+    }
+
+    private function flashResult(array $result): void
+    {
+        if (!empty($result['failed'])) {
+            $failed = $result['failed'];
+            $message = sprintf(
+                '%s: %s (%s #%s)',
+                lang('migration_failed'),
+                $failed['name'] ?? '',
+                lang('migration_statement'),
+                $failed['statement_index'] ?? '?'
+            );
+
+            flash('error', sanitize($message));
+            return;
+        }
+
+        $count = count($result['executed'] ?? []);
+        flash('success', sprintf(lang('migrations_ran_successfully'), $count));
+    }
+
+    private function storeResult(array $result): void
+    {
+        $_SESSION['migration_result'] = $result;
     }
 }

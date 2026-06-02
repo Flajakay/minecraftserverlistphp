@@ -392,6 +392,26 @@ function renderMetaTags(): string
     return SEO::renderMetaTags();
 }
 
+function renderFaviconTags(): string
+{
+    $settings = Setting::get();
+    if (empty($settings->favicon_source)) {
+        return '';
+    }
+
+    $version = (int)($settings->favicon_version ?? 1);
+    $assetVersion = static fn ($path) => htmlspecialchars(asset($path) . '?v=' . $version, ENT_QUOTES, 'UTF-8');
+    $urlVersion = static fn ($path) => htmlspecialchars(url($path) . '?v=' . $version, ENT_QUOTES, 'UTF-8');
+
+    return implode("\n", [
+        '<link rel="icon" href="' . $urlVersion('/favicon.ico') . '" sizes="any">',
+        '<link rel="icon" type="image/png" sizes="16x16" href="' . $assetVersion('favicons/favicon-16x16.png') . '">',
+        '<link rel="icon" type="image/png" sizes="32x32" href="' . $assetVersion('favicons/favicon-32x32.png') . '">',
+        '<link rel="apple-touch-icon" sizes="180x180" href="' . $assetVersion('favicons/apple-touch-icon.png') . '">',
+        '<link rel="manifest" href="' . $urlVersion('/site.webmanifest') . '">',
+    ]);
+}
+
 /**
  * Jodit Editor Integration Helpers
  */

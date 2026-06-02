@@ -3,13 +3,14 @@
 namespace App\Core\System;
 
 use PDO;
+use PDOException;
 use Throwable;
 
 /**
  * Database migration runner for `database/migrations/*.sql`.
  *
- * Discovers migrations by filename, executes pending `.up.sql` (and `.down.sql` if used)
- * via `PDO::exec()`, and tracks applied migrations in `schema_migrations`.
+ * Discovers `.up.sql` migrations, executes pending files statement by statement,
+ * and tracks applied migrations in `schema_migrations`.
  */
 class MigrationRunner
 {
@@ -26,7 +27,8 @@ class MigrationRunner
     {
         $this->ensureMigrationsTable();
 
-        $migrations = $this->discoverMigrations();
+        $discovery = $this->discoverMigrations();
+        $migrations = $discovery['up'];
         $applied = $this->appliedMigrations();
 
         $items = [];
@@ -54,6 +56,8 @@ class MigrationRunner
             'total' => count($items),
             'applied' => $appliedCount,
             'pending' => $pendingCount,
+            'ignored' => count($discovery['ignored']),
+            'ignored_items' => $discovery['ignored'],
             'items' => $items
         ];
     }
@@ -62,7 +66,7 @@ class MigrationRunner
     {
         $this->ensureMigrationsTable();
 
-        $migrations = $this->discoverMigrations();
+        $migrations = $this->discoverMigrations()['up'];
         $applied = $this->appliedMigrations();
 
         $toRun = [];
@@ -88,7 +92,7 @@ class MigrationRunner
             }
         }
 
-        $migrations = $this->discoverMigrations();
+        $migrations = $this->discoverMigrations()['up'];
         $applied = $this->appliedMigrations();
 
         $executed = [];
@@ -104,22 +108,40 @@ class MigrationRunner
             }
 
             try {
-                $sql = trim((string)file_get_contents($migration['path']));
-                if ($sql === '') {
+                $contents = file_get_contents($migration['path']);
+                if ($contents === false) {
+                    throw new \RuntimeException('Unable to read migration file.');
+                }
+
+                $sql = trim($contents);
+                $statements = $this->splitStatements($sql);
+                if (empty($statements)) {
                     // Empty migration files are treated as no-ops but still recorded.
                     $this->markApplied($migration['name'], $migration['direction']);
-                    $executed[] = ['name' => $migration['name'], 'status' => 'skipped_empty'];
+                    $executed[] = [
+                        'name' => $migration['name'],
+                        'status' => 'skipped_empty',
+                        'statements' => []
+                    ];
                     continue;
                 }
 
-                // Migration files are executed as-is; prefer single-statement migrations.
-                $this->pdo->exec($sql);
+                $statementResults = $this->executeStatements($statements);
                 $this->markApplied($migration['name'], $migration['direction']);
-                $executed[] = ['name' => $migration['name'], 'status' => 'applied'];
+                $executed[] = [
+                    'name' => $migration['name'],
+                    'status' => $this->hasAppliedStatement($statementResults) ? 'applied' : 'skipped_idempotent',
+                    'statements' => $statementResults
+                ];
             } catch (Throwable $e) {
+                $pdoException = $this->extractPdoException($e);
                 $failed = [
                     'name' => $migration['name'],
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
+                    'statement' => method_exists($e, 'getMigrationStatement') ? $e->getMigrationStatement() : null,
+                    'statement_index' => method_exists($e, 'getMigrationStatementIndex') ? $e->getMigrationStatementIndex() : null,
+                    'sqlstate' => $pdoException ? $pdoException->getCode() : null,
+                    'driver_code' => $pdoException ? ($pdoException->errorInfo[1] ?? null) : null,
                 ];
                 break;
             }
@@ -134,25 +156,219 @@ class MigrationRunner
     private function discoverMigrations(): array
     {
         if (!is_dir($this->migrationsPath)) {
-            return [];
+            return ['up' => [], 'ignored' => []];
         }
 
         $files = glob($this->migrationsPath . '/*.sql') ?: [];
         sort($files, SORT_STRING);
 
-        $migrations = [];
+        $upMigrations = [];
+        $ignored = [];
         foreach ($files as $file) {
             $name = basename($file);
             $direction = str_contains($name, '.down.') ? 'down' : 'up';
 
-            $migrations[] = [
+            $item = [
                 'name' => $name,
                 'path' => $file,
                 'direction' => $direction
             ];
+
+            if ($direction === 'down') {
+                $item['reason'] = 'rollback_not_supported';
+                $ignored[] = $item;
+                continue;
+            }
+
+            $upMigrations[] = $item;
         }
 
-        return $migrations;
+        return ['up' => $upMigrations, 'ignored' => $ignored];
+    }
+
+    private function splitStatements(string $sql): array
+    {
+        $statements = [];
+        $current = '';
+        $length = strlen($sql);
+        $quote = null;
+        $inLineComment = false;
+        $inBlockComment = false;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $sql[$i];
+            $next = $i + 1 < $length ? $sql[$i + 1] : '';
+
+            if ($inLineComment) {
+                $current .= $char;
+                if ($char === "\n") {
+                    $inLineComment = false;
+                }
+                continue;
+            }
+
+            if ($inBlockComment) {
+                $current .= $char;
+                if ($char === '*' && $next === '/') {
+                    $current .= $next;
+                    $i++;
+                    $inBlockComment = false;
+                }
+                continue;
+            }
+
+            if ($quote !== null) {
+                $current .= $char;
+
+                if ($char === '\\' && ($quote === '\'' || $quote === '"') && $next !== '') {
+                    $current .= $next;
+                    $i++;
+                    continue;
+                }
+
+                if ($char === $quote) {
+                    if (($quote === '\'' || $quote === '"') && $next === $quote) {
+                        $current .= $next;
+                        $i++;
+                        continue;
+                    }
+
+                    $quote = null;
+                }
+
+                continue;
+            }
+
+            if ($char === '-' && $next === '-' && ($i + 2 >= $length || ctype_space($sql[$i + 2]))) {
+                $current .= $char . $next;
+                $i++;
+                $inLineComment = true;
+                continue;
+            }
+
+            if ($char === '#') {
+                $current .= $char;
+                $inLineComment = true;
+                continue;
+            }
+
+            if ($char === '/' && $next === '*') {
+                $current .= $char . $next;
+                $i++;
+                $inBlockComment = true;
+                continue;
+            }
+
+            if ($char === '\'' || $char === '"' || $char === '`') {
+                $quote = $char;
+                $current .= $char;
+                continue;
+            }
+
+            if ($char === ';') {
+                $statement = trim($current);
+                if ($statement !== '') {
+                    $statements[] = $statement;
+                }
+                $current = '';
+                continue;
+            }
+
+            $current .= $char;
+        }
+
+        $statement = trim($current);
+        if ($statement !== '') {
+            $statements[] = $statement;
+        }
+
+        return $statements;
+    }
+
+    private function executeStatements(array $statements): array
+    {
+        $results = [];
+
+        foreach ($statements as $index => $statement) {
+            try {
+                $stmt = $this->pdo->query($statement);
+                if ($stmt !== false) {
+                    $stmt->closeCursor();
+                }
+
+                $results[] = [
+                    'index' => $index + 1,
+                    'status' => 'applied',
+                    'statement' => $this->summarizeStatement($statement)
+                ];
+            } catch (PDOException $e) {
+                if ($this->isIgnorableDdlError($e, $statement)) {
+                    $results[] = [
+                        'index' => $index + 1,
+                        'status' => 'skipped_idempotent',
+                        'statement' => $this->summarizeStatement($statement),
+                        'message' => $e->getMessage(),
+                        'driver_code' => $e->errorInfo[1] ?? null
+                    ];
+                    continue;
+                }
+
+                throw new MigrationStatementException($e, $statement, $index + 1);
+            }
+        }
+
+        return $results;
+    }
+
+    private function isIgnorableDdlError(PDOException $e, string $statement): bool
+    {
+        $driverCode = (int)($e->errorInfo[1] ?? 0);
+        $normalized = strtoupper(ltrim($statement));
+
+        if (str_starts_with($normalized, 'ALTER TABLE')) {
+            return in_array($driverCode, [1060, 1061, 1091], true);
+        }
+
+        if (str_starts_with($normalized, 'CREATE TABLE')) {
+            return $driverCode === 1050;
+        }
+
+        if (str_starts_with($normalized, 'CREATE INDEX') || str_starts_with($normalized, 'CREATE UNIQUE INDEX')) {
+            return $driverCode === 1061;
+        }
+
+        return false;
+    }
+
+    private function hasAppliedStatement(array $statementResults): bool
+    {
+        foreach ($statementResults as $result) {
+            if (($result['status'] ?? '') === 'applied') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function summarizeStatement(string $statement): string
+    {
+        $summary = preg_replace('/\s+/', ' ', trim($statement));
+        if (strlen($summary) > 240) {
+            return substr($summary, 0, 237) . '...';
+        }
+
+        return $summary;
+    }
+
+    private function extractPdoException(Throwable $e): ?PDOException
+    {
+        if ($e instanceof PDOException) {
+            return $e;
+        }
+
+        $previous = $e->getPrevious();
+        return $previous instanceof PDOException ? $previous : null;
     }
 
     private function ensureMigrationsTable(): void
