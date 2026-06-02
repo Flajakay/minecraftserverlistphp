@@ -106,7 +106,7 @@ class ServerController
             'address' => $_POST['address'] ?? '',
             'port' => $_POST['port'] ?? 25565,
             'category_ids' => $_POST['category_ids'] ?? [],
-            'description' => $_POST['description'] ?? '',
+            'description' => cleanHtml($_POST['description'] ?? ''),
             'website' => $_POST['website'] ?? '',
             'country' => $_POST['country'] ?? '',
             'youtube_id' => $_POST['youtube_id'] ?? '',

@@ -9,6 +9,7 @@
         "ext-pdo": "*",
         "ext-sockets": "*",
         "davedevelopment/stiphle": "^0.9.4",
+        "ezyang/htmlpurifier": "^4.19",
         "paypal/paypal-server-sdk": "^1.1",
         "vlucas/phpdotenv": "^5.6"
     },

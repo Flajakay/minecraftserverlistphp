@@ -96,19 +96,37 @@ function sanitize($input): array|string
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
+function cleanHtml($input): string
+{
+    if (empty($input)) {
+        return '';
+    }
+
+    $config = HTMLPurifier_Config::createDefault();
+    $config->set('HTML.Allowed',
+        'p,b,i,u,strong,em,ul,ol,li,br,hr,'
+        . 'a[href|target|rel],img[src|alt|width|height|style],'
+        . 'h1,h2,h3,h4,blockquote,pre,code,span[style],div,sub,sup'
+    );
+    $config->set('HTML.TargetBlank', true);
+    $config->set('Attr.AllowedRel', ['nofollow', 'noopener', 'noreferrer']);
+    $config->set('CSS.AllowedProperties',
+        'color,background-color,font-size,font-weight,text-align,'
+        . 'font-family,margin-left,margin-right,padding-left,padding-right'
+    );
+    $config->set('URI.DisableExternalResources', false);
+    $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true]);
+    $purifier = new HTMLPurifier($config);
+    return $purifier->purify($input);
+}
+
 function displayHtml($input)
 {
     if (empty($input)) {
         return '';
     }
     
-    // If content appears HTML-escaped already, decode it for rendering.
-    if (str_contains($input, '&lt;') || str_contains($input, '&gt;')) {
-        return html_entity_decode($input, ENT_QUOTES, 'UTF-8');
-    }
-    
-    // Otherwise, return as-is (caller is responsible for ensuring safety).
-    return $input;
+    return cleanHtml($input);
 }
 
 function formatBytes($bytes, $precision = 2): string

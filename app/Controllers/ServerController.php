@@ -115,7 +115,7 @@ class ServerController
             'name' => sanitize($_POST['name'] ?? ''),
             'category_ids' => $_POST['category_ids'] ?? [],
             'primary_category_id' => (int) ($_POST['primary_category_id'] ?? 0),
-            'description' => trim($_POST['description'] ?? ''),
+            'description' => cleanHtml(trim($_POST['description'] ?? '')),
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
@@ -167,7 +167,7 @@ class ServerController
         $data = [
             'name' => sanitize($_POST['name'] ?? ''),
             'category_ids' => $_POST['category_ids'] ?? [],
-            'description' => sanitize($_POST['description'] ?? ''),
+            'description' => cleanHtml($_POST['description'] ?? ''),
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
