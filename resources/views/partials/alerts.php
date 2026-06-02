@@ -33,7 +33,7 @@ if ($hasMessage):
 ?>
 <!-- Premium Non-Intrusive Toast Container -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
-    <div id="notificationToast" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="border-radius: 1rem; overflow: hidden; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+    <div id="notificationToast" class="toast border-0 shadow-lg toast-<?= $type ?>" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="border-radius: 1rem; overflow: hidden; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
         <div class="toast-body p-3 d-flex align-items-center">
             <!-- Icon with dynamic translucent circular background -->
             <div class="me-3 d-inline-flex align-items-center justify-content-center rounded-circle p-2" style="background: rgba(var(--toast-bg-rgb), 0.1); width: 44px; height: 44px; flex-shrink: 0;">
@@ -56,51 +56,5 @@ if ($hasMessage):
         <div class="toast-progress-bar" style="height: 3px; background: rgba(var(--toast-bg-rgb), 1); width: 100%;"></div>
     </div>
 </div>
-
-<style>
-    /* Styling variables and setup for the toast notification */
-    #notificationToast {
-        --toast-bg-rgb: 13, 110, 253; /* default blue */
-        animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    
-    <?php if ($type === 'success'): ?>
-    #notificationToast {
-        --toast-bg-rgb: 25, 135, 84; /* green */
-    }
-    <?php elseif ($type === 'error'): ?>
-    #notificationToast {
-        --toast-bg-rgb: 220, 53, 69; /* red */
-    }
-    <?php else: ?>
-    #notificationToast {
-        --toast-bg-rgb: 13, 110, 253; /* blue */
-    }
-    <?php endif; ?>
-
-    /* Smooth Slide-in from the right side */
-    @keyframes toastSlideIn {
-        0% {
-            transform: translateX(120%);
-            opacity: 0;
-        }
-        100% {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    #notificationToast .btn-close:focus {
-        box-shadow: none !important;
-        outline: none !important;
-        border: none !important;
-    }
-    
-    #notificationToast:focus {
-        box-shadow: none !important;
-        outline: none !important;
-        border: none !important;
-    }
-</style>
 
 <?php endif; ?>

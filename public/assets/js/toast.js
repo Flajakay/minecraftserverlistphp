@@ -1,5 +1,5 @@
 /**
- * Premium Millisecond-Precise Toast Notification Controller
+ * Toast Notification Controller
  * Manages custom autohide countdown, dynamic progress bar, and pause-on-hover logic.
  */
 document.addEventListener('DOMContentLoaded', function () {

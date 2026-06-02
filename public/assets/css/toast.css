@@ -1,0 +1,44 @@
+/**
+ * Premium Toast Notification Stylesheet
+ */
+#notificationToast {
+    --toast-bg-rgb: 13, 110, 253; /* default blue */
+    animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Modifier classes for different toast types */
+#notificationToast.toast-success {
+    --toast-bg-rgb: 25, 135, 84; /* green */
+}
+
+#notificationToast.toast-error {
+    --toast-bg-rgb: 220, 53, 69; /* red */
+}
+
+#notificationToast.toast-info {
+    --toast-bg-rgb: 13, 110, 253; /* blue */
+}
+
+/* Smooth Slide-in from the right side */
+@keyframes toastSlideIn {
+    0% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#notificationToast .btn-close:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
+
+#notificationToast:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
