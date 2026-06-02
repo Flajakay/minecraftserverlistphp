@@ -543,4 +543,11 @@ $language['server_activated'] = "Serwer został pomyślnie aktywowany!";
 $language['server_made_private'] = "Serwer został ustawiony jako prywatny.";
 $language['server_made_public'] = "Serwer został ustawiony jako publiczny!";
 
-
+$language['registered_successfuly'] = "Rejestracja pomyślna! Sprawdź swoją skrzynkę e-mail, aby aktywować konto.";
+$language['registration_complete'] = "Rejestracja zakończona! Możesz się teraz zalogować.";
+$language['loggedout'] = "Zostałeś pomyślnie wylogowany.";
+$language['account_activated'] = "Twoje konto zostało pomyślnie aktywowane! Możesz się teraz zalogować.";
+$language['invalid_activation_link'] = "Link aktywacyjny jest nieprawidłowy lub wygasł.";
+$language['lostpassword'] = "Jeśli ten adres e-mail jest zarejestrowany, link do zresetowania hasła został wysłany.";
+$language['password_updated'] = "Twoje hasło zostało pomyślnie zaktualizowane. Możesz się teraz zalogować.";
+$language['invalid_reset_link'] = "Link do resetowania hasła jest nieprawidłowy lub wygasł.";

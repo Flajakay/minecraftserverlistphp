@@ -3,26 +3,29 @@
 use App\Core\System\Router;
 
 $installLockPath = __DIR__ . '/storage/installed.lock';
+$envPath = __DIR__ . '/.env';
 
-$hasValidConfig = file_exists(__DIR__ . '/config/app.php') && filesize(__DIR__ . '/config/app.php') >= 100;
+$hasRequiredEnv = false;
 
-if ($hasValidConfig && !file_exists($installLockPath)) {
-    if (!is_dir(__DIR__ . '/storage')) {
-        mkdir(__DIR__ . '/storage', 0755, true);
+if (file_exists($envPath)) {
+    $envContent = file_get_contents($envPath);
+    $requiredEnvKeys = ['APP_URL', 'DB_HOST', 'DB_USERNAME', 'DB_DATABASE'];
+    $hasRequiredEnv = true;
+
+    foreach ($requiredEnvKeys as $key) {
+        if (!preg_match('/^' . preg_quote($key, '/') . '=/m', $envContent)) {
+            $hasRequiredEnv = false;
+            break;
+        }
     }
-    @file_put_contents($installLockPath, 'installed');
 }
 
-if (!$hasValidConfig || !file_exists($installLockPath)) {
-    // If the app is not installed (no install lock) or the main config is
-    // missing/incomplete, redirect to the installer when available so the
-    // user can set up the app. Otherwise show a clear error to avoid
-    // obscure failures later in the request lifecycle.
+if (!$hasRequiredEnv || !file_exists($installLockPath)) {
     if (file_exists(__DIR__ . '/install.php')) {
         header('Location: install.php');
         exit;
     } else {
-        die('<h1>Configuration Error</h1><p>Please run the installation or restore the config/app.php file.</p>');
+        die('<h1>Configuration Error</h1><p>Please run the installation or restore the .env file.</p>');
     }
 }
 

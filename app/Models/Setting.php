@@ -7,20 +7,26 @@ use App\Core\System\Database;
 
 class Setting
 {
+    private static $settings = null;
+
     public static function get()
     {
-        static $settings = null;
-        
-        if ($settings === null) {
-            $settings = Database::fetch('SELECT * FROM settings WHERE id = 1');
+        if (self::$settings === null) {
+            self::$settings = Database::fetch('SELECT * FROM settings WHERE id = 1');
         }
         
-        return $settings;
+        return self::$settings;
     }
 
     public static function update($data)
     {
+        self::clearCache();
         return Database::update('settings', $data, 'id = 1');
+    }
+
+    public static function clearCache(): void
+    {
+        self::$settings = null;
     }
 
     public static function getValue($key, $default = null)
@@ -29,3 +35,4 @@ class Setting
         return $settings->$key ?? $default;
     }
 }
+

@@ -3,6 +3,7 @@
 use App\Core\Security\Auth;
 use App\Core\Security\Csrf;
 use App\Core\Security\RateLimit;
+use App\Core\Support\Env;
 use App\Core\Support\Language;
 use App\Core\Support\SEO;
 use App\Models\Setting;
@@ -66,16 +67,23 @@ function verifyCsrf($token): bool
     return Csrf::verify($token);
 }
 
+if (!function_exists('env')) {
+    function env($key, $default = null)
+    {
+        return Env::get($key, $default);
+    }
+}
+
 function asset($path): string
 {
-    $config = require __DIR__ . '/../../../config/app.php';
-    return $config['url'] . 'assets/' . ltrim($path, '/');
+    $url = env('APP_URL', 'http://localhost:8080/');
+    return $url . 'assets/' . ltrim($path, '/');
 }
 
 function url($path = ''): string
 {
-    $config = require __DIR__ . '/../../../config/app.php';
-    return rtrim($config['url'], '/') . '/' . ltrim($path, '/');
+    $url = env('APP_URL', 'http://localhost:8080/');
+    return rtrim($url, '/') . '/' . ltrim($path, '/');
 }
 
 function sanitize($input): array|string

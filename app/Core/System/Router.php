@@ -28,7 +28,12 @@ class Router
     {
         $uri = rtrim($uri, '/') ?: '/';
 
-        // Rate limiting (when enabled) should run before CSRF so abusive traffic is rejected early.
+        // Run rate limiting early so abusive traffic is rejected before doing heavier operations.
+        try {
+            \App\Core\Security\RateLimit::getInstance()->middleware($uri, $method);
+        } catch (\Throwable $e) {
+            error_log("Rate Limiter fail-open error: " . $e->getMessage());
+        }
         
         if (!Csrf::check($method, $uri)) {
             flash('error', 'Invalid security token');

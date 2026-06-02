@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\System\MigrationRunner;
+use App\Core\Support\Env;
 
 $installLockPath = __DIR__ . '/storage/installed.lock';
 
@@ -50,19 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
         $runner->runAllPending();
 
-        $config = "<?php\n\nreturn [\n";
-        $config .= "    'name' => '" . addslashes($siteTitle) . "',\n";
-        $config .= "    'url' => '" . addslashes($siteUrl) . "',\n";
-        $config .= "    'timezone' => 'America/New_York',\n";
-        $config .= "    'db' => [\n";
-        $config .= "        'host' => '" . addslashes($dbHost) . "',\n";
-        $config .= "        'username' => '" . addslashes($dbUser) . "',\n";
-        $config .= "        'password' => '" . addslashes($dbPass) . "',\n";
-        $config .= "        'database' => '" . addslashes($dbName) . "'\n";
-        $config .= "    ]\n";
-        $config .= "];\n";
-
-        file_put_contents(__DIR__ . '/config/app.php', $config);
+        Env::writeValues(__DIR__ . '/.env', [
+            'APP_NAME' => $siteTitle,
+            'APP_URL' => $siteUrl,
+            'APP_TIMEZONE' => 'America/New_York',
+            'DB_HOST' => $dbHost,
+            'DB_USERNAME' => $dbUser,
+            'DB_PASSWORD' => $dbPass,
+            'DB_DATABASE' => $dbName,
+        ]);
 
         if (!is_dir(__DIR__ . '/storage')) {
             mkdir(__DIR__ . '/storage', 0755, true);

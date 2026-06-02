@@ -39,3 +39,13 @@ docs
 
 scripts/
 language_templates/
+
+# Storage & Logs
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/framework/*
+!/storage/framework/.gitkeep
+!/storage/framework/rate_limits/.gitkeep
+
+# Testing
+/.phpunit.result.cache

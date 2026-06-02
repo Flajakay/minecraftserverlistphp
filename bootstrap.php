@@ -9,6 +9,12 @@ ob_start();
 // Load Composer's autoloader
 require_once __DIR__ . '/vendor/autoload.php';
 
+// Load environment variables from .env
+if (file_exists(__DIR__ . '/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->safeLoad();
+}
+
 // Manually load global helper functions
 require_once __DIR__ . '/app/Core/Support/Helpers.php';
 

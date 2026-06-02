@@ -23,7 +23,7 @@ class SettingController
 
         $settings = Setting::get();
         
-        // Merge PayPal config from app.php for the view
+        // Merge PayPal config from environment-backed app config for the view.
         $config = require __DIR__ . '/../../../config/app.php';
         if (isset($config['paypal'])) {
             $settings->paypal_email = $config['paypal']['email'] ?? '';

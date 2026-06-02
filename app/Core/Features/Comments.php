@@ -20,6 +20,19 @@ class Comments
             $errors[] = 'Comment is too long (max 512 characters)';
         }
 
+        // Check for banned words configured in site settings
+        $bannedWords = \App\Models\Setting::getValue('banned_words');
+        if (!empty($bannedWords)) {
+            $words = array_map('trim', explode(',', $bannedWords));
+            foreach ($words as $word) {
+                if (empty($word)) continue;
+                if (stripos($comment, $word) !== false) {
+                    $errors[] = 'Comment contains inappropriate language';
+                    break;
+                }
+            }
+        }
+
         return $errors;
     }
 

@@ -1,47 +1,48 @@
 <?php
 
 return [
-    // Global rate limiting configuration
+    // Global enable/disable switch
+    'enabled' => true,
     
     // Rate limit rules by route pattern
     'rules' => [
-        // Authentication routes - stricter limits
+        // Authentication routes - loose enough for typos, strict enough for brute force
         'auth' => [
-            'routes' => ['/login', '/register', '/reset-password'],
-            'limit' => 1,
-            'window' => 900, // 15 minutes (in seconds)
-            'key_type' => 'ip', // ip, user, combined
-        ],
-        
-        // Voting routes - very strict
-        'voting' => [
-            'routes' => ['/vote/*', '/servers/*/vote'],
-            'limit' => 1,
-            'window' => 86400, // 24 hours (in seconds)
-            'key_type' => 'combined',
-        ],
-        
-        // Server submission/editing - moderate
-        'server_actions' => [
-            'routes' => ['/servers/submit', '/servers/*/edit', '/servers/create'],
-            'limit' => 10,
-            'window' => 3600, // 1 hour (in seconds)
-            'key_type' => 'user',
-        ],
-        
-        // Contact/reporting - moderate
-        'contact' => [
-            'routes' => ['/contact', '/servers/*/report'],
-            'limit' => 3,
-            'window' => 3600, // 1 hour (in seconds)
+            'routes' => ['/login', '/register', '/lost-password', '/reset-password'],
+            'limit' => 5,
+            'window' => 300, // 5 requests every 5 minutes
             'key_type' => 'ip',
         ],
         
-        // API routes - moderate
+        // Voting endpoints network shield - stops API spam (business rules are in database)
+        'voting' => [
+            'routes' => ['/vote', '/vote/*'],
+            'limit' => 10,
+            'window' => 60, // 10 requests per minute
+            'key_type' => 'ip',
+        ],
+        
+        // Server actions (creation, editing, claims)
+        'server_actions' => [
+            'routes' => ['/submit', '/edit-server/*', '/server-claim/*/start', '/server-claim/*/verify'],
+            'limit' => 5,
+            'window' => 60, // 5 requests per minute
+            'key_type' => 'user',
+        ],
+        
+        // Contact and reports - moderate
+        'contact' => [
+            'routes' => ['/contact', '/report'],
+            'limit' => 3,
+            'window' => 300, // 3 submissions every 5 minutes
+            'key_type' => 'ip',
+        ],
+        
+        // API actions - generous
         'api' => [
-            'routes' => ['/api/*'],
-            'limit' => 100,
-            'window' => 3600, // 1 hour (in seconds)
+            'routes' => ['/api/*', '/comment/load-more'],
+            'limit' => 60,
+            'window' => 60, // 60 requests per minute
             'key_type' => 'ip',
         ],
         
@@ -49,15 +50,15 @@ return [
         'admin' => [
             'routes' => ['/admin/*'],
             'limit' => 200,
-            'window' => 3600, // 1 hour (in seconds)
+            'window' => 60, // 200 requests per minute
             'key_type' => 'user',
         ],
         
-        // General browsing - very high limits
+        // General browsing - very high to prevent false-positives
         'general' => [
             'routes' => ['*'],
-            'limit' => 1000,
-            'window' => 3600, // 1 hour (in seconds)
+            'limit' => 150,
+            'window' => 60, // 150 page views per minute
             'key_type' => 'ip',
         ],
     ],
@@ -66,12 +67,12 @@ return [
     'bypass' => [
         // IPs that bypass all rate limiting
         'ips' => [
+            '127.0.0.1', // Whitelist localhost
         ],
         
         // User roles that bypass rate limiting
         'roles' => [
-            '2',
-            // 'admin', // Uncomment to bypass for admins too
+            '2', // Admin role type 2 bypasses limits
         ],
     ],
     

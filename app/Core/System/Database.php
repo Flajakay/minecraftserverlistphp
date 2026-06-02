@@ -34,9 +34,28 @@ class Database
 
     public static function query($sql, $params = [])
     {
+        self::logQuery($sql, $params);
+
         $stmt = self::$pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt;
+    }
+
+    /**
+     * Log executed queries for auditing and analysis in the testing environment.
+     */
+    private static function logQuery(string $sql, array $params): void
+    {
+        if (getenv('APP_ENV') === 'testing') {
+            $logDir = dirname(__DIR__, 3) . '/storage/logs';
+            if (is_dir($logDir)) {
+                $logFile = $logDir . '/test_queries.log';
+                $timestamp = date('Y-m-d H:i:s');
+                $paramsJson = !empty($params) ? json_encode($params, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '[]';
+                $logMessage = "[{$timestamp}] SQL: {$sql} | Params: {$paramsJson}\n";
+                file_put_contents($logFile, $logMessage, FILE_APPEND);
+            }
+        }
     }
 
     public static function fetchAll($sql, $params = [])

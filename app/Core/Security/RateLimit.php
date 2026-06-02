@@ -30,9 +30,12 @@ class RateLimit
             
             $this->logDebug("Rate limiting initialized with APCu storage");
         } else {
-            // Without APCu, buckets cannot be shared/persisted reliably.
+            // Fall back to local file-based storage
+            $storage = new FileStorage();
             $this->throttle = new LeakyBucket();
-            $this->logError("APCu not available - rate limiting will NOT work. Enable APCu extension in PHP.");
+            $this->throttle->setStorage($storage);
+            
+            $this->logDebug("Rate limiting initialized with FileStorage fallback");
         }
     }
 
@@ -46,6 +49,12 @@ class RateLimit
 
     public function checkRequest($route, $method = 'GET'): bool
     {
+        // Global enable/disable switch
+        $enabled = $this->config['enabled'] ?? true;
+        if (!$enabled) {
+            return true; // Fail open / bypass rate limiter completely
+        }
+
         // Bypass checks must run first so trusted callers aren't throttled.
         if ($this->shouldBypass()) {
             $this->logDebug("Request bypassed", ['route' => $route, 'reason' => 'user_in_bypass_list']);
@@ -62,9 +71,17 @@ class RateLimit
         $key = $this->generateKey($rule, $route);
         
         try {
-            // Stiphle expects a window duration in milliseconds.
-            $waitTime = $this->throttle->throttle($key, $rule['limit'], $rule['window'] * 1000);
-            $allowed = $waitTime === 0;
+            // Check the estimate wait time first to prevent sleeping/usleep freezes on blocked requests
+            $estimate = $this->throttle->getEstimate($key, $rule['limit'], $rule['window'] * 1000);
+            
+            if ($estimate > 0) {
+                $allowed = false;
+                $waitTime = $estimate;
+            } else {
+                // If allowed, record the hit (throttle will return 0 instantly with no sleep)
+                $waitTime = $this->throttle->throttle($key, $rule['limit'], $rule['window'] * 1000);
+                $allowed = true;
+            }
             
             $this->logDebug("Rate limit check", [
                 'route' => $route,
@@ -323,5 +340,10 @@ class RateLimit
         if (!$this->checkRequest($route, $method)) {
             $this->handleRateLimitExceeded($route);
         }
+    }
+
+    public function setConfig(array $config): void
+    {
+        $this->config = $config;
     }
 }

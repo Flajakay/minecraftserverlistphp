@@ -2,6 +2,7 @@
 
 namespace App\Core\System;
 
+use App\Core\Support\Env;
 use App\Models\Setting;
 use App\Models\Server;
 use App\Models\AuditLog;
@@ -30,14 +31,11 @@ class SiteSettings
             'maximum_days' => (int)($data['maximum_days'] ?? 30)
         ];
 
-        // Update PayPal configuration in app.php
-        self::updateAppConfig([
-            'paypal' => [
-                'email' => sanitize($data['paypal_email'] ?? ''),
-                'client_id' => sanitize($data['paypal_client_id'] ?? ''),
-                'client_secret' => sanitize($data['paypal_client_secret'] ?? ''),
-                'sandbox' => isset($data['paypal_sandbox']),
-            ]
+        self::updatePayPalEnv([
+            'PAYPAL_EMAIL' => sanitize($data['paypal_email'] ?? ''),
+            'PAYPAL_CLIENT_ID' => sanitize($data['paypal_client_id'] ?? ''),
+            'PAYPAL_CLIENT_SECRET' => sanitize($data['paypal_client_secret'] ?? ''),
+            'PAYPAL_SANDBOX' => isset($data['paypal_sandbox']),
         ]);
 
         Setting::update($settingsData);
@@ -48,16 +46,9 @@ class SiteSettings
         ];
     }
 
-    private static function updateAppConfig(array $newConfig): void
+    private static function updatePayPalEnv(array $values): void
     {
-        $configPath = __DIR__ . '/../../../config/app.php';
-        $config = require $configPath;
-
-        // Recursively merge new config
-        $config = array_replace_recursive($config, $newConfig);
-
-        $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
-        file_put_contents($configPath, $content);
+        Env::writeValues(dirname(__DIR__, 3) . '/.env', $values);
     }
 
     public static function resetVotes($initiatorId): array
