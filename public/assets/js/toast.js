@@ -1,6 +1,6 @@
 /**
  * Toast Notification Controller
- * Manages custom autohide countdown, dynamic progress bar, and pause-on-hover logic.
+ * Manages custom autohide countdown, progress bar, and pause-on-hover logic.
  */
 document.addEventListener('DOMContentLoaded', function () {
     const toastElement = document.getElementById('notificationToast');

@@ -31,7 +31,7 @@ if ($hasMessage):
         $colorClass = 'text-primary';
     }
 ?>
-<!-- Premium Non-Intrusive Toast Container -->
+<!-- Toast Notification Container -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
     <div id="notificationToast" class="toast border-0 shadow-lg toast-<?= $type ?>" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="border-radius: 1rem; overflow: hidden; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
         <div class="toast-body p-3 d-flex align-items-center">
@@ -52,7 +52,7 @@ if ($hasMessage):
             <button type="button" class="btn-close shadow-none ms-2" data-bs-dismiss="toast" aria-label="<?= lang('close', 'Close') ?>"></button>
         </div>
         
-        <!-- Premium accent progress bar indicating timer before auto-hide (width animated dynamically) -->
+        <!-- Progress bar indicating timer before auto-hide (width animated dynamically) -->
         <div class="toast-progress-bar" style="height: 3px; background: rgba(var(--toast-bg-rgb), 1); width: 100%;"></div>
     </div>
 </div>
