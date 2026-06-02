@@ -13,32 +13,30 @@ use PaypalServerSdkLib\Models\Builders\OrderRequestBuilder;
 use PaypalServerSdkLib\Models\CheckoutPaymentIntent;
 use PaypalServerSdkLib\Models\Builders\PurchaseUnitRequestBuilder;
 use PaypalServerSdkLib\Models\Builders\AmountWithBreakdownBuilder;
-use App\Models\Setting;
 
 /**
  * PayPal integration wrapper.
  *
- * Encapsulates client initialization from settings and provides order creation/capture.
+ * Encapsulates PayPal client initialization and order create/capture calls.
  */
 class PayPalService
 {
     private PaypalServerSdkClient $client;
     private OrdersController $ordersController;
+    private array $config;
 
-    public function __construct()
+    public function __construct(array $config)
     {
+        $this->config = $config;
         $this->client = $this->getClient();
         $this->ordersController = $this->client->getOrdersController();
     }
 
     private function getClient(): PaypalServerSdkClient
     {
-        $config = require __DIR__ . '/../../../config/app.php';
-        $paypalConfig = $config['paypal'] ?? [];
-
-        $clientId = $paypalConfig['client_id'] ?? '';
-        $clientSecret = $paypalConfig['client_secret'] ?? '';
-        $isSandbox = $paypalConfig['sandbox'] ?? true;
+        $clientId = $this->config['client_id'] ?? '';
+        $clientSecret = $this->config['client_secret'] ?? '';
+        $isSandbox = $this->config['sandbox'] ?? true;
 
         if (!$clientId || !$clientSecret) {
             throw new Exception('PayPal client credentials not configured');
@@ -95,16 +93,55 @@ class PayPalService
         }
     }
 
-    public function validateConfiguration(): bool
+    public function verifyCapturedOrder($order, $payment, string $expectedPayeeEmail): bool
     {
-        $config = require __DIR__ . '/../../../config/app.php';
-        $paypalConfig = $config['paypal'] ?? [];
+        if (!$order || $order->getStatus() !== 'COMPLETED') {
+            return false;
+        }
 
-        $clientId = $paypalConfig['client_id'] ?? '';
-        $clientSecret = $paypalConfig['client_secret'] ?? '';
-        $email = $paypalConfig['email'] ?? '';
+        if ($order->getId() !== $payment->paypal_order_id) {
+            return false;
+        }
 
-        return !empty($clientId) && !empty($clientSecret) && !empty($email);
+        $purchaseUnits = $order->getPurchaseUnits();
+        if (!is_array($purchaseUnits) || count($purchaseUnits) !== 1) {
+            return false;
+        }
+
+        $purchaseUnit = $purchaseUnits[0];
+        $expectedAmount = number_format((float)$payment->revenue, 2, '.', '');
+        $expectedCurrency = strtoupper((string)($payment->currency ?? 'USD'));
+
+        $amount = $purchaseUnit->getAmount();
+        if (!$amount || strtoupper($amount->getCurrencyCode()) !== $expectedCurrency || number_format((float)$amount->getValue(), 2, '.', '') !== $expectedAmount) {
+            return false;
+        }
+
+        $payments = $purchaseUnit->getPayments();
+        $captures = $payments ? $payments->getCaptures() : null;
+        if (!is_array($captures) || empty($captures)) {
+            return false;
+        }
+
+        $capture = $captures[0];
+        $captureAmount = $capture->getAmount();
+        if (
+            $capture->getStatus() !== 'COMPLETED' ||
+            !$captureAmount ||
+            strtoupper($captureAmount->getCurrencyCode()) !== $expectedCurrency ||
+            number_format((float)$captureAmount->getValue(), 2, '.', '') !== $expectedAmount
+        ) {
+            return false;
+        }
+
+        $expectedPayeeEmail = strtolower($expectedPayeeEmail);
+        $payee = $purchaseUnit->getPayee();
+
+        if ($expectedPayeeEmail !== '' && (!$payee || strtolower((string)$payee->getEmailAddress()) !== $expectedPayeeEmail)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function calculateAmount($days): float|int

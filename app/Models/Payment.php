@@ -30,6 +30,19 @@ class Payment
         return Database::update('payments', $data, 'id = ?', [$id]);
     }
 
+    public static function findByPayPalOrderId($paypalOrderId)
+    {
+        return Database::fetch('SELECT * FROM payments WHERE paypal_order_id = ?', [$paypalOrderId]);
+    }
+
+    public static function markCompleted($id)
+    {
+        return Database::query(
+            'UPDATE payments SET status = ?, updated_at = ? WHERE id = ? AND status = ?',
+            ['completed', date('Y-m-d H:i:s'), $id, 'pending']
+        )->rowCount();
+    }
+
     public static function getAll()
     {
         return Database::fetchAll(

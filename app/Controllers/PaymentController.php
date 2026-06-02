@@ -3,8 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Server;
-use App\Models\Payment;
-use App\Core\Integrations\PayPalService;
+use App\Core\Support\Config;
 use App\Models\Setting;
 use App\Core\Features\Payments;
 use Exception;
@@ -36,13 +35,19 @@ class PaymentController
         $costPerDay = Setting::getValue('per_day_cost', 0.00);
         $minDays = Setting::getValue('minimum_days', 1);
         $maxDays = Setting::getValue('maximum_days', 30);
+        $paypalConfig = Config::get('app.paypal', []);
+        $paypalConfigured = !empty($paypalConfig['email'] ?? '')
+            && !empty($paypalConfig['client_id'] ?? '')
+            && !empty($paypalConfig['client_secret'] ?? '');
 
         view('payments.purchase', [
             'servers' => $userServers,
             'currency' => $currency,
             'cost_per_day' => $costPerDay,
             'min_days' => $minDays,
-            'max_days' => $maxDays
+            'max_days' => $maxDays,
+            'paypal_client_id' => $paypalConfig['client_id'] ?? '',
+            'paypal_configured' => $paypalConfigured
         ]);
     }
 
@@ -91,11 +96,9 @@ class PaymentController
         }
 
         try {
-            $orderId = $_POST['order_id'] ?? '';
-            $serverId = (int)($_POST['server_id'] ?? 0);
-            $days = (int)($_POST['days'] ?? 0);
+            $orderId = isset($_POST['order_id']) && is_string($_POST['order_id']) ? trim($_POST['order_id']) : '';
 
-            Payments::completePayment(auth()->id, $orderId, $serverId, $days);
+            Payments::completePayment(auth()->id, $orderId);
 
             flash('success', lang('payment_successful_highlight'));
             echo json_encode(['success' => true]);

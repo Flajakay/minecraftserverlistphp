@@ -3,6 +3,7 @@
 use App\Core\Security\Auth;
 use App\Core\Security\Csrf;
 use App\Core\Security\RateLimit;
+use App\Core\Support\Config;
 use App\Core\Support\Env;
 use App\Core\Support\Language;
 use App\Core\Support\SEO;
@@ -76,13 +77,13 @@ if (!function_exists('env')) {
 
 function asset($path): string
 {
-    $url = env('APP_URL', 'http://localhost:8080/');
+    $url = Config::get('app.url', 'http://localhost:8080/');
     return $url . 'assets/' . ltrim($path, '/');
 }
 
 function url($path = ''): string
 {
-    $url = env('APP_URL', 'http://localhost:8080/');
+    $url = Config::get('app.url', 'http://localhost:8080/');
     return rtrim($url, '/') . '/' . ltrim($path, '/');
 }
 

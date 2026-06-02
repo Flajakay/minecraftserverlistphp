@@ -118,9 +118,7 @@
                             },
                             body: new URLSearchParams({
                                 csrf_token: document.querySelector('[name="csrf_token"]').value,
-                                order_id: data.orderID,
-                                server_id: serverSelect.value,
-                                days: daysInput.value
+                                order_id: data.orderID
                             })
                         })
                         .then(response => response.json())

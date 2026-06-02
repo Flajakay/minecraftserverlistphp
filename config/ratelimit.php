@@ -37,6 +37,14 @@ return [
             'window' => 300, // 3 submissions every 5 minutes
             'key_type' => 'ip',
         ],
+
+        // Payment endpoints - limit repeated create/capture attempts per user
+        'payments' => [
+            'routes' => ['/paypal/create-order', '/paypal/capture-payment'],
+            'limit' => 10,
+            'window' => 300, // 10 requests every 5 minutes
+            'key_type' => 'user',
+        ],
         
         // API actions - generous
         'api' => [

@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Models\Setting;
 use App\Core\System\SiteSettings;
+use App\Core\Support\Config;
 /**
  * Admin settings controller.
  *
@@ -24,13 +25,11 @@ class SettingController
         $settings = Setting::get();
         
         // Merge PayPal config from environment-backed app config for the view.
-        $config = require __DIR__ . '/../../../config/app.php';
-        if (isset($config['paypal'])) {
-            $settings->paypal_email = $config['paypal']['email'] ?? '';
-            $settings->paypal_client_id = $config['paypal']['client_id'] ?? '';
-            $settings->paypal_client_secret = $config['paypal']['client_secret'] ?? '';
-            $settings->paypal_sandbox = $config['paypal']['sandbox'] ?? true;
-        }
+        $paypalConfig = Config::get('app.paypal', []);
+        $settings->paypal_email = $paypalConfig['email'] ?? '';
+        $settings->paypal_client_id = $paypalConfig['client_id'] ?? '';
+        $settings->paypal_client_secret = $paypalConfig['client_secret'] ?? '';
+        $settings->paypal_sandbox = $paypalConfig['sandbox'] ?? true;
 
         view('admin.settings', ['settings' => $settings]);
     }

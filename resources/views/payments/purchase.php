@@ -89,7 +89,7 @@
                             </h5>
 
                             <div id="paypal-button-container" class="text-center">
-                                <?php if (empty(setting('paypal_client_id')) || empty(setting('paypal_client_secret'))): ?>
+                                <?php if (empty($paypal_configured)): ?>
                                     <div class="alert alert-warning">
                                         <i class="bi bi-exclamation-triangle me-2"></i>
                                         <?= lang('paypal_not_configured') ?>
@@ -121,8 +121,8 @@
     </div>
 </div>
 
-<?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>
-<script src="https://www.paypal.com/sdk/js?client-id=<?= sanitize(setting('paypal_client_id')) ?>&currency=<?= $currency ?>&intent=capture"></script>
+<?php if (!empty($paypal_configured)): ?>
+<script src="https://www.paypal.com/sdk/js?client-id=<?= rawurlencode($paypal_client_id) ?>&currency=<?= rawurlencode($currency) ?>&intent=capture"></script>
 <?php endif; ?>
 
 <script id="payment-config" type="application/json">
@@ -131,8 +131,7 @@
     "currency": <?= json_encode($currency) ?>,
     "minDays": <?= json_encode((int)$min_days) ?>,
     "maxDays": <?= json_encode((int)$max_days) ?>,
-    "paypalClientId": <?= json_encode(setting('paypal_client_id')) ?>,
-    "hasPaypal": <?= json_encode(!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))) ?>,
+    "hasPaypal": <?= json_encode(!empty($paypal_configured)) ?>,
     "urls": {
         "createOrder": <?= json_encode(url('/paypal/create-order')) ?>,
         "capturePayment": <?= json_encode(url('/paypal/capture-payment')) ?>,
