@@ -27,6 +27,15 @@ Thumbs.db
 # User uploads
 /public/uploads/
 
+# Generated favicon files
+/public/assets/favicons/*.png
+/public/assets/favicons/*.jpg
+/public/assets/favicons/*.jpeg
+/public/assets/favicons/*.gif
+/public/assets/favicons/*.ico
+/public/assets/favicons/site.webmanifest
+!/public/assets/favicons/.gitkeep
+
 /.osp/
 
 ngrok.txt
