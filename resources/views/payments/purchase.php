@@ -125,28 +125,54 @@
 <script src="https://www.paypal.com/sdk/js?client-id=<?= sanitize(setting('paypal_client_id')) ?>&currency=<?= $currency ?>&intent=capture"></script>
 <?php endif; ?>
 
-<?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('payment-form');
-    const serverSelect = document.getElementById('server_id');
     const daysInput = document.getElementById('days');
-    const costDisplay = document.getElementById('cost-display');
     const totalDisplay = document.getElementById('total-display');
     const daysDisplay = document.getElementById('days-display');
-    const paypalContainer = document.getElementById('paypal-button-container');
-    const loadingSpinner = document.getElementById('loading-spinner');
-    const messagesDiv = document.getElementById('payment-messages');
 
-    const costPerDay = <?= $cost_per_day ?>;
-    const currency = '<?= $currency ?>';
+    if (!daysInput || !totalDisplay || !daysDisplay) {
+        return;
+    }
+
+    const costPerDay = <?= json_encode((float)$cost_per_day) ?>;
+    const currency = <?= json_encode($currency) ?>;
+    const minDays = <?= json_encode((int)$min_days) ?>;
+    const maxDays = <?= json_encode((int)$max_days) ?>;
+
+    function normalizeDays() {
+        const days = parseInt(daysInput.value, 10);
+
+        if (Number.isNaN(days)) {
+            return minDays;
+        }
+
+        return Math.min(Math.max(days, minDays), maxDays);
+    }
 
     function updateCost() {
-        const days = parseInt(daysInput.value) || 0;
+        const days = normalizeDays();
         const total = days * costPerDay;
+
+        daysInput.value = days;
         daysDisplay.textContent = days;
         totalDisplay.textContent = '$' + total.toFixed(2) + ' ' + currency;
     }
+
+    daysInput.addEventListener('input', updateCost);
+    daysInput.addEventListener('change', updateCost);
+    updateCost();
+});
+</script>
+
+<?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const serverSelect = document.getElementById('server_id');
+    const daysInput = document.getElementById('days');
+    const paypalContainer = document.getElementById('paypal-button-container');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const messagesDiv = document.getElementById('payment-messages');
 
     function showMessage(message, type = 'info') {
         messagesDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -159,9 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingSpinner.classList.toggle('d-none', !show);
         paypalContainer.classList.toggle('d-none', show);
     }
-
-    daysInput.addEventListener('input', updateCost);
-    updateCost();
 
     serverSelect.addEventListener('change', function() {
         if (this.value) {
