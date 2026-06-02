@@ -566,3 +566,19 @@ class BannerGenerator {
         }, 3000);
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('canvas')) {
+        if (!window.bannerConfig) {
+            const configEl = document.getElementById('banner-generator-config');
+            if (configEl) {
+                try {
+                    window.bannerConfig = JSON.parse(configEl.textContent);
+                } catch (e) {
+                    console.error('Failed to parse banner generator configuration:', e);
+                }
+            }
+        }
+        window.bannerGenerator = new BannerGenerator();
+    }
+});

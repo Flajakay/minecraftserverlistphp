@@ -224,52 +224,19 @@
     </div>
 </div>
 
-<script>
-function deleteBlogPost(id) {
-    if (!confirm('<?= lang('confirm_delete') ?>')) return;
-    
-    fetch(`<?= url('/admin/blog-posts/delete/') ?>${id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            csrf_token: '<?= csrf() ?>',
-            ajax: '1'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.querySelector(`tr[data-blog-id="${id}"]`).remove();
-            showAlert('success', data.message);
-        } else {
-            showAlert('danger', data.message || '<?= lang('error_occurred') ?>');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('danger', '<?= lang('error_occurred') ?>');
-    });
-}
-
-function showAlert(type, message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-    alertDiv.style.zIndex = '9999';
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.body.appendChild(alertDiv);
-    
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.parentNode.removeChild(alertDiv);
-        }
-    }, 5000);
+<script id="admin-config" type="application/json">
+{
+    "urls": {
+        "deleteBlogPost": <?= json_encode(url('/admin/blog-posts/delete/')) ?>
+    },
+    "csrfToken": <?= json_encode(csrf()) ?>,
+    "lang": {
+        "confirmDelete": <?= json_encode(lang('confirm_delete')) ?>,
+        "errorOccurred": <?= json_encode(lang('error_occurred')) ?>
+    }
 }
 </script>
+<script src="<?= asset('js/admin-blog-posts.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.blog_posts_management'); ?>

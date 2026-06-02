@@ -203,22 +203,18 @@
 }
 </style>
 
-<script src="<?= asset('js/gif.min.js') ?>"></script>
-<script src="<?= asset('js/banner-generator.js') ?>"></script>
-<script>
-window.bannerConfig = {
-    serverId: <?= $server ? $server->id : 'null' ?>,
-    serverAddress: <?= $server ? "'" . $server->address . "'" : 'null' ?>,
-    serverPort: <?= $server ? $server->port : 'null' ?>,
-    serverName: <?= $server ? "'" . sanitize($server->name, ENT_QUOTES) . "'" : 'null' ?>,
-    backgrounds: <?= json_encode($backgrounds) ?>,
-    assetUrl: '<?= url('/') ?>'
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    window.bannerGenerator = new BannerGenerator();
-});
+<script id="banner-generator-config" type="application/json">
+{
+    "serverId": <?= $server ? (int)$server->id : "null" ?>,
+    "serverAddress": <?= json_encode($server ? $server->address : null) ?>,
+    "serverPort": <?= $server ? (int)$server->port : "null" ?>,
+    "serverName": <?= json_encode($server ? sanitize($server->name, ENT_QUOTES) : null) ?>,
+    "backgrounds": <?= json_encode($backgrounds) ?>,
+    "assetUrl": <?= json_encode(url('/')) ?>
+}
 </script>
+<script src="<?= asset('js/gif.min.js') ?>" defer></script>
+<script src="<?= asset('js/banner-generator.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = 'Banner Generator - ' . setting('title'); ?>

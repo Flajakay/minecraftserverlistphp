@@ -272,15 +272,7 @@
     </div>
 </div>
 
-<script>
-// Initialize tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-</script>
+<script src="<?= asset('js/admin-audit-index.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.audit_logs'); ?>

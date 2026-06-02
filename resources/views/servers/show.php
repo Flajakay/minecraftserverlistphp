@@ -652,102 +652,22 @@
 
 <?php joditAssets(); ?>
 
-<script src="<?= asset('js/server-show.js') ?>"></script>
-
-<script>
-window.serverStatistics = <?= /** @noinspection PhpUndefinedVariableInspection */json_encode($statistics) ?>;
-window.lang = {
-    content_placeholder: '<?= lang('content_placeholder') ?>',
-    blog_content_required: '<?= lang('blog_content_required') ?>',
-    confirm_delete: '<?= lang('confirm_delete') ?>',
-    jodit_code: '<?= lang('_jodit_code', 'en') ?>'
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    window.serverShowInstance = new ServerShow(
-        <?= $server->id ?>,
-        '<?= $server->address ?>',
-        <?= $server->port ?>,
-        '<?= csrf() ?>'
-    );
-    
-    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    popoverTriggerList.map(function (popoverTriggerEl) {
-        const popover = new bootstrap.Popover(popoverTriggerEl, {
-            trigger: 'manual'
-        });
-
-        let isHoveringTrigger = false;
-        let isHoveringPopover = false;
-
-        const showPopover = () => {
-            popoverTriggerEl.setAttribute('aria-expanded', 'true');
-            popover.show();
-
-            setTimeout(function() {
-                const popoverElement = document.querySelector('.popover');
-                if (!popoverElement) return;
-
-                popoverElement.addEventListener('mouseenter', function() {
-                    isHoveringPopover = true;
-                });
-
-                popoverElement.addEventListener('mouseleave', function() {
-                    isHoveringPopover = false;
-                    setTimeout(function() {
-                        if (!isHoveringTrigger && !isHoveringPopover) {
-                            hidePopover();
-                        }
-                    }, 100);
-                });
-            }, 10);
-        };
-
-        const hidePopover = () => {
-            popoverTriggerEl.setAttribute('aria-expanded', 'false');
-            popover.hide();
-        };
-
-        popoverTriggerEl.setAttribute('aria-haspopup', 'true');
-        popoverTriggerEl.setAttribute('aria-expanded', 'false');
-
-        popoverTriggerEl.addEventListener('mouseenter', function() {
-            isHoveringTrigger = true;
-            showPopover();
-        });
-
-        popoverTriggerEl.addEventListener('mouseleave', function() {
-            isHoveringTrigger = false;
-            setTimeout(function() {
-                if (!isHoveringTrigger && !isHoveringPopover) {
-                    hidePopover();
-                }
-            }, 100);
-        });
-
-        popoverTriggerEl.addEventListener('focus', function() {
-            showPopover();
-        });
-
-        popoverTriggerEl.addEventListener('blur', function() {
-            setTimeout(function() {
-                if (!isHoveringTrigger && !isHoveringPopover) {
-                    hidePopover();
-                }
-            }, 100);
-        });
-
-        popoverTriggerEl.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                hidePopover();
-                popoverTriggerEl.blur();
-            }
-        });
-
-        return popover;
-    });
-});
+<script id="server-show-config" type="application/json">
+{
+    "serverId": <?= (int)$server->id ?>,
+    "serverAddress": <?= json_encode($server->address) ?>,
+    "serverPort": <?= (int)$server->port ?>,
+    "csrfToken": <?= json_encode(csrf()) ?>,
+    "statistics": <?= json_encode($statistics) ?>,
+    "lang": {
+        "content_placeholder": <?= json_encode(lang('content_placeholder')) ?>,
+        "blog_content_required": <?= json_encode(lang('blog_content_required')) ?>,
+        "confirm_delete": <?= json_encode(lang('confirm_delete')) ?>,
+        "jodit_code": <?= json_encode(lang('_jodit_code', 'en')) ?>
+    }
+}
 </script>
+<script src="<?= asset('js/server-show.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = sanitize($server->name) . ' - ' . lang('minecraft_server') . ' - ' . setting('title'); ?>

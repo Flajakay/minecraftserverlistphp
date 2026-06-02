@@ -16,7 +16,18 @@ class CategoryCloud {
     }
 
     loadCategoriesData() {
-        const categoryData = window.categoryCloudData;
+        let categoryData = window.categoryCloudData;
+        if (!categoryData) {
+            const configEl = document.getElementById('category-cloud-config');
+            if (configEl) {
+                try {
+                    const config = JSON.parse(configEl.textContent);
+                    categoryData = config.categories;
+                } catch (e) {
+                    console.error('Failed to parse category-cloud config:', e);
+                }
+            }
+        }
         if (!categoryData) return;
 
         categoryData.forEach(cat => {
@@ -155,7 +166,19 @@ class CategoryCloud {
 
     loadInitialSelections() {
         // Load from PHP-provided selected categories (for edit mode)
-        const selectedIds = window.selectedCategoryIds || [];
+        let selectedIds = window.selectedCategoryIds;
+        if (!selectedIds) {
+            const configEl = document.getElementById('category-cloud-config');
+            if (configEl) {
+                try {
+                    const config = JSON.parse(configEl.textContent);
+                    selectedIds = config.selectedCategoryIds;
+                } catch (e) {
+                    console.error('Failed to parse category-cloud selected IDs:', e);
+                }
+            }
+        }
+        selectedIds = selectedIds || [];
 
         selectedIds.forEach(categoryId => {
             categoryId = parseInt(categoryId);

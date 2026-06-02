@@ -125,160 +125,26 @@
 <script src="https://www.paypal.com/sdk/js?client-id=<?= sanitize(setting('paypal_client_id')) ?>&currency=<?= $currency ?>&intent=capture"></script>
 <?php endif; ?>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const daysInput = document.getElementById('days');
-    const totalDisplay = document.getElementById('total-display');
-    const daysDisplay = document.getElementById('days-display');
-
-    if (!daysInput || !totalDisplay || !daysDisplay) {
-        return;
+<script id="payment-config" type="application/json">
+{
+    "costPerDay": <?= json_encode((float)$cost_per_day) ?>,
+    "currency": <?= json_encode($currency) ?>,
+    "minDays": <?= json_encode((int)$min_days) ?>,
+    "maxDays": <?= json_encode((int)$max_days) ?>,
+    "paypalClientId": <?= json_encode(setting('paypal_client_id')) ?>,
+    "hasPaypal": <?= json_encode(!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))) ?>,
+    "urls": {
+        "createOrder": <?= json_encode(url('/paypal/create-order')) ?>,
+        "capturePayment": <?= json_encode(url('/paypal/capture-payment')) ?>,
+        "redirect": <?= json_encode(url('/profile/' . auth()->username)) ?>
+    },
+    "lang": {
+        "completePayment": <?= json_encode(lang('complete_payment_paypal')) ?>,
+        "paymentSuccessful": <?= json_encode(lang('payment_successful')) ?>
     }
-
-    const costPerDay = <?= json_encode((float)$cost_per_day) ?>;
-    const currency = <?= json_encode($currency) ?>;
-    const minDays = <?= json_encode((int)$min_days) ?>;
-    const maxDays = <?= json_encode((int)$max_days) ?>;
-
-    function normalizeDays() {
-        const days = parseInt(daysInput.value, 10);
-
-        if (Number.isNaN(days)) {
-            return minDays;
-        }
-
-        return Math.min(Math.max(days, minDays), maxDays);
-    }
-
-    function updateCost() {
-        const days = normalizeDays();
-        const total = days * costPerDay;
-
-        daysInput.value = days;
-        daysDisplay.textContent = days;
-        totalDisplay.textContent = '$' + total.toFixed(2) + ' ' + currency;
-    }
-
-    daysInput.addEventListener('input', updateCost);
-    daysInput.addEventListener('change', updateCost);
-    updateCost();
-});
+}
 </script>
-
-<?php if (!empty(setting('paypal_client_id')) && !empty(setting('paypal_client_secret'))): ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const serverSelect = document.getElementById('server_id');
-    const daysInput = document.getElementById('days');
-    const paypalContainer = document.getElementById('paypal-button-container');
-    const loadingSpinner = document.getElementById('loading-spinner');
-    const messagesDiv = document.getElementById('payment-messages');
-
-    function showMessage(message, type = 'info') {
-        messagesDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>`;
-    }
-
-    function showLoading(show) {
-        loadingSpinner.classList.toggle('d-none', !show);
-        paypalContainer.classList.toggle('d-none', show);
-    }
-
-    serverSelect.addEventListener('change', function() {
-        if (this.value) {
-            renderPayPalButton();
-        } else {
-            paypalContainer.innerHTML = '<p class="text-muted"><?= lang('complete_payment_paypal') ?></p>';
-        }
-    });
-
-    function renderPayPalButton() {
-        paypalContainer.innerHTML = '';
-
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                showLoading(true);
-
-                return fetch('<?= url('/paypal/create-order') ?>', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        csrf_token: document.querySelector('[name="csrf_token"]').value,
-                        server_id: serverSelect.value,
-                        days: daysInput.value
-                    })
-                })
-                .then(response => response.json())
-                .then(orderData => {
-                    showLoading(false);
-                    if (orderData.error) {
-                        throw new Error(orderData.error);
-                    }
-                    return orderData.order_id;
-                })
-                .catch(error => {
-                    showLoading(false);
-                    showMessage('Failed to create payment: ' + error.message, 'danger');
-                    throw error;
-                });
-            },
-
-            onApprove: function(data, actions) {
-                showLoading(true);
-
-                return fetch('<?= url('/paypal/capture-payment') ?>', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        csrf_token: document.querySelector('[name="csrf_token"]').value,
-                        order_id: data.orderID,
-                        server_id: serverSelect.value,
-                        days: daysInput.value
-                    })
-                })
-                .then(response => response.json())
-                .then(captureData => {
-                    showLoading(false);
-                    if (captureData.error) {
-                        throw new Error(captureData.error);
-                    }
-
-                    showMessage('<?= lang('payment_successful') ?>', 'success');
-                    setTimeout(() => {
-                        window.location.href = '<?= url('/profile/' . auth()->username) ?>';
-                    }, 2000);
-                })
-                .catch(error => {
-                    showLoading(false);
-                    showMessage('Payment failed: ' + error.message, 'danger');
-                });
-            },
-
-            onError: function(err) {
-                showLoading(false);
-                showMessage('PayPal error occurred', 'danger');
-                console.error('PayPal error:', err);
-            },
-
-            onCancel: function(data) {
-                showLoading(false);
-                showMessage('Payment was cancelled', 'warning');
-            }
-        }).render('#paypal-button-container');
-    }
-
-    if (serverSelect.value) {
-        renderPayPalButton();
-    }
-});
-</script>
-<?php endif; ?>
+<script src="<?= asset('js/payments-purchase.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.purchase_highlight'); ?>

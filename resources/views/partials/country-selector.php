@@ -27,12 +27,5 @@
     </div>
 </div>
 
-<script>
-window.searchableSelectData = {
-    countries: <?= json_encode($countries) ?>,
-    selectedValue: "<?= $selectedCountry ?? old('country') ?>"
-};
-</script>
-
 <link rel="stylesheet" href="<?= url('/assets/css/searchable-select.css') ?>">
-<script src="<?= url('/assets/js/searchable-select.js') ?>"></script>
+<script src="<?= url('/assets/js/searchable-select.js') ?>" defer></script>

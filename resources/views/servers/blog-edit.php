@@ -57,18 +57,17 @@
 <!-- Load Jodit Helper -->
 <?php joditAssets(); ?>
 
-<!-- Load Blog Edit JavaScript -->
-<script src="<?= asset('js/blog-edit.js') ?>"></script>
-
-<script>
-// Global data for JavaScript
-window.csrfToken = '<?= csrf() ?>';
-window.lang = {
-    content_placeholder: '<?= lang('content_placeholder') ?>',
-    blog_content_required: '<?= lang('blog_content_required') ?>',
-    jodit_code: '<?= lang('_jodit_code', 'en') ?>'
-};
+<script id="blog-edit-config" type="application/json">
+{
+    "csrfToken": <?= json_encode(csrf()) ?>,
+    "lang": {
+        "content_placeholder": <?= json_encode(lang('content_placeholder')) ?>,
+        "blog_content_required": <?= json_encode(lang('blog_content_required')) ?>,
+        "jodit_code": <?= json_encode(lang('_jodit_code', 'en')) ?>
+    }
+}
 </script>
+<script src="<?= asset('js/blog-edit.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('edit_blog_post') . ' - ' . sanitize($server->name); ?>

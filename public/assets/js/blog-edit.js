@@ -79,6 +79,18 @@ class BlogEdit {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
+    if (!window.csrfToken) {
+        const configEl = document.getElementById('blog-edit-config');
+        if (configEl) {
+            try {
+                const config = JSON.parse(configEl.textContent);
+                window.csrfToken = config.csrfToken;
+                window.lang = config.lang;
+            } catch (e) {
+                console.error('Failed to parse blog edit configuration:', e);
+            }
+        }
+    }
     if (window.csrfToken) {
         window.blogEditInstance = new BlogEdit(window.csrfToken);
     }

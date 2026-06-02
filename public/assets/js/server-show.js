@@ -794,3 +794,102 @@ window.generateBanner = function () {
         window.serverShowInstance.generateBanner();
     }
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (!window.serverStatistics) {
+        const configEl = document.getElementById('server-show-config');
+        if (configEl) {
+            try {
+                const config = JSON.parse(configEl.textContent);
+                window.serverStatistics = config.statistics;
+                window.lang = config.lang;
+                window.serverShowInstance = new ServerShow(
+                    config.serverId,
+                    config.serverAddress,
+                    config.serverPort,
+                    config.csrfToken
+                );
+            } catch (e) {
+                console.error('Failed to parse server show configuration:', e);
+            }
+        }
+    }
+
+    if (typeof bootstrap !== 'undefined' && bootstrap.Popover) {
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.map(function (popoverTriggerEl) {
+            const popover = new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'manual'
+            });
+
+            let isHoveringTrigger = false;
+            let isHoveringPopover = false;
+
+            const showPopover = () => {
+                popoverTriggerEl.setAttribute('aria-expanded', 'true');
+                popover.show();
+
+                setTimeout(function() {
+                    const popoverElement = document.querySelector('.popover');
+                    if (!popoverElement) return;
+
+                    popoverElement.addEventListener('mouseenter', function() {
+                        isHoveringPopover = true;
+                    });
+
+                    popoverElement.addEventListener('mouseleave', function() {
+                        isHoveringPopover = false;
+                        setTimeout(function() {
+                            if (!isHoveringTrigger && !isHoveringPopover) {
+                                hidePopover();
+                            }
+                        }, 100);
+                    });
+                }, 10);
+            };
+
+            const hidePopover = () => {
+                popoverTriggerEl.setAttribute('aria-expanded', 'false');
+                popover.hide();
+            };
+
+            popoverTriggerEl.setAttribute('aria-haspopup', 'true');
+            popoverTriggerEl.setAttribute('aria-expanded', 'false');
+
+            popoverTriggerEl.addEventListener('mouseenter', function() {
+                isHoveringTrigger = true;
+                showPopover();
+            });
+
+            popoverTriggerEl.addEventListener('mouseleave', function() {
+                isHoveringTrigger = false;
+                setTimeout(function() {
+                    if (!isHoveringTrigger && !isHoveringPopover) {
+                        hidePopover();
+                    }
+                }, 100);
+            });
+
+            popoverTriggerEl.addEventListener('focus', function() {
+                showPopover();
+            });
+
+            popoverTriggerEl.addEventListener('blur', function() {
+                setTimeout(function() {
+                    if (!isHoveringTrigger && !isHoveringPopover) {
+                        hidePopover();
+                    }
+                }, 100);
+            });
+
+            popoverTriggerEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hidePopover();
+                    popoverTriggerEl.blur();
+                }
+            });
+
+            return popover;
+        });
+    }
+});

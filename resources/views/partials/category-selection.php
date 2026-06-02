@@ -13,10 +13,12 @@
     </fieldset>
 </div>
 
-<script>
-    window.categoryCloudData = <?= /** @noinspection PhpUndefinedVariableInspection */json_encode($categories) ?>;
-    window.selectedCategoryIds = <?= json_encode(isset($server_categories) ? array_column($server_categories, 'category_id') : []) ?>;
+<script id="category-cloud-config" type="application/json">
+{
+    "categories": <?= json_encode($categories) ?>,
+    "selectedCategoryIds": <?= json_encode(isset($server_categories) ? array_column($server_categories, 'category_id') : []) ?>
+}
 </script>
 
 <link rel="stylesheet" href="<?= url('/assets/css/category-cloud.css') ?>">
-<script src="<?= url('/assets/js/category-cloud.js') ?>"></script>
+<script src="<?= url('/assets/js/category-cloud.js') ?>" defer></script>

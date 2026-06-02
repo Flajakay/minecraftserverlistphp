@@ -21,7 +21,7 @@ $statusId = $prefix . 'status';
             <h2 class="visually-hidden" id="<?= $filtersHeadingId ?>"><?= lang('filters') ?></h2>
             <?php endif; ?>
 
-            <form action="<?= url('/servers') ?>" method="GET" id="<?= $formId ?>">
+            <form action="<?= url('/servers') ?>" method="GET" id="<?= $formId ?>" class="sidebar-filter-form" data-prefix="<?= $prefix ?>">
             <!-- Keep existing query params -->
             <?php if (isset($_GET['q'])): ?>
                 <input type="hidden" name="q" value="<?= sanitize($_GET['q']) ?>">
@@ -75,22 +75,7 @@ $statusId = $prefix . 'status';
                 <input type="hidden" name="categories" id="<?= $prefix ?>categoriesInput" value="<?= sanitize($_GET['categories'] ?? '') ?>">
             </fieldset>
 
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('<?= $formId ?>');
-                if (!form) return;
-                
-                const checkboxes = form.querySelectorAll('.category-check');
-                const updateCategories = () => {
-                    const selected = Array.from(checkboxes)
-                        .filter(cb => cb.checked)
-                        .map(cb => cb.value);
-                    document.getElementById('<?= $prefix ?>categoriesInput').value = selected.join(',');
-                };
-                
-                checkboxes.forEach(cb => cb.addEventListener('change', updateCategories));
-            });
-            </script>
+            <script src="<?= asset('js/sidebar-filters.js') ?>" defer></script>
 
             <div class="mb-3">
                 <label class="form-label small fw-semibold text-uppercase text-muted" for="<?= $orderById ?>"><?= lang('sort_by') ?></label>
