@@ -69,18 +69,15 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold"><?= lang('cost_calculation') ?></label>
-                                    <div class="card bg-light">
-                                        <div class="card-body py-3">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span id="cost-display">
-                                                    <span id="days-display"><?= $min_days ?></span> <?= lang('days') ?> × $<?= /** @noinspection PhpUndefinedVariableInspection */
-                                                    number_format($cost_per_day, 2) ?>/<?= lang('day') ?>
-                                                </span>
-                                                <strong id="total-display">$<?= number_format($min_days * $cost_per_day, 2) ?> <?= /** @noinspection PhpUndefinedVariableInspection */
-                                                    $currency ?></strong>
-                                            </div>
+                                    <div class="bg-white px-3 border-0 d-flex align-items-center" style="height: 38px; border-radius: 0.375rem;">
+                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                            <span id="cost-display" class="text-muted">
+                                                <span id="days-display" class="text-dark fw-semibold"><?= $min_days ?></span> <?= lang('days') ?> × $<?= number_format($cost_per_day, 2) ?>/<?= lang('day') ?>
+                                            </span>
+                                            <strong id="total-display" class="text-dark fw-bold">$<?= number_format($min_days * $cost_per_day, 2) ?> <?= $currency ?></strong>
                                         </div>
                                     </div>
+                                    <small class="text-muted d-block">&nbsp;</small>
                                 </div>
                             </div>
                         </div>

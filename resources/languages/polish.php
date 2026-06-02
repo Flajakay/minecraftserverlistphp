@@ -530,3 +530,17 @@ $language['usd_revenue'] = "$%s USD";
 $language['view_all_servers'] = "Zobacz wszystkie serwery";
 $language['youtube_placeholder'] = "dQw4w9WgXcQ";
 
+$language['server_now_public'] = "Serwer jest teraz publiczny!";
+$language['server_now_private'] = "Serwer jest teraz prywatny!";
+$language['server_deleted'] = "Serwer został pomyślnie usunięty.";
+$language['back_to_my_profile'] = "Powrót do mojego profilu";
+$language['server_highlighted'] = "Serwer został pomyślnie wyróżniony!";
+$language['server_highlight_removed'] = "Wyróżnienie serwera zostało pomyślnie usunięte!";
+$language['confirm_deactivate'] = "Czy na pewno chcesz dezaktywować ten serwer? Zostanie on ukryty na publicznej liście.";
+$language['confirm_activate'] = "Czy na pewno chcesz aktywować ten serwer? Zostanie on upubliczniony na liście.";
+$language['server_deactivated'] = "Serwer został pomyślnie dezaktywowany.";
+$language['server_activated'] = "Serwer został pomyślnie aktywowany!";
+$language['server_made_private'] = "Serwer został ustawiony jako prywatny.";
+$language['server_made_public'] = "Serwer został ustawiony jako publiczny!";
+
+

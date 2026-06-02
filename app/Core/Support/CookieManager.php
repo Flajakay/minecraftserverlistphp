@@ -32,7 +32,7 @@ class CookieManager
         return setcookie($name, $value, $options);
     }
 
-    public static function get(string $name, string $default = null): ?string
+    public static function get(string $name, ?string $default = null): ?string
     {
         if (!isset($_COOKIE[$name])) {
             return $default;

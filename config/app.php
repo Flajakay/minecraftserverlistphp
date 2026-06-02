@@ -1,21 +1,13 @@
 <?php
 
-return array (
-  'name' => 'Minecraft Server List',
-  'url' => 'http://minecraft.local/',
-  'timezone' => 'America/New_York',
-  'db' => 
-  array (
-    'host' => 'localhost',
-    'username' => 'admin',
-    'password' => 'admin',
-    'database' => 'serverlist',
-  ),
-  'paypal' => 
-  array (
-    'email' => 'test@tesr.com',
-    'client_id' => '',
-    'client_secret' => '',
-    'sandbox' => true,
-  ),
-);
+return [
+    'name' => 'Minecraft Server List',
+    'url' => 'http://localhost:8080/',
+    'timezone' => 'America/New_York',
+    'db' => [
+        'host' => 'db',
+        'username' => 'root',
+        'password' => 'root',
+        'database' => 'serverlist'
+    ]
+];

@@ -186,6 +186,20 @@ body {
     font-weight: 500;
 }
 
+.alert .btn-close:focus,
+.toast .btn-close:focus,
+.btn-close:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
+
+.toast:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
+
 /* Tables */
 .table {
     border-radius: var(--border-radius-lg);

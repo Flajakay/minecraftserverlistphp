@@ -20,6 +20,7 @@
 }
 
 .category-tag.main-category {
+    background: #ffffff;
     color: #0d6efd;
     border-color: #bbdefb;
     font-weight: 600;
@@ -44,7 +45,7 @@
 }
 
 .category-tag.sub-category {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #ffffff;
     color: #6c757d;
     border-color: #dee2e6;
     font-size: 0.8125rem;

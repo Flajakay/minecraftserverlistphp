@@ -161,6 +161,20 @@ body {
     font-weight: 500;
 }
 
+.alert .btn-close:focus,
+.toast .btn-close:focus,
+.btn-close:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
+
+.toast:focus {
+    box-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+}
+
 /* Tables */
 .table {
     border-radius: var(--border-radius-lg);
@@ -751,7 +765,6 @@ footer a:hover {
 
 /* Premium Server Highlight */
 .server-row-item.premium {
-    border-left: 4px solid #ffc107;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
 }
 

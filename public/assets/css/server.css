@@ -157,7 +157,6 @@
 
 /* Premium Server Highlight */
 .server-row-item.premium {
-    border-left: 4px solid #ffc107;
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
 }
 

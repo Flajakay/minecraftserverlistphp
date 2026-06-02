@@ -528,3 +528,17 @@ $language['youtube_id_help'] = "Just the video ID, not the full URL";
 $language['youtube_placeholder'] = "dQw4w9WgXcQ";
 $language['youtube_video'] = "YouTube Video";
 
+$language['server_now_public'] = "Server is now public!";
+$language['server_now_private'] = "Server is now private!";
+$language['server_deleted'] = "Server has been deleted successfully.";
+$language['back_to_my_profile'] = "Back to My Profile";
+$language['server_highlighted'] = "Server has been highlighted successfully!";
+$language['server_highlight_removed'] = "Server highlight has been removed successfully!";
+$language['confirm_deactivate'] = "Are you sure you want to deactivate this server? It will be hidden from the public list.";
+$language['confirm_activate'] = "Are you sure you want to activate this server? It will be visible on the public list.";
+$language['server_deactivated'] = "Server has been deactivated successfully.";
+$language['server_activated'] = "Server has been activated successfully!";
+$language['server_made_private'] = "Server has been made private.";
+$language['server_made_public'] = "Server has been made public!";
+
+

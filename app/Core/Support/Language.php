@@ -30,7 +30,7 @@ class Language
         self::$initialized = true;
     }
 
-    public static function get(string $key, string $default = null): string
+    public static function get(string $key, ?string $default = null): string
     {
         $keys = explode('.', $key);
         $value = self::$translations;
