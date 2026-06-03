@@ -29,7 +29,7 @@
                                     <?php /** @noinspection PhpUndefinedVariableInspection */
                                     foreach ($servers as $server): ?>
                                         <option value="<?= $server->id ?>" <?= $server->highlight ? 'disabled' : '' ?>>
-                                            <?= sanitize($server->name) ?> (<?= $server->address ?>:<?= $server->port ?>)
+                                            <?= sanitize($server->name) ?> (<?= sanitize($server->address) ?>:<?= sanitize($server->port) ?>)
                                             <?php if ($server->highlight): ?>
                                                 <span class="text-warning">- <?= lang('already_highlighted') ?></span>
                                             <?php endif; ?>

@@ -219,7 +219,7 @@
                                             </td>
                                             <td>
                                                 <code class="bg-light px-2 py-1 rounded">
-                                                    <?= sanitize($server->address) ?>:<?= $server->port ?>
+                                                    <?= sanitize($server->address) ?>:<?= sanitize($server->port) ?>
                                                 </code>
                                             </td>
                                             <td>

@@ -43,7 +43,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0 <?= $isAdmin ? '' : 'bg-light' ?>" 
                            id="port" 
                            <?= $isAdmin ? 'name="port"' : '' ?>
-                           value="<?= $server->port ?>" 
+                           value="<?= sanitize($server->port) ?>" 
                            autocomplete="off"
                            <?= $isAdmin ? 'min="1" max="65535"' : 'readonly' ?>>
                 </div>

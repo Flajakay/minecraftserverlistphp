@@ -81,7 +81,7 @@ $server->highlight ? 'border-warning border-2' : '' ?>">
                 </span>
             </div>
             <small class="text-muted">
-                <?= $server->address ?>:<?= $server->port ?>
+                <?= sanitize($server->address) ?>:<?= sanitize($server->port) ?>
             </small>
         </div>
     </div>

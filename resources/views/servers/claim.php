@@ -12,7 +12,7 @@
                 <p class="text-muted mb-0">
                     <?= /** @noinspection PhpUndefinedVariableInspection */
                     sanitize($server->name) ?>
-                    <span class="ms-2">(<?= $server->address ?><?= $server->port != 25565 ? ':' . $server->port : '' ?>)</span>
+                    <span class="ms-2">(<?= sanitize($server->address) ?><?= $server->port != 25565 ? ':' . sanitize($server->port) : '' ?>)</span>
                 </p>
             </div>
 

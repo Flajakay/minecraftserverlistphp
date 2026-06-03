@@ -57,7 +57,7 @@
                 <!-- Metadata Row (Categories & IP) -->
                 <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
                     <span class="badge bg-secondary bg-opacity-10 text-secondary border-0 fw-normal">
-                        <i class="bi bi-globe me-1"></i><?= $server->address ?>
+                        <i class="bi bi-globe me-1"></i><?= sanitize($server->address) ?>
                     </span>
 
                     <?php if (isset($server->categories) && !empty($server->categories)): ?>
@@ -92,7 +92,7 @@
                     <?= lang('view_details') ?>
                 </a>
                 <button type="button" class="btn btn-sm btn-light position-relative z-2" title="<?= lang('copy_ip') ?>" aria-label="<?= lang('copy_ip') ?>"
-                    onclick="copyToClipboard('<?= $server->address ?>')">
+                    onclick="copyToClipboard(<?= json_encode($server->address) ?>)">
                     <i class="bi bi-clipboard"></i>
                 </button>
             </div>

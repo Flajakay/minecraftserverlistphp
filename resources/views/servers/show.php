@@ -27,11 +27,11 @@
                                     </span>
                                 <?php endif; ?>
                             </div>
-                            <p class="mb-2 text-white-50">
-                                <i class="bi bi-globe me-1"></i>
-                                <?= $server->address ?><?= $server->port != 25565 ? ':' . $server->port : '' ?>
-                            </p>
-                            <div class="d-flex align-items-center">
+                                    <p class="mb-2 text-white-50">
+                                        <i class="bi bi-globe me-1"></i>
+                                        <?= sanitize($server->address) ?><?= $server->port != 25565 ? ':' . sanitize($server->port) : '' ?>
+                                    </p>
+                                    <div class="d-flex align-items-center">
                                 <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-2">
                                     <i class="bi bi-<?= $server->status ? 'wifi' : 'wifi-off' ?> me-1"></i>
                                     <?= $server->status ? lang('online') : lang('offline') ?>
@@ -64,7 +64,7 @@
                                 </div>
                                 <p class="mb-2 text-white-50">
                                     <i class="bi bi-globe me-1"></i>
-                                    <?= $server->address ?><?= $server->port != 25565 ? ':' . $server->port : '' ?>
+                                    <?= sanitize($server->address) ?><?= $server->port != 25565 ? ':' . sanitize($server->port) : '' ?>
                                 </p>
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-2">
@@ -166,17 +166,17 @@
                                         <i class="bi bi-server text-primary me-2"></i><?= lang('server_information') ?>
                                     </div>
                                     <div class="list-group list-group-flush">
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_address') ?>: <?= $server->address ?>">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_address') ?>: <?= sanitize($server->address) ?>">
                                             <span class="text-muted">
                                                 <i class="bi bi-link-45deg me-2" aria-hidden="true"></i><?= lang('server_address') ?>
                                             </span>
-                                            <code class="bg-light px-2 py-1 rounded"><?= $server->address ?></code>
+                                            <code class="bg-light px-2 py-1 rounded"><?= sanitize($server->address) ?></code>
                                         </div>
-                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_connection_port') ?>: <?= $server->port ?>">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_connection_port') ?>: <?= sanitize($server->port) ?>">
                                             <span class="text-muted">
                                                 <i class="bi bi-hdd-network me-2" aria-hidden="true"></i><?= lang('server_connection_port') ?>
                                             </span>
-                                            <span><?= $server->port ?></span>
+                                            <span><?= sanitize($server->port) ?></span>
                                         </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_category') ?>: <?= sanitize(implode(', ', array_map(fn($c) => $c->category_name, $categories ?? [])), ENT_QUOTES) ?>">
                                             <span class="text-muted">

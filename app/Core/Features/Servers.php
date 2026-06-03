@@ -32,6 +32,14 @@ class Servers
             $errors[] = 'Server address is required';
         }
 
+        if (!empty($data['address'])) {
+            $isDomain = filter_var($data['address'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+            $isIpV4   = filter_var($data['address'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+            if (!$isDomain && !$isIpV4) {
+                $errors[] = 'Server address must be a valid domain name or IP address';
+            }
+        }
+
         if (empty($data['country'])) {
             $errors[] = 'Country is required';
         }

@@ -127,7 +127,7 @@
                                             </div>
                                             
                                             <p class="text-muted small mb-2">
-                                                <?= sanitize($server->address) ?>:<?= $server->port ?>
+                                                <?= sanitize($server->address) ?>:<?= sanitize($server->port) ?>
                                             </p>
                                             
                                             <?php if ($server->status): ?>
