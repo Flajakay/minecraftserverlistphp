@@ -28,9 +28,20 @@ class MigrationController
         $lastResult = $_SESSION['migration_result'] ?? null;
         unset($_SESSION['migration_result']);
 
+        $page = (int)($_GET['page'] ?? 1);
+        $limit = 10;
+        $items = $status['items'] ?? [];
+        $totalItems = count($items);
+        $totalPages = max(1, (int)ceil($totalItems / $limit));
+        $currentPage = max(1, min($page, $totalPages));
+        $offset = ($currentPage - 1) * $limit;
+        $status['items'] = array_slice($items, $offset, $limit);
+
         view('admin.migrations', [
             'status' => $status,
-            'lastResult' => $lastResult
+            'lastResult' => $lastResult,
+            'totalPages' => $totalPages,
+            'currentPage' => $currentPage,
         ]);
     }
 

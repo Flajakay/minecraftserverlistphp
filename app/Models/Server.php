@@ -32,9 +32,12 @@ class Server
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['votes'] = 0;
         $data['highlight'] = 0;
-        $data['private'] = 1;
         $data['active'] = 1;
         $data['status'] = 1;
+
+        if (!isset($data['private'])) {
+            $data['private'] = 1;
+        }
 
         if (!isset($data['game_type'])) {
             $data['game_type'] = 'minecraft';

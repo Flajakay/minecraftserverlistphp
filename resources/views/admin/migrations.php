@@ -62,8 +62,6 @@
 
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
-
-
                 <div class="card-body p-0">
                     <?php if (empty($status['items'])): ?>
                         <div class="text-center py-5">
@@ -120,6 +118,36 @@
                         </form>
                     <?php endif; ?>
                 </div>
+
+                <?php if ($totalPages > 1): ?>
+                    <div class="card-footer bg-light border-0">
+                        <nav>
+                            <ul class="pagination justify-content-center mb-0">
+                                <?php if ($currentPage > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $currentPage - 1 ?>">
+                                            <i class="bi bi-chevron-left"></i> <?= lang('previous') ?>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $currentPage - 2); $i <= min($totalPages, $currentPage + 2); $i++): ?>
+                                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($currentPage < $totalPages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $currentPage + 1 ?>">
+                                            <?= lang('next') ?> <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 

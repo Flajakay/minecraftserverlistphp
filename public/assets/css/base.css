@@ -212,21 +212,23 @@ body {
     border-radius: var(--border-radius);
     margin: 0 0.125rem;
     border: 1px solid #dee2e6;
-    color: #6c757d;
+    color: #343a40;
     font-weight: 500;
     transition: var(--transition);
 }
 
 .pagination .page-item.active .page-link {
-    background: linear-gradient(45deg, #0d6efd, #0056b3);
-    border-color: #0d6efd;
-    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.25);
+    background: linear-gradient(135deg, #4a6cf7, #3b5de7);
+    border-color: #4a6cf7;
+    box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+    color: #ffffff;
 }
 
 .pagination .page-link:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-    transform: translateY(-1px);
+    background-color: #f1f3f5;
+    border-color: #ced4da;
+    color: #212529;
+    transform: translateY(-2px);
 }
 
 /* Progress Bars */

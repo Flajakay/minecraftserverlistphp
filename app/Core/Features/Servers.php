@@ -6,6 +6,7 @@ use App\Models\Server;
 use App\Models\Category;
 use App\Models\Game;
 use App\Models\AuditLog;
+use App\Models\Setting;
 use App\Core\Integrations\MinecraftPing;
 use App\Core\Integrations\GameServers\ServerProtocolRegistry;
 
@@ -255,8 +256,11 @@ class Servers
             $gameName = 'Minecraft Java';
         }
 
+        $isPublicByDefault = (bool) Setting::getValue('new_servers_visibility', 0);
+
         $serverId = Server::create([
             'user_id' => $userId,
+            'private' => $isPublicByDefault ? 0 : 1,
             'category_id' => $primaryCategoryId,
             'address' => $data['address'],
             'port' => $port,
