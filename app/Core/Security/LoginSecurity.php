@@ -2,6 +2,7 @@
 
 namespace App\Core\Security;
 use App\Core\System\Database;
+use App\Models\LoginAttempt;
 
 /**
  * Login attempt tracking and lockouts.
@@ -18,10 +19,7 @@ class LoginSecurity
 
     public static function isLockedOut($identifier, $type): bool
     {
-        $attempt = Database::fetch(
-            'SELECT lockout_until FROM login_attempts WHERE identifier = ? AND identifier_type = ? AND lockout_until IS NOT NULL',
-            [$identifier, $type]
-        );
+        $attempt = LoginAttempt::findLockedOut($identifier, $type);
 
         if (!$attempt) {
             return false;
@@ -32,7 +30,7 @@ class LoginSecurity
             return true;
         }
 
-        self::clearExpiredLockout($identifier, $type);
+        LoginAttempt::clearExpiredLockout($identifier, $type);
         return false;
     }
 
@@ -43,10 +41,7 @@ class LoginSecurity
             $ip = self::getClientIp();
         }
 
-        $existing = Database::fetch(
-            'SELECT id, attempts, first_attempt FROM login_attempts WHERE identifier = ? AND identifier_type = ?',
-            [$identifier, $type]
-        );
+        $existing = LoginAttempt::find($identifier, $type);
 
         if ($existing) {
             $newAttempts = $existing->attempts + 1;
@@ -57,18 +52,14 @@ class LoginSecurity
                 $lockoutUntil = date('Y-m-d H:i:s', strtotime('+' . self::LOCKOUT_DURATION_MINUTES . ' minutes'));
             }
 
-            Database::update('login_attempts',
-                [
-                    'attempts' => $newAttempts,
-                    'last_attempt' => date('Y-m-d H:i:s'),
-                    'lockout_until' => $lockoutUntil,
-                    'ip_address' => $ip
-                ],
-                'id = ?',
-                [$existing->id]
-            );
+            LoginAttempt::update($existing->id, [
+                'attempts' => $newAttempts,
+                'last_attempt' => date('Y-m-d H:i:s'),
+                'lockout_until' => $lockoutUntil,
+                'ip_address' => $ip
+            ]);
         } else {
-            Database::insert('login_attempts', [
+            LoginAttempt::create([
                 'identifier' => $identifier,
                 'identifier_type' => $type,
                 'attempts' => 1,
@@ -82,25 +73,19 @@ class LoginSecurity
 
     public static function clearFailedAttempts($identifier, $type): void
     {
-        Database::delete('login_attempts', 'identifier = ? AND identifier_type = ?', [$identifier, $type]);
+        LoginAttempt::delete($identifier, $type);
     }
 
     public static function getRemainingAttempts($identifier, $type)
     {
-        $attempt = Database::fetch(
-            'SELECT attempts FROM login_attempts WHERE identifier = ? AND identifier_type = ?',
-            [$identifier, $type]
-        );
+        $attempt = LoginAttempt::find($identifier, $type);
 
         return $attempt ? max(0, self::MAX_ATTEMPTS - $attempt->attempts) : self::MAX_ATTEMPTS;
     }
 
     public static function getLockoutTimeRemaining($identifier, $type)
     {
-        $attempt = Database::fetch(
-            'SELECT lockout_until FROM login_attempts WHERE identifier = ? AND identifier_type = ?',
-            [$identifier, $type]
-        );
+        $attempt = LoginAttempt::find($identifier, $type);
 
         if (!$attempt || !$attempt->lockout_until) {
             return 0;
@@ -108,15 +93,6 @@ class LoginSecurity
 
         $remaining = strtotime($attempt->lockout_until) - time();
         return max(0, $remaining);
-    }
-
-    private static function clearExpiredLockout($identifier, $type): void
-    {
-        Database::update('login_attempts',
-            ['lockout_until' => null],
-            'identifier = ? AND identifier_type = ? AND lockout_until <= ?',
-            [$identifier, $type, date('Y-m-d H:i:s')]
-        );
     }
 
     private static function getClientIp(): string
@@ -145,7 +121,6 @@ class LoginSecurity
 
     public static function cleanupOldAttempts(): void
     {
-        $cutoff = date('Y-m-d H:i:s', strtotime('-' . self::ATTEMPT_WINDOW_MINUTES . ' minutes'));
-        Database::query('DELETE FROM login_attempts WHERE last_attempt < ? AND lockout_until IS NULL', [$cutoff]);
+        LoginAttempt::cleanup(self::ATTEMPT_WINDOW_MINUTES);
     }
 }
