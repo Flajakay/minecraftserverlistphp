@@ -32,6 +32,7 @@ class SiteSettings
             'maximum_days' => (int)($data['maximum_days'] ?? 30),
             'minecraft_java_enabled' => isset($data['minecraft_java_enabled']) ? 1 : 0,
             'steam_a2s_enabled' => isset($data['steam_a2s_enabled']) ? 1 : 0,
+            'minecraft_bedrock_enabled' => isset($data['minecraft_bedrock_enabled']) ? 1 : 0,
         ];
         $faviconError = null;
 

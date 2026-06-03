@@ -220,6 +220,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `favicon_version` int(11) NOT NULL DEFAULT '0',
   `minecraft_java_enabled` tinyint(1) NOT NULL DEFAULT 1,
   `steam_a2s_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `minecraft_bedrock_enabled` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

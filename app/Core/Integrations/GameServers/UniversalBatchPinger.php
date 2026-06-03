@@ -17,6 +17,7 @@ class UniversalBatchPinger
 
         $minecraftServers = [];
         $steamServers = [];
+        $bedrockServers = [];
 
         foreach ($servers as $server) {
             $protocol = $server->protocol ?? 'minecraft_java';
@@ -25,6 +26,8 @@ class UniversalBatchPinger
                 $minecraftServers[] = $server;
             } elseif ($protocol === 'steam_a2s') {
                 $steamServers[] = $server;
+            } elseif ($protocol === 'minecraft_bedrock') {
+                $bedrockServers[] = $server;
             }
         }
 
@@ -39,7 +42,22 @@ class UniversalBatchPinger
             $results[$server->id] = $this->pingSingleSteam($server, $timeout);
         }
 
+        foreach ($bedrockServers as $server) {
+            $results[$server->id] = $this->pingSingleBedrock($server, $timeout);
+        }
+
         return $results;
+    }
+
+    private function pingSingleBedrock($server, int $timeout): ServerStatusResult
+    {
+        $adapter = $this->registry->getAdapter('minecraft_bedrock');
+        if (!$adapter) {
+            return ServerStatusResult::offline();
+        }
+
+        $queryPort = $server->query_port ?? $server->port;
+        return $adapter->query($server->address, (int)$server->port, (int)$queryPort, $timeout);
     }
 
     private function pingMinecraftBatch(array $servers, int $timeout, int $concurrency): array

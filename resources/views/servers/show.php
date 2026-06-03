@@ -29,7 +29,7 @@
                             </div>
                                     <p class="mb-2 text-white-50">
                                         <i class="bi bi-globe me-1"></i>
-                                        <?= sanitize($server->address) ?><?= $server->port != 25565 ? ':' . sanitize($server->port) : '' ?>
+                                        <?= sanitize($server->address) ?><?= ($server->protocol === 'minecraft_java' && $server->port == 25565) || ($server->protocol === 'minecraft_bedrock' && $server->port == 19132) ? '' : ':' . sanitize($server->port) ?>
                                     </p>
                                     <div class="d-flex align-items-center">
                                 <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-2">
@@ -64,7 +64,7 @@
                                 </div>
                                 <p class="mb-2 text-white-50">
                                     <i class="bi bi-globe me-1"></i>
-                                    <?= sanitize($server->address) ?><?= $server->port != 25565 ? ':' . sanitize($server->port) : '' ?>
+                                    <?= sanitize($server->address) ?><?= ($server->protocol === 'minecraft_java' && $server->port == 25565) || ($server->protocol === 'minecraft_bedrock' && $server->port == 19132) ? '' : ':' . sanitize($server->port) ?>
                                 </p>
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-<?= $server->status ? 'success' : 'danger' ?> me-2">
@@ -267,7 +267,7 @@
                                             <span class="text-muted">
                                                 <i class="bi bi-controller me-2" aria-hidden="true"></i><?= lang('game') ?>
                                             </span>
-                                            <span><?= sanitize($server->game_name ?? ($server->protocol === 'steam_a2s' ? 'Steam' : 'Minecraft')) ?></span>
+                                            <span><?= sanitize($server->game_name ?? ($server->protocol === 'steam_a2s' ? 'Steam' : ($server->protocol === 'minecraft_bedrock' ? 'Minecraft Bedrock' : 'Minecraft'))) ?></span>
                                         </div>
                                         <?php if ($server->map_name): ?>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">

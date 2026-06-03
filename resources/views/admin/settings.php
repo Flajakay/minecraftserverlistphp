@@ -168,7 +168,7 @@
                     </div>
                     <small class="text-muted ms-4">Default port: 25565</small>
                 </div>
-                <div class="mb-0">
+                <div class="mb-3">
                     <div class="form-check form-switch">
                         <input class="form-check-input" 
                                type="checkbox" 
@@ -180,6 +180,19 @@
                         </label>
                     </div>
                     <small class="text-muted ms-4">Default port: 27015</small>
+                </div>
+                <div class="mb-0">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="minecraft_bedrock_enabled" 
+                               name="minecraft_bedrock_enabled" 
+                               <?= ($settings->minecraft_bedrock_enabled ?? 1) ? 'checked' : '' ?>>
+                        <label class="form-check-label fw-semibold" for="minecraft_bedrock_enabled">
+                            Minecraft Bedrock
+                        </label>
+                    </div>
+                    <small class="text-muted ms-4">Default port: 19132</small>
                 </div>
             </div>
         </div>

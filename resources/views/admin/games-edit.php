@@ -29,9 +29,9 @@
                         </div>
                         <div class="mb-3">
                             <label for="protocol" class="form-label">Protocol</label>
-                            <select class="form-select" id="protocol" name="protocol">
-                                <option value="steam_a2s" <?= $game->protocol === 'steam_a2s' ? 'selected' : '' ?>>Steam</option>
-                            </select>
+                                <select class="form-select" id="protocol" name="protocol">
+                                    <option value="steam_a2s" <?= $game->protocol === 'steam_a2s' ? 'selected' : '' ?>>Steam</option>
+                                </select>
                         </div>
                         <div class="mb-4">
                             <div class="form-check form-switch">

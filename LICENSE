@@ -1,0 +1,56 @@
+Custom Non-Commercial Open Source License v1.0
+
+Copyright (c) 2025-2026 Nikita Koval (SwiftKoi)
+
+TERMS AND CONDITIONS
+
+This license applies to all code contributed to this project from
+June 3, 2026 onward. Code contributed prior to that date remains
+licensed under the MIT License.
+
+1. Definitions
+
+   "Licensor" means the copyright holder Nikita Koval (SwiftKoi).
+   "Software" means the source code and associated documentation
+   files covered by this license.
+   "Non-Commercial Use" means use that is not intended for or
+   directed toward commercial advantage or monetary compensation.
+
+2. Non-Commercial Use
+
+   You may use, copy, modify, and distribute the Software for any
+   Non-Commercial Use, free of charge, provided you comply with the
+   terms of this license.
+
+3. Derivative Works
+
+   You may create and distribute derivative works of the Software,
+   provided that:
+   (a) the derivative work is distributed free of charge and under
+       the same license terms;
+   (b) you retain all copyright notices and provide attribution to
+       the Licensor.
+
+4. Commercial Use
+
+   Commercial Use, including but not limited to selling the Software,
+   using it as part of a commercial product or service, or monetizing
+   it in any way, requires explicit written permission from the
+   Licensor.
+
+5. Attribution
+
+   You must retain all copyright notices and provide reasonable
+   attribution to the Licensor in all copies or substantial portions
+   of the Software.
+
+6. Disclaimer of Warranty
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+   OTHER DEALINGS IN THE SOFTWARE.

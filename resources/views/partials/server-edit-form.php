@@ -24,6 +24,9 @@ $games = $games ?? [];
                     <option value="minecraft_java" <?= $serverProtocol === 'minecraft_java' ? 'selected' : '' ?>>
                         <?= lang('protocol_minecraft_java') ?>
                     </option>
+                    <option value="minecraft_bedrock" <?= $serverProtocol === 'minecraft_bedrock' ? 'selected' : '' ?>>
+                        <?= lang('protocol_minecraft_bedrock') ?>
+                    </option>
                     <option value="steam_a2s" <?= $serverProtocol === 'steam_a2s' ? 'selected' : '' ?>>
                         <?= lang('protocol_steam_a2s') ?>
                     </option>

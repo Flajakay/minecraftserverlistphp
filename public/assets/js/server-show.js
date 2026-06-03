@@ -440,7 +440,8 @@ class ServerShow {
     // Action methods
     async voteForServer() {
         const isSteam = this.serverProtocol === 'steam_a2s';
-        const promptText = isSteam ? 'Enter your in-game username (optional):' : 'Enter your Minecraft username (optional):';
+        const isBedrock = this.serverProtocol === 'minecraft_bedrock';
+        const promptText = isSteam ? 'Enter your in-game username (optional):' : isBedrock ? 'Enter your Minecraft username (optional):' : 'Enter your Minecraft username (optional):';
         const username = prompt(promptText);
 
         try {
@@ -472,7 +473,8 @@ class ServerShow {
 
 
     copyServerAddress() {
-        const address = `${this.serverAddress}${this.serverPort !== 25565 ? ':' + this.serverPort : ''}`;
+        const defaultPort = this.serverProtocol === 'minecraft_bedrock' ? 19132 : (this.serverProtocol === 'minecraft_java' ? 25565 : null);
+        const address = `${this.serverAddress}${defaultPort !== null && this.serverPort === defaultPort ? '' : ':' + this.serverPort}`;
 
         navigator.clipboard.writeText(address).then(() => {
             this.showToast('Server address copied to clipboard!', 'success');

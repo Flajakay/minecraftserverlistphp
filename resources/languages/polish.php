@@ -498,6 +498,7 @@ $language['game'] = "Gra";
 $language['map'] = "Mapa";
 $language['protocol_label'] = "Gra / Protokół";
 $language['protocol_minecraft_java'] = "Minecraft Java";
+$language['protocol_minecraft_bedrock'] = "Minecraft Bedrock";
 $language['protocol_steam_a2s'] = "Steam";
 $language['protocol_help'] = "Wybierz protokół używany przez serwer";
 $language['game_app_id'] = "Steam App ID";

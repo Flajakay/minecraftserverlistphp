@@ -30,6 +30,9 @@
                                         <option value="minecraft_java" <?= old('protocol', 'minecraft_java') === 'minecraft_java' ? 'selected' : '' ?>>
                                             <?= lang('protocol_minecraft_java') ?>
                                         </option>
+                                        <option value="minecraft_bedrock" <?= old('protocol') === 'minecraft_bedrock' ? 'selected' : '' ?>>
+                                            <?= lang('protocol_minecraft_bedrock') ?>
+                                        </option>
                                         <option value="steam_a2s" <?= old('protocol') === 'steam_a2s' ? 'selected' : '' ?>>
                                             <?= lang('protocol_steam_a2s') ?>
                                         </option>

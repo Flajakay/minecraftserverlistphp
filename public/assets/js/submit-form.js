@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
             gameSelectorWrapper.style.display = 'block';
             votifierSection.style.display = 'none';
             nameInput.placeholder = 'My Awesome Game Server';
+        } else if (protocol === 'minecraft_bedrock') {
+            portInput.value = portInput.value || '19132';
+            portInput.placeholder = '19132';
+            portDefaultText.textContent = 'Default: 19132';
+            gameSelectorWrapper.style.display = 'none';
+            votifierSection.style.display = 'none';
+            nameInput.placeholder = 'My Awesome Bedrock Server';
         } else {
             portInput.value = portInput.value || '25565';
             portInput.placeholder = '25565';

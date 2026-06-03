@@ -1,7 +1,8 @@
 {
-    "name": "flajakay/serverlist",
+    "name": "swiftkoi/game-server-list",
     "description": "A server list application",
     "type": "project",
+    "license": "SEE LICENSE IN LICENSE file",
     "require": {
         "php": ">=8.2",
         "ext-gd": "*",

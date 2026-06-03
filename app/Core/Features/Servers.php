@@ -69,6 +69,13 @@ class Servers
                     'game_type' => 'steam',
                     'protocol' => 'steam_a2s',
                 ];
+            case 'minecraft_bedrock':
+                return [
+                    'port' => 19132,
+                    'query_port' => 19132,
+                    'game_type' => 'minecraft',
+                    'protocol' => 'minecraft_bedrock',
+                ];
             case 'minecraft_java':
             default:
                 return [
@@ -218,6 +225,12 @@ class Servers
             if (!$result->online) {
                 $errors[] = 'Server is offline or unreachable';
             }
+        } elseif ($protocol === 'minecraft_bedrock') {
+            $adapter = new \App\Core\Integrations\GameServers\MinecraftBedrockAdapter();
+            $result = $adapter->query($data['address'], $port, $queryPort, 2);
+            if (!$result->online) {
+                $errors[] = 'Server is offline or unreachable';
+            }
         }
 
         if (!empty($errors)) {
@@ -254,6 +267,8 @@ class Servers
             $gameName = $game ? $game->name : null;
         } elseif ($protocol === 'minecraft_java') {
             $gameName = 'Minecraft Java';
+        } elseif ($protocol === 'minecraft_bedrock') {
+            $gameName = 'Minecraft Bedrock';
         }
 
         $isPublicByDefault = (bool) Setting::getValue('new_servers_visibility', 0);

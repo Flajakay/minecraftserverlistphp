@@ -119,6 +119,9 @@ $statusId = $prefix . 'status';
                     <option value="minecraft_java" <?= (isset($_GET['protocol']) && $_GET['protocol'] == 'minecraft_java') ? 'selected' : '' ?>>
                         <?= lang('protocol_minecraft_java') ?>
                     </option>
+                    <option value="minecraft_bedrock" <?= (isset($_GET['protocol']) && $_GET['protocol'] == 'minecraft_bedrock') ? 'selected' : '' ?>>
+                        <?= lang('protocol_minecraft_bedrock') ?>
+                    </option>
                     <option value="steam_a2s" <?= (isset($_GET['protocol']) && $_GET['protocol'] == 'steam_a2s') ? 'selected' : '' ?>>
                         <?= lang('protocol_steam_a2s') ?>
                     </option>

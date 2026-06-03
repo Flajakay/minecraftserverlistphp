@@ -10,6 +10,7 @@ class ServerProtocolRegistry
     {
         $this->register(new MinecraftJavaAdapter());
         $this->register(new SteamA2SAdapter());
+        $this->register(new MinecraftBedrockAdapter());
     }
 
     public function register(ServerProtocolAdapter $adapter): void
@@ -51,9 +52,11 @@ class ServerProtocolRegistry
         $protocols = [];
         $minecraft = new MinecraftJavaAdapter();
         $steam = new SteamA2SAdapter();
+        $bedrock = new MinecraftBedrockAdapter();
 
         $protocols['minecraft_java'] = 'Minecraft Java';
         $protocols['steam_a2s'] = 'Steam';
+        $protocols['minecraft_bedrock'] = 'Minecraft Bedrock';
 
         return $protocols;
     }

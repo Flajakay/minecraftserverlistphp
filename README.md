@@ -72,4 +72,4 @@ Pull requests are welcome. Please include tests for any new features.
 
 ## 📄 License
 
-See [LICENCE](LICENCE).
+See [LICENSE](LICENSE).

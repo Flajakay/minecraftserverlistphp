@@ -45,6 +45,29 @@ class ProtocolServerTest extends TestCase
         $this->assertEquals('minecraft_java', $server->protocol);
     }
 
+    public function testCanCreateMinecraftBedrockServer(): void
+    {
+        $serverId = Server::create([
+            'user_id' => $this->testUserId,
+            'category_id' => 1,
+            'address' => 'bedrock.example.com',
+            'port' => 19132,
+            'name' => 'Bedrock Server',
+            'game_type' => 'minecraft',
+            'protocol' => 'minecraft_bedrock',
+            'query_port' => 19132,
+            'game_name' => 'Minecraft Bedrock',
+        ]);
+
+        $server = Server::find($serverId);
+        $this->assertNotNull($server);
+        $this->assertEquals('minecraft', $server->game_type);
+        $this->assertEquals('minecraft_bedrock', $server->protocol);
+        $this->assertEquals(19132, $server->port);
+        $this->assertEquals(19132, $server->query_port);
+        $this->assertEquals('Minecraft Bedrock', $server->game_name);
+    }
+
     public function testCanCreateSteamA2SServer(): void
     {
         $serverId = Server::create([
