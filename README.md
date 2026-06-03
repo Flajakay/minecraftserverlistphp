@@ -8,7 +8,7 @@ This platform provides everything needed to run a Minecraft server listing websi
 
 ## 🚀 Key Features
 
-*   **⚡ Concurrent Async Pinger (`AsyncBatchPinger`)**: Pings multiple Minecraft servers concurrently using non-blocking TCP sockets and multiplexing via `stream_select()`. Capable of checking scores of servers in seconds, preventing script timeouts.
+*   **⚡ Concurrent Async Pinger **: Pings multiple Minecraft servers concurrently using non-blocking TCP sockets and multiplexing via `stream_select()`. Capable of checking scores of servers in seconds, preventing script timeouts.
 *   **🔑 Server Ownership Claims**: A self-service verification system. Users claim servers by adding a generated verification token to their Minecraft server's MOTD. The platform verifies this in real-time by query-pinging the server.
 *   **🛡️ Leaky-Bucket Rate Limiter**: Granular rate limiting built on Stiphle's leaky-bucket algorithm. It utilizes fast in-memory **APCu** storage (with a transparent fallback to a database/file-based `FileStorage`). Configurable limits protect sensitive routes:
     *   *Authentication*: Max 5 requests / 5 mins (IP-bound).
@@ -43,7 +43,7 @@ This platform provides everything needed to run a Minecraft server listing websi
     *   `pdo` & `pdo_mysql` (for database access)
     *   `fileinfo` (for secure upload MIME-type checking)
     *   `apcu` *(highly recommended for high-performance rate limiting)*
-*   **MySQL 8.0+** or **MariaDB 10.3+**
+*   **MySQL 8.0+** or similar
 
 ---
 
