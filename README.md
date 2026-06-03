@@ -14,7 +14,7 @@ A modern game server listing platform built with **PHP 8.2+** and **Bootstrap 5*
 *   **Voting System**: Players can vote for their favorite servers once per day. For Minecraft Java servers, votes can be forwarded directly to the server via Votifier.
 *   **Premium Highlights**: Server owners can purchase highlighted listings via PayPal to attract more players. Duration and pricing are fully configurable.
 *   **Multi-Language**: Built-in English and Polish translations. Easy to add more.
-*   **Security**: SSRF protection (blocks internal IPs on server pings), CSRF tokens, session IP binding, and brute-force lockout.
+*   **Security**: SSRF protection, CSRF tokens, session IP binding, and brute-force lockout.
 
 ---
 
