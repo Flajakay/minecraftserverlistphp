@@ -66,7 +66,7 @@ class SiteSettings
 
     public static function resetVotes($initiatorId): array
     {
-        if (Server::resetAllVotes()) {
+        if (Server::resetAllVotes() !== false) {
             AuditLog::log('reset_votes', 'servers', 0, $initiatorId, 'Reset all server votes');
             
             return [

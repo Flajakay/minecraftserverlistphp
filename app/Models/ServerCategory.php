@@ -56,22 +56,54 @@ class ServerCategory
 
     public static function setServerCategories($serverId, $categoryIds, $primaryCategoryId = null): bool
     {
-        Database::delete('server_categories', 'server_id = ?', [$serverId]);
-        
-        if (empty($categoryIds)) {
+        Database::pdo()->beginTransaction();
+        try {
+            Database::delete('server_categories', 'server_id = ?', [$serverId]);
+
+            if (empty($categoryIds)) {
+                Database::pdo()->commit();
+                return false;
+            }
+
+            foreach ($categoryIds as $categoryId) {
+                $isPrimary = ($primaryCategoryId && $categoryId == $primaryCategoryId) ? 1 : 0;
+                Database::insert('server_categories', [
+                    'server_id' => $serverId,
+                    'category_id' => $categoryId,
+                    'is_primary' => $isPrimary
+                ]);
+            }
+
+            Database::pdo()->commit();
+            return true;
+        } catch (\Exception $e) {
+            Database::pdo()->rollBack();
+            error_log('Failed to set server categories: ' . $e->getMessage());
             return false;
         }
-        
-        foreach ($categoryIds as $categoryId) {
-            $isPrimary = ($primaryCategoryId && $categoryId == $primaryCategoryId) ? 1 : 0;
-            Database::insert('server_categories', [
-                'server_id' => $serverId,
-                'category_id' => $categoryId,
-                'is_primary' => $isPrimary
-            ]);
+    }
+
+    public static function getServerCategoriesForServers(array $serverIds): array
+    {
+        if (empty($serverIds)) {
+            return [];
         }
-        
-        return true;
+
+        $placeholders = str_repeat('?,', count($serverIds) - 1) . '?';
+        $rows = Database::fetchAll(
+            'SELECT sc.*, c.name as category_name, c.url as category_url
+             FROM server_categories sc
+             JOIN categories c ON sc.category_id = c.id
+             WHERE sc.server_id IN (' . $placeholders . ')
+             ORDER BY sc.is_primary DESC, c.name ASC',
+            $serverIds
+        );
+
+        $grouped = [];
+        foreach ($rows as $row) {
+            $grouped[$row->server_id][] = $row;
+        }
+        return $grouped;
     }
 
     public static function getPrimaryCategory($serverId)

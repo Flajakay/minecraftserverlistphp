@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Server;
+use App\Models\ServerCategory;
 use App\Models\Category;
 use App\Models\Setting;
 use App\Models\Vote;
@@ -31,8 +32,10 @@ class ServerController
 
         $categories = Category::getAllWithHierarchy();
 
+        $serverIds = array_map(fn($s) => $s->id, $servers);
+        $categoriesGrouped = !empty($serverIds) ? ServerCategory::getServerCategoriesForServers($serverIds) : [];
         foreach ($servers as $server) {
-            $server->categories = Server::getCategories($server->id);
+            $server->categories = $categoriesGrouped[$server->id] ?? [];
         }
 
         view('servers.index', [

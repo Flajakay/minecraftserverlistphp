@@ -110,7 +110,7 @@ class Payment
              JOIN servers s ON p.server_id = s.id
              JOIN users u ON p.user_id = u.id
              WHERE p.status = "completed"
-             AND DATE_ADD(p.created_at, INTERVAL p.highlighted_days DAY) < NOW()
+             AND p.expires_at < NOW()
              AND s.highlight = 1'
         );
 

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Server;
+use App\Models\ServerCategory;
 use App\Models\Category;
 use App\Core\Support\SEO;
 
@@ -35,8 +36,10 @@ class HomeController
         ]);
 
         $allServers = array_merge($featuredServers, $recentServers, $topVotedServers);
+        $uniqueServerIds = array_unique(array_map(fn($s) => $s->id, $allServers));
+        $categoriesGrouped = ServerCategory::getServerCategoriesForServers($uniqueServerIds);
         foreach ($allServers as $server) {
-            $server->categories = Server::getCategories($server->id);
+            $server->categories = $categoriesGrouped[$server->id] ?? [];
         }
         
         $categories = Category::getWithServerCount();

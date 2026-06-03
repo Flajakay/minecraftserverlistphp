@@ -21,8 +21,6 @@ class PaymentController
             redirect('/');
         }
 
-        $payments = Payment::getAll();
-
         $page = (int)($_GET['page'] ?? 1);
         $search = sanitize($_GET['search'] ?? '');
         $limit = 20;

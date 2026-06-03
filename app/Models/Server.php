@@ -79,19 +79,17 @@ class Server
             }
 
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
-            $sql .= " AND s.id IN (
-                SELECT DISTINCT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id IN ($placeholders)
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id IN ($placeholders)
             )";
             $params = array_merge($params, $categoryIds);
         }
 
         if (!empty($filters['category_id'])) {
-            $sql .= " AND s.id IN (
-                SELECT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id = ?
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id = ?
             )";
             $params[] = $filters['category_id'];
         }
@@ -217,19 +215,17 @@ class Server
             }
 
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
-            $sql .= " AND s.id IN (
-                SELECT DISTINCT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id IN ($placeholders)
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id IN ($placeholders)
             )";
             $params = array_merge($params, $categoryIds);
         }
 
         if (!empty($filters['category_id'])) {
-            $sql .= " AND s.id IN (
-                SELECT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id = ?
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id = ?
             )";
             $params[] = $filters['category_id'];
         }
@@ -278,19 +274,17 @@ class Server
         if (!empty($filters['categories'])) {
             $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
-            $sql .= " AND s.id IN (
-                SELECT DISTINCT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id IN ($placeholders)
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id IN ($placeholders)
             )";
             $params = array_merge($params, $categoryIds);
         }
 
         if (isset($filters['category_id']) && $filters['category_id'] !== '') {
-            $sql .= " AND s.id IN (
-                SELECT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id = ?
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id = ?
             )";
             $params[] = $filters['category_id'];
         }
@@ -333,19 +327,17 @@ class Server
         if (!empty($filters['categories'])) {
             $categoryIds = is_array($filters['categories']) ? $filters['categories'] : [$filters['categories']];
             $placeholders = str_repeat('?,', count($categoryIds) - 1) . '?';
-            $sql .= " AND s.id IN (
-                SELECT DISTINCT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id IN ($placeholders)
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id IN ($placeholders)
             )";
             $params = array_merge($params, $categoryIds);
         }
 
         if (isset($filters['category_id']) && $filters['category_id'] !== '') {
-            $sql .= " AND s.id IN (
-                SELECT sc.server_id 
-                FROM server_categories sc 
-                WHERE sc.category_id = ?
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM server_categories sc
+                WHERE sc.server_id = s.id AND sc.category_id = ?
             )";
             $params[] = $filters['category_id'];
         }
@@ -433,7 +425,18 @@ class Server
 
     public static function resetAllVotes()
     {
-        return Database::query('UPDATE servers SET votes = 0');
+        $chunkSize = 1000;
+        $totalAffected = 0;
+        do {
+            $affected = Database::query(
+                'UPDATE servers SET votes = 0 WHERE votes > 0 LIMIT ' . (int)$chunkSize
+            )->rowCount();
+            $totalAffected += $affected;
+            if ($affected > 0) {
+                usleep(10000);
+            }
+        } while ($affected > 0);
+        return $totalAffected;
     }
 
     public static function getCountriesWithServerCount()

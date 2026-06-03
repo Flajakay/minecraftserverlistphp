@@ -13,13 +13,14 @@ class Report
         return Database::insert('reports', $data);
     }
 
-    public static function getAll()
+    public static function getAll($limit = 100, $offset = 0)
     {
         return Database::fetchAll(
             'SELECT r.*, u.username as reporter_name 
              FROM reports r 
              LEFT JOIN users u ON r.user_id = u.id 
-             ORDER BY r.created_at DESC'
+             ORDER BY r.created_at DESC
+             LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset
         );
     }
 

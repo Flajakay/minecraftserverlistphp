@@ -109,15 +109,21 @@ class Category
 
     public static function getDescendants($categoryId): array
     {
-        $descendants = [];
-        $subcategories = self::getSubcategories($categoryId);
-        
-        foreach ($subcategories as $subcategory) {
-            $descendants[] = $subcategory;
-            $subDescendants = self::getDescendants($subcategory->id);
-            $descendants = array_merge($descendants, $subDescendants);
+        $allCategories = self::getAllWithHierarchy();
+        $childrenMap = [];
+        foreach ($allCategories as $cat) {
+            $childrenMap[$cat->parent_id][] = $cat;
         }
-        
+
+        $descendants = [];
+        $stack = $childrenMap[$categoryId] ?? [];
+        while (!empty($stack)) {
+            $current = array_shift($stack);
+            $descendants[] = $current;
+            if (!empty($childrenMap[$current->id])) {
+                array_unshift($stack, ...$childrenMap[$current->id]);
+            }
+        }
         return $descendants;
     }
 

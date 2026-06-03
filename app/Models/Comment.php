@@ -17,18 +17,14 @@ class Comment
         return Database::insert('comments', $data);
     }
 
-    public static function getServerComments($serverId, $limit = null, $offset = 0)
+    public static function getServerComments($serverId, $limit = 100, $offset = 0)
     {
         $sql = 'SELECT c.*, u.username, u.name 
                 FROM comments c 
                 LEFT JOIN users u ON c.user_id = u.id 
                 WHERE c.server_id = ? 
-                ORDER BY c.created_at DESC';
-        
-        if ($limit) {
-            $sql .= ' LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
-            return Database::fetchAll($sql, [$serverId]);
-        }
+                ORDER BY c.created_at DESC
+                LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
         
         return Database::fetchAll($sql, [$serverId]);
     }
@@ -43,18 +39,14 @@ class Comment
         return Database::fetch('SELECT * FROM comments WHERE id = ?', [$id]);
     }
 
-    public static function getByType($serverId, $type, $limit = null, $offset = 0)
+    public static function getByType($serverId, $type, $limit = 100, $offset = 0)
     {
         $sql = 'SELECT c.*, u.username, u.name 
                 FROM comments c 
                 LEFT JOIN users u ON c.user_id = u.id 
                 WHERE c.server_id = ? AND c.type = ? 
-                ORDER BY c.created_at DESC';
-        
-        if ($limit) {
-            $sql .= ' LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
-            return Database::fetchAll($sql, [$serverId, $type]);
-        }
+                ORDER BY c.created_at DESC
+                LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
         
         return Database::fetchAll($sql, [$serverId, $type]);
     }

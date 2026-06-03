@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\Server;
+use App\Models\ServerCategory;
 use App\Models\Category;
 use App\Core\Features\Servers;
 /**
@@ -34,8 +35,10 @@ class ServerController
         $limit = 20;
         $servers = Server::getAllPaginated($page, $limit, $search, $filters);
         
+        $serverIds = array_map(fn($s) => $s->id, $servers);
+        $categoriesGrouped = !empty($serverIds) ? ServerCategory::getServerCategoriesForServers($serverIds) : [];
         foreach ($servers as $server) {
-            $server->categories = Server::getCategories($server->id);
+            $server->categories = $categoriesGrouped[$server->id] ?? [];
         }
         
         $totalServers = Server::countAllAdmin($search, $filters);

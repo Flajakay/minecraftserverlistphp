@@ -20,14 +20,14 @@ class PlayerHistory
     {
         return Database::fetchAll(
             'SELECT
-                DATE(created_at) as date,
+                date,
                 AVG(players) as avg_players,
                 MAX(players) as max_players,
                 MIN(players) as min_players,
                 COUNT(*) as samples
              FROM server_player_history
              WHERE server_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? DAY)
-             GROUP BY DATE(created_at)
+             GROUP BY date
              ORDER BY date DESC',
             [$serverId, $days]
         );
@@ -44,7 +44,7 @@ class PlayerHistory
                 COUNT(*) as samples
              FROM server_player_history
              WHERE server_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL ? HOUR)
-             GROUP BY DATE(created_at), HOUR(created_at)
+             GROUP BY date, HOUR(created_at)
              ORDER BY hour DESC',
             [$serverId, $hours]
         );
