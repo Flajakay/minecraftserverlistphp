@@ -206,11 +206,9 @@ CREATE TABLE IF NOT EXISTS `settings` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `name`, `type`, `active`, `created_at`) VALUES
-(1, 'admin', 'password_here', 'admin@admin.com', 'Admin', 2, 1, NOW());
-
 INSERT INTO `settings` (`id`, `title`, `url`, `contact_email`) VALUES
-(1, 'Minecraft Server List', 'http://localhost/new_server_list/public/', 'admin@admin.com');
+(1, 'Minecraft Server List', 'http://localhost/new_server_list/public/', 'admin@admin.com')
+ON DUPLICATE KEY UPDATE `id` = `id`;
 
 CREATE TABLE IF NOT EXISTS `server_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -244,4 +242,5 @@ INSERT INTO `categories` (`id`, `name`, `url`, `description`) VALUES
 (2, 'Creative', 'creative', 'Creative servers'),
 (3, 'PvP', 'pvp', 'PvP servers'),
 (4, 'Roleplay', 'roleplay', 'Roleplay servers'),
-(5, 'Mini Games', 'minigames', 'Mini games servers');
+(5, 'Mini Games', 'minigames', 'Mini games servers')
+ON DUPLICATE KEY UPDATE `id` = `id`;

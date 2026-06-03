@@ -8,7 +8,7 @@ use App\Models\User;
 class UserTest extends TestCase
 {
     /**
-     * Test that the default admin user seeded by schema.sql is retrievable.
+     * Test that the default admin user seeded after migrations is retrievable.
      */
     public function testCanFindSeededAdminUser()
     {

@@ -33,7 +33,7 @@ class ServerTest extends TestCase
     {
         $serverData = [
             'user_id' => $this->testUserId,
-            'category_id' => 1, // Survival category (seeded in schema.sql)
+            'category_id' => 1, // Survival category seeded by the initial migration
             'address' => 'play.example.com',
             'port' => 25565,
             'name' => 'Survival Server',

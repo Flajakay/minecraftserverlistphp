@@ -30,29 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbName` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `$dbName`");
 
-        $schema = file_get_contents(__DIR__ . '/database/schema.sql');
-        $statements = explode(';', $schema);
-        
-        foreach ($statements as $statement) {
-            $statement = trim($statement);
-            if (!empty($statement)) {
-                if (strpos($statement, 'INSERT INTO `users`') !== false) {
-                    $adminPasswordHash = password_hash('admin', PASSWORD_ARGON2ID);
-                    $statement = str_replace(
-                        "'password_here'",
-                        "'" . $adminPasswordHash . "'",
-                        $statement
-                    );
-                }
-                $pdo->exec($statement);
-            }
-        }
-
         $runner = new MigrationRunner($pdo, __DIR__ . '/database/migrations');
         $migrationResult = $runner->runAllPending();
         if (!empty($migrationResult['failed'])) {
             throw new RuntimeException(formatMigrationFailure($migrationResult['failed']));
         }
+
+        ensureDefaultAdminUser($pdo);
 
         Env::writeValues(__DIR__ . '/.env', [
             'APP_NAME' => $siteTitle,
@@ -69,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         file_put_contents($installLockPath, 'installed');
 
-        $pdo->exec("UPDATE settings SET title = '" . addslashes($siteTitle) . "', url = '" . addslashes($siteUrl) . "' WHERE id = 1");
+        $settingsStmt = $pdo->prepare('UPDATE settings SET title = ?, url = ? WHERE id = 1');
+        $settingsStmt->execute([$siteTitle, $siteUrl]);
 
         $success = true;
         $successMessage = 'Installation completed successfully!';
@@ -78,6 +63,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $error = 'Installation failed: ' . $e->getMessage();
     }
+}
+
+function ensureDefaultAdminUser(PDO $pdo): void
+{
+    $passwordHash = password_hash('admin', PASSWORD_ARGON2ID);
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO `users` (`username`, `password`, `email`, `name`, `type`, `active`, `created_at`)
+         SELECT ?, ?, ?, ?, ?, ?, NOW()
+         WHERE NOT EXISTS (
+             SELECT 1 FROM `users` WHERE `username` = ? OR `email` = ?
+         )"
+    );
+
+    $stmt->execute([
+        'admin',
+        $passwordHash,
+        'admin@admin.com',
+        'Admin',
+        2,
+        1,
+        'admin',
+        'admin@admin.com'
+    ]);
 }
 
 function formatMigrationFailure(array $failed): string

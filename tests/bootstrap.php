@@ -42,42 +42,43 @@ try {
     $pdo->exec("CREATE DATABASE `{$databaseName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $pdo->exec("USE `{$databaseName}`");
 
-    // 3. Import core database schema
-    $schemaPath = dirname(__DIR__) . '/database/schema.sql';
-    if (!file_exists($schemaPath)) {
-        throw new RuntimeException("Schema file not found at {$schemaPath}");
-    }
-    
-    $schema = file_get_contents($schemaPath);
-    // Split by semicolons to execute individual queries.
-    // NOTE: This assumes standard statements that can be split by ';'
-    $statements = array_filter(array_map('trim', explode(';', $schema)));
-    
-    foreach ($statements as $statement) {
-        if (!empty($statement)) {
-            // Replace the admin password placeholder with a hashed one
-            if (strpos($statement, "INSERT INTO `users`") !== false) {
-                $adminPasswordHash = password_hash('admin', PASSWORD_ARGON2ID);
-                $statement = str_replace(
-                    "'password_here'",
-                    "'" . $adminPasswordHash . "'",
-                    $statement
-                );
-            }
-            $pdo->exec($statement);
-        }
-    }
-
-    // 4. Initialize the main Database connection class
+    // 3. Initialize the main Database connection class
     Database::connect();
 
-    // 5. Run all pending migrations
+    // 4. Run all migrations, including the initial schema migration.
     $migrationRunner = new MigrationRunner(Database::pdo(), dirname(__DIR__) . '/database/migrations');
     $migrationRunner->runAllPending();
+
+    // 5. Seed the default admin user used by tests and fresh installs.
+    seedDefaultAdminUser(Database::pdo());
 
     echo "Test database '{$databaseName}' initialized and migrated successfully.\n\n";
 
 } catch (Exception $e) {
     fwrite(STDERR, "FATAL ERROR: Failed to initialize test database: " . $e->getMessage() . "\n");
     exit(1);
+}
+
+function seedDefaultAdminUser(PDO $pdo): void
+{
+    $passwordHash = password_hash('admin', PASSWORD_ARGON2ID);
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO `users` (`username`, `password`, `email`, `name`, `type`, `active`, `created_at`)
+         SELECT ?, ?, ?, ?, ?, ?, NOW()
+         WHERE NOT EXISTS (
+             SELECT 1 FROM `users` WHERE `username` = ? OR `email` = ?
+         )"
+    );
+
+    $stmt->execute([
+        'admin',
+        $passwordHash,
+        'admin@admin.com',
+        'Admin',
+        2,
+        1,
+        'admin',
+        'admin@admin.com'
+    ]);
 }
