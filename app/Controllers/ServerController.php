@@ -107,10 +107,19 @@ class ServerController
         $countries = getCountries();
         $games = Game::getEnabled();
 
+        $selectedCategoryIds = [];
+        $primaryCategoryId = 0;
+        if (!empty($_SESSION['old']['category_ids'])) {
+            $selectedCategoryIds = array_map('intval', (array)$_SESSION['old']['category_ids']);
+            $primaryCategoryId = (int)($_SESSION['old']['primary_category_id'] ?? 0);
+        }
+
         view('servers.submit', [
             'categories' => $categories,
             'countries' => $countries,
             'games' => $games,
+            'server_categories' => array_map(fn($id) => (object)['category_id' => $id], $selectedCategoryIds),
+            'primary_category_id' => $primaryCategoryId,
         ]);
     }
 
@@ -143,11 +152,14 @@ class ServerController
         $result = Servers::submitServer(auth()->id, $data, $_FILES);
 
         if (!$result['success']) {
+            $_SESSION['old'] = $_POST;
             foreach ($result['errors'] as $error) {
                 flash('error', $error);
             }
             redirect('/submit');
         }
+
+        unset($_SESSION['old']);
 
         flash('success', $result['message']);
         redirect('/profile/' . auth()->username);
@@ -197,6 +209,7 @@ class ServerController
         $result = Servers::updateServer($id, auth()->id, $data, $_FILES);
 
         if (!$result['success']) {
+            $_SESSION['old'] = $_POST;
             if (isset($result['errors'])) {
                 foreach ($result['errors'] as $error) {
                     flash('error', $error);
@@ -207,6 +220,7 @@ class ServerController
             redirect('/profile/' . auth()->username);
         }
 
+        unset($_SESSION['old']);
         flash('success', $result['message']);
         redirect('/profile/' . auth()->username);
     }
