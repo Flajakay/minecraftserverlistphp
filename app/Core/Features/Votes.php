@@ -23,16 +23,19 @@ class Votes
             return ['success' => false, 'message' => 'You can only vote once per day'];
         }
 
-        $customData = json_decode($server->custom_data ?? '{}', true);
-        
-        // Send vote notification to game server via Votifier protocol if configured
-        if (!empty($customData['votifier_public_key']) && !empty($username)) {
-            // Use custom votifier IP if set, otherwise default to server address
-            $votifierIp = $customData['votifier_ip'] ?? $server->address;
-            $votifierPort = $customData['votifier_port'] ?? 8192;
+        // Votifier delivery is only supported for Minecraft Java servers
+        if ($server->protocol === 'minecraft_java') {
+            $customData = json_decode($server->custom_data ?? '{}', true);
             
-            if (!Votifier::sendVote($customData['votifier_public_key'], $votifierIp, $votifierPort, $username)) {
-                return ['success' => false, 'message' => 'Votifier error occurred'];
+            // Send vote notification to game server via Votifier protocol if configured
+            if (!empty($customData['votifier_public_key']) && !empty($username)) {
+                // Use custom votifier IP if set, otherwise default to server address
+                $votifierIp = $customData['votifier_ip'] ?? $server->address;
+                $votifierPort = $customData['votifier_port'] ?? 8192;
+                
+                if (!Votifier::sendVote($customData['votifier_public_key'], $votifierIp, $votifierPort, $username)) {
+                    return ['success' => false, 'message' => 'Votifier error occurred'];
+                }
             }
         }
 

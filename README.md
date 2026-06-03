@@ -100,9 +100,6 @@ Contributions to the project are welcome! To contribute:
 
 1. **Install Dev Dependencies**: Ensure you run `composer install` without `--no-dev` to install testing and formatting tools.
 2. **Write & Run Tests**: Include unit/feature tests for any bug fixes or new features under the `tests/` directory. Run the test suite using PHPUnit:
-   ```bash
-   ./vendor/bin/phpunit
-   ```
 3. **Submit a Pull Request**: Create a branch, push your changes, and open a clear Pull Request outlining the changes made.
 
 ---

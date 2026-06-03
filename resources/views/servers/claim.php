@@ -18,9 +18,18 @@
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
+                    <?php
+                    /** @noinspection PhpUndefinedVariableInspection */
+                    $isMinecraft = ($server->protocol ?? 'minecraft_java') === 'minecraft_java';
+                    ?>
+                    <?php if (!$isMinecraft): ?>
+                        <div class="alert alert-info border-0">
+                            <div class="fw-semibold mb-2"><?= lang('server_claim_not_supported_title') ?></div>
+                            <div><?= lang('server_claim_not_supported_body') ?></div>
+                        </div>
                     <?php /** @noinspection PhpUndefinedVariableInspection */
                     /** @noinspection PhpUndefinedVariableInspection */
-                    if ($is_pending && $is_requestor): ?>
+                    elseif ($is_pending && $is_requestor): ?>
                         <div class="alert alert-info border-0">
                             <div class="fw-semibold mb-2"><?= lang('server_claim_instructions_title') ?></div>
                             <div class="mb-3"><?= lang('server_claim_instructions_body') ?></div>

@@ -4,11 +4,12 @@
  */
 
 class ServerShow {
-    constructor(serverId, serverAddress, serverPort, csrfToken) {
+    constructor(serverId, serverAddress, serverPort, csrfToken, serverProtocol) {
         this.serverId = serverId;
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.csrfToken = csrfToken;
+        this.serverProtocol = serverProtocol || 'minecraft_java';
         this.statisticsChart = null;
         this.blogEditor = null;
         this.blogEditorInitialized = false;
@@ -438,7 +439,9 @@ class ServerShow {
 
     // Action methods
     async voteForServer() {
-        const username = prompt('Enter your Minecraft username (optional):');
+        const isSteam = this.serverProtocol === 'steam_a2s';
+        const promptText = isSteam ? 'Enter your in-game username (optional):' : 'Enter your Minecraft username (optional):';
+        const username = prompt(promptText);
 
         try {
             const response = await this.makeRequest('/vote', {
@@ -807,7 +810,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     config.serverId,
                     config.serverAddress,
                     config.serverPort,
-                    config.csrfToken
+                    config.csrfToken,
+                    config.serverProtocol
                 );
             } catch (e) {
                 console.error('Failed to parse server show configuration:', e);

@@ -36,7 +36,7 @@ class HomeController
         ]);
 
         $allServers = array_merge($featuredServers, $recentServers, $topVotedServers);
-        $uniqueServerIds = array_unique(array_map(fn($s) => $s->id, $allServers));
+        $uniqueServerIds = array_values(array_unique(array_map(fn($s) => $s->id, $allServers)));
         $categoriesGrouped = ServerCategory::getServerCategoriesForServers($uniqueServerIds);
         foreach ($allServers as $server) {
             $server->categories = $categoriesGrouped[$server->id] ?? [];

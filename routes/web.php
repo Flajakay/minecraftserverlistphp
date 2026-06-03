@@ -75,6 +75,12 @@ $router->get('/admin/categories/edit/{id}', 'Admin\CategoryController@edit');
 $router->post('/admin/categories/edit/{id}', 'Admin\CategoryController@update');
 $router->post('/admin/categories/delete/{id}', 'Admin\CategoryController@delete');
 
+$router->get('/admin/games', 'Admin\GameController@index');
+$router->post('/admin/games', 'Admin\GameController@create');
+$router->get('/admin/games/edit/{id}', 'Admin\GameController@edit');
+$router->post('/admin/games/edit/{id}', 'Admin\GameController@update');
+$router->post('/admin/games/delete/{id}', 'Admin\GameController@delete');
+
 $router->get('/admin/reports', 'Admin\ReportController@index');
 $router->get('/admin/reports/view/{id}', 'Admin\ReportController@view');
 $router->post('/admin/reports/action/{id}', 'Admin\ReportController@action');

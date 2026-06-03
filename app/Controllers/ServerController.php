@@ -12,6 +12,8 @@ use App\Models\BlogPost;
 use App\Models\PlayerHistory;
 use App\Core\Support\SEO;
 use App\Core\Features\Servers;
+use App\Core\Integrations\GameServers\ServerProtocolRegistry;
+use App\Models\Game;
 
 class ServerController
 {
@@ -74,6 +76,9 @@ class ServerController
 
         $canVote = isLoggedIn() && Vote::canVote($server->id, $_SERVER['REMOTE_ADDR']);
 
+        $protocolRegistry = new ServerProtocolRegistry();
+        $protocolLabel = $protocolRegistry->getProtocolLabel($server->protocol ?? 'minecraft_java');
+
         view('servers.show', [
             'server' => $server,
             'categories' => $categories,
@@ -86,7 +91,8 @@ class ServerController
             'is_owner' => $isOwner,
             'effective_owner_id' => $effectiveOwnerId,
             'is_verified' => (int) ($server->verification_status ?? 0) === 2,
-            'can_vote' => $canVote
+            'can_vote' => $canVote,
+            'protocolLabel' => $protocolLabel
         ]);
     }
 
@@ -99,10 +105,12 @@ class ServerController
 
         $categories = Category::getAllForSelect();
         $countries = getCountries();
+        $games = Game::getEnabled();
 
         view('servers.submit', [
             'categories' => $categories,
-            'countries' => $countries
+            'countries' => $countries,
+            'games' => $games,
         ]);
     }
 
@@ -112,9 +120,13 @@ class ServerController
             redirect('/login');
         }
 
+        $protocol = $_POST['protocol'] ?? 'minecraft_java';
+        $protocolDefaults = Servers::getProtocolDefaults($protocol);
+
         $data = [
             'address' => sanitize($_POST['address'] ?? ''),
-            'port' => validatePort($_POST['port'] ?? 25565),
+            'port' => validatePort($_POST['port'] ?? $protocolDefaults['port']),
+            'protocol' => $protocol,
             'name' => sanitize($_POST['name'] ?? ''),
             'category_ids' => $_POST['category_ids'] ?? [],
             'primary_category_id' => (int) ($_POST['primary_category_id'] ?? 0),
@@ -122,6 +134,7 @@ class ServerController
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
+            'game_id' => (int) ($_POST['game_id'] ?? 0),
             'votifier_public_key' => sanitize($_POST['votifier_public_key'] ?? ''),
             'votifier_ip' => sanitize($_POST['votifier_ip'] ?? ''),
             'votifier_port' => validatePort($_POST['votifier_port'] ?? 8192)
@@ -157,7 +170,8 @@ class ServerController
             'server' => $result['server'],
             'categories' => $result['categories'],
             'countries' => $result['countries'],
-            'server_categories' => $result['server_categories']
+            'server_categories' => $result['server_categories'],
+            'games' => Game::getEnabled(),
         ]);
     }
 
@@ -174,6 +188,7 @@ class ServerController
             'website' => sanitize($_POST['website'] ?? ''),
             'country' => sanitize($_POST['country'] ?? ''),
             'youtube_id' => sanitize($_POST['youtube_id'] ?? ''),
+            'game_id' => (int) ($_POST['game_id'] ?? 0),
             'votifier_public_key' => sanitize($_POST['votifier_public_key'] ?? ''),
             'votifier_ip' => sanitize($_POST['votifier_ip'] ?? ''),
             'votifier_port' => validatePort($_POST['votifier_port'] ?? 8192)

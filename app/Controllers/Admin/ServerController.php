@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Models\Server;
 use App\Models\ServerCategory;
 use App\Models\Category;
+use App\Models\Game;
 use App\Core\Features\Servers;
 /**
  * Admin servers controller.
@@ -79,12 +80,14 @@ class ServerController
         $categories = Category::getAllForSelect();
         $countries = getCountries();
         $serverCategories = Server::getCategories($id);
+        $games = Game::getAll();
 
         view('admin.servers-edit', [
             'server' => $server,
             'categories' => $categories,
             'countries' => $countries,
-            'server_categories' => $serverCategories
+            'server_categories' => $serverCategories,
+            'games' => $games,
         ]);
     }
 
@@ -108,11 +111,14 @@ class ServerController
             'name' => $_POST['name'] ?? '',
             'address' => $_POST['address'] ?? '',
             'port' => $_POST['port'] ?? 25565,
+            'query_port' => $_POST['query_port'] ?? $_POST['port'] ?? 25565,
+            'protocol' => $_POST['protocol'] ?? 'minecraft_java',
             'category_ids' => $_POST['category_ids'] ?? [],
             'description' => cleanHtml($_POST['description'] ?? ''),
             'website' => $_POST['website'] ?? '',
             'country' => $_POST['country'] ?? '',
             'youtube_id' => $_POST['youtube_id'] ?? '',
+            'game_id' => (int) ($_POST['game_id'] ?? 0),
             'votifier_public_key' => $_POST['votifier_public_key'] ?? '',
             'votifier_ip' => $_POST['votifier_ip'] ?? '',
             'votifier_port' => $_POST['votifier_port'] ?? 8192

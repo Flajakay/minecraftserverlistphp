@@ -36,6 +36,16 @@ class Server
         $data['active'] = 1;
         $data['status'] = 1;
 
+        if (!isset($data['game_type'])) {
+            $data['game_type'] = 'minecraft';
+        }
+        if (!isset($data['protocol'])) {
+            $data['protocol'] = 'minecraft_java';
+        }
+        if (!isset($data['query_port'])) {
+            $data['query_port'] = $data['port'] ?? 25565;
+        }
+
         return Database::insert('servers', $data);
     }
 
@@ -44,15 +54,20 @@ class Server
         return Database::fetch('SELECT * FROM servers WHERE id = ?', [$id]);
     }
 
-    public static function findByAddress($address, $port)
+    public static function findByAddress($address, $port, ?string $protocol = null)
     {
-        return Database::fetch(
-            'SELECT s.*, u.username as owner_username 
-             FROM servers s 
-             LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
-             WHERE s.address = ? AND s.port = ?',
-            [$address, $port]
-        );
+        $sql = 'SELECT s.*, u.username as owner_username 
+                FROM servers s 
+                LEFT JOIN users u ON COALESCE(s.verified_owner_user_id, s.user_id) = u.id 
+                WHERE s.address = ? AND s.port = ?';
+        $params = [$address, $port];
+
+        if ($protocol !== null) {
+            $sql .= ' AND s.protocol = ?';
+            $params[] = $protocol;
+        }
+
+        return Database::fetch($sql, $params);
     }
 
     public static function getAll($filters = [])
@@ -114,6 +129,21 @@ class Server
             $params[] = $filters['highlight'];
         }
 
+        if (!empty($filters['protocol'])) {
+            $sql .= ' AND s.protocol = ?';
+            $params[] = $filters['protocol'];
+        }
+
+        if (!empty($filters['game_type'])) {
+            $sql .= ' AND s.game_type = ?';
+            $params[] = $filters['game_type'];
+        }
+
+        if (!empty($filters['game_id'])) {
+            $sql .= ' AND s.game_id = ?';
+            $params[] = (int)$filters['game_id'];
+        }
+
         $orderBy = $filters['order_by'] ?? 'votes';
 
         if ($orderBy === 'newest') {
@@ -161,6 +191,28 @@ class Server
         ], 'id = ?', [$id]);
     }
 
+    public static function updateProtocolStatus($id, array $data): void
+    {
+        $updateData = ['last_check' => date('Y-m-d H:i:s')];
+
+        if (array_key_exists('map_name', $data)) {
+            $updateData['map_name'] = $data['map_name'];
+        }
+        if (array_key_exists('game_name', $data)) {
+            $updateData['game_name'] = $data['game_name'];
+        }
+        if (array_key_exists('password_protected', $data)) {
+            $updateData['password_protected'] = $data['password_protected'] ? 1 : 0;
+        }
+        if (array_key_exists('protocol_metadata', $data)) {
+            $updateData['protocol_metadata'] = is_string($data['protocol_metadata'])
+                ? $data['protocol_metadata']
+                : json_encode($data['protocol_metadata']);
+        }
+
+        Database::update('servers', $updateData, 'id = ?', [$id]);
+    }
+
     public static function addVote($serverId)
     {
         return Database::query('UPDATE servers SET votes = votes + 1 WHERE id = ?', [$serverId]);
@@ -189,9 +241,9 @@ class Server
         return Database::delete('servers', 'id = ?', [$id]);
     }
 
-    public static function exists($address, $port): bool
+    public static function exists($address, $port, ?string $protocol = null): bool
     {
-        $server = self::findByAddress($address, $port);
+        $server = self::findByAddress($address, $port, $protocol);
         return $server !== false;
     }
 
@@ -250,6 +302,21 @@ class Server
             $params[] = $filters['highlight'];
         }
 
+        if (!empty($filters['protocol'])) {
+            $sql .= ' AND s.protocol = ?';
+            $params[] = $filters['protocol'];
+        }
+
+        if (!empty($filters['game_type'])) {
+            $sql .= ' AND s.game_type = ?';
+            $params[] = $filters['game_type'];
+        }
+
+        if (!empty($filters['game_id'])) {
+            $sql .= ' AND s.game_id = ?';
+            $params[] = (int)$filters['game_id'];
+        }
+
         $result = Database::fetch($sql, $params);
         return $result->count;
     }
@@ -304,6 +371,21 @@ class Server
             $params[] = $filters['private'];
         }
 
+        if (!empty($filters['protocol'])) {
+            $sql .= ' AND s.protocol = ?';
+            $params[] = $filters['protocol'];
+        }
+
+        if (!empty($filters['game_type'])) {
+            $sql .= ' AND s.game_type = ?';
+            $params[] = $filters['game_type'];
+        }
+
+        if (!empty($filters['game_id'])) {
+            $sql .= ' AND s.game_id = ?';
+            $params[] = (int)$filters['game_id'];
+        }
+
         $sql .= ' ORDER BY s.created_at DESC LIMIT ' . (int) $limit . ' OFFSET ' . (int) $offset;
 
         return Database::fetchAll($sql, $params);
@@ -355,6 +437,21 @@ class Server
         if (isset($filters['private']) && $filters['private'] !== '') {
             $sql .= ' AND s.private = ?';
             $params[] = $filters['private'];
+        }
+
+        if (!empty($filters['protocol'])) {
+            $sql .= ' AND s.protocol = ?';
+            $params[] = $filters['protocol'];
+        }
+
+        if (!empty($filters['game_type'])) {
+            $sql .= ' AND s.game_type = ?';
+            $params[] = $filters['game_type'];
+        }
+
+        if (!empty($filters['game_id'])) {
+            $sql .= ' AND s.game_id = ?';
+            $params[] = (int)$filters['game_id'];
         }
 
         $result = Database::fetch($sql, $params);

@@ -3,7 +3,7 @@
 use App\Core\Support\Env;
 
 return [
-    'name' => Env::get('APP_NAME', 'Minecraft Server List'),
+    'name' => Env::get('APP_NAME', 'Game Server List'),
     'env' => Env::get('APP_ENV', 'production'),
     'url' => Env::get('APP_URL', 'http://localhost:8080/'),
     'timezone' => Env::get('APP_TIMEZONE', 'America/New_York'),

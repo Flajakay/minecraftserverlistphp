@@ -16,7 +16,7 @@ class SettingsTest extends TestCase
 
         $this->assertNotNull($settings);
         $this->assertEquals(1, $settings->id);
-        $this->assertEquals('Minecraft Server List', $settings->title);
+        $this->assertEquals('Game Server List', $settings->title);
         $this->assertEquals('admin@admin.com', $settings->contact_email);
     }
 
@@ -26,7 +26,7 @@ class SettingsTest extends TestCase
     public function testCanUpdateSettings()
     {
         // Assert initial value
-        $this->assertEquals('Minecraft Server List', Setting::getValue('title'));
+        $this->assertEquals('Game Server List', Setting::getValue('title'));
 
         // Update settings in database
         $updated = Setting::update([

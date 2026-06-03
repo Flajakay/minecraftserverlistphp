@@ -113,6 +113,34 @@ $statusId = $prefix . 'status';
             </div>
 
             <div class="mb-3">
+                <label class="form-label small fw-semibold text-uppercase text-muted" for="<?= $prefix ?>protocol"><?= lang('filter_protocol') ?></label>
+                <select name="protocol" class="form-select" id="<?= $prefix ?>protocol">
+                    <option value=""><?= lang('all') ?></option>
+                    <option value="minecraft_java" <?= (isset($_GET['protocol']) && $_GET['protocol'] == 'minecraft_java') ? 'selected' : '' ?>>
+                        <?= lang('protocol_minecraft_java') ?>
+                    </option>
+                    <option value="steam_a2s" <?= (isset($_GET['protocol']) && $_GET['protocol'] == 'steam_a2s') ? 'selected' : '' ?>>
+                        <?= lang('protocol_steam_a2s') ?>
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold text-uppercase text-muted" for="<?= $prefix ?>game_id"><?= lang('game') ?></label>
+                <select name="game_id" class="form-select" id="<?= $prefix ?>game_id">
+                    <option value=""><?= lang('all') ?></option>
+                    <?php
+                    $allGames = \App\Models\Game::getEnabled();
+                    $selectedGameId = isset($_GET['game_id']) ? (int)$_GET['game_id'] : 0;
+                    foreach ($allGames as $g): ?>
+                        <option value="<?= $g->id ?>" <?= $selectedGameId === $g->id ? 'selected' : '' ?>>
+                            <?= sanitize($g->name) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="highlight" value="1" id="<?= $prefix ?>premiumOnly"
                         <?= (isset($_GET['highlight']) && $_GET['highlight']) ? 'checked' : '' ?>>

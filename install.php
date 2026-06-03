@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbUser = $_POST['db_user'] ?? '';
     $dbPass = $_POST['db_pass'] ?? '';
     $siteUrl = $_POST['site_url'] ?? '';
-    $siteTitle = $_POST['site_title'] ?? 'Minecraft Server List';
+    $siteTitle = $_POST['site_title'] ?? 'Game Server List';
 
     try {
         if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -112,7 +112,7 @@ function formatMigrationFailure(array $failed): string
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Server List - Installation</title>
+    <title>Game Server List - Installation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -204,7 +204,7 @@ function formatMigrationFailure(array $failed): string
                     <div class="mb-3">
                         <i class="bi bi-controller" style="font-size: 3rem;"></i>
                     </div>
-                    <h2 class="h3 fw-bold mb-2">Minecraft Server List</h2>
+                    <h2 class="h3 fw-bold mb-2">Game Server List</h2>
                     <p class="mb-0 opacity-90">Installation Wizard</p>
                 </div>
 
@@ -319,7 +319,7 @@ function formatMigrationFailure(array $failed): string
                                                class="form-control" 
                                                id="site_title" 
                                                name="site_title" 
-                                               value="Minecraft Server List" 
+                                               value="Game Server List" 
                                                placeholder="Your Server List Name"
                                                required>
                                     </div>
@@ -414,7 +414,7 @@ function formatMigrationFailure(array $failed): string
                     </div>
                     
                     <h3 class="text-success fw-bold mb-2">Installation Complete!</h3>
-                    <p class="text-muted mb-4">Your Minecraft Server List has been successfully installed and is ready to use.</p>
+                    <p class="text-muted mb-4">Your Game Server List has been successfully installed and is ready to use.</p>
                     
                     <!-- Important Information -->
                     <div class="row justify-content-center g-4 mb-4">
@@ -455,7 +455,7 @@ function formatMigrationFailure(array $failed): string
                     
                     <p class="text-muted small mb-0">
                         <i class="bi bi-info-circle me-1"></i>
-                        You can now close this window and access your new Minecraft Server List website.
+                        You can now close this window and access your new Game Server List website.
                     </p>
                 </div>
             </div>

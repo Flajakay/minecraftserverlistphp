@@ -136,6 +136,15 @@ class ServerClaim
 
         Server::markVerificationAttempt($serverId);
 
+        // MOTD-based ownership verification is only supported for Minecraft Java servers
+        if ($server->protocol !== 'minecraft_java') {
+            return [
+                'success' => false,
+                'error' => lang('server_claim_not_supported'),
+                'server' => $server
+            ];
+        }
+
         // Ping the Minecraft server to retrieve MOTD for token verification
         $response = (new MinecraftPing($server->address, $server->port, 2))->query();
         if (!$response) {

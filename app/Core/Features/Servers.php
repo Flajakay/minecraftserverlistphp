@@ -4,8 +4,10 @@ namespace App\Core\Features;
 
 use App\Models\Server;
 use App\Models\Category;
+use App\Models\Game;
 use App\Models\AuditLog;
 use App\Core\Integrations\MinecraftPing;
+use App\Core\Integrations\GameServers\ServerProtocolRegistry;
 
 class Servers
 {
@@ -56,6 +58,27 @@ class Servers
         return $errors;
     }
 
+    public static function getProtocolDefaults(string $protocol): array
+    {
+        switch ($protocol) {
+            case 'steam_a2s':
+                return [
+                    'port' => 27015,
+                    'query_port' => 27015,
+                    'game_type' => 'steam',
+                    'protocol' => 'steam_a2s',
+                ];
+            case 'minecraft_java':
+            default:
+                return [
+                    'port' => 25565,
+                    'query_port' => 25565,
+                    'game_type' => 'minecraft',
+                    'protocol' => 'minecraft_java',
+                ];
+        }
+    }
+
     public static function validateCategories($categoryIds, $primaryCategoryId = null): array
     {
         $errors = [];
@@ -104,11 +127,11 @@ class Servers
         return $result;
     }
 
-    public static function prepareCustomData($postData, $defaultAddress): array
+    public static function prepareCustomData($postData, $defaultAddress, string $protocol = 'minecraft_java'): array
     {
         $customData = [];
 
-        if (!empty($postData['votifier_public_key'])) {
+        if ($protocol === 'minecraft_java' && !empty($postData['votifier_public_key'])) {
             $customData['votifier_public_key'] = $postData['votifier_public_key'];
             $customData['votifier_ip'] = $postData['votifier_ip'] ?? $defaultAddress;
             $customData['votifier_port'] = (int) ($postData['votifier_port'] ?? 8192);
@@ -149,6 +172,18 @@ class Servers
             $filters['status'] = $request['status'];
         }
 
+        if (isset($request['protocol'])) {
+            $filters['protocol'] = $request['protocol'];
+        }
+
+        if (isset($request['game_type'])) {
+            $filters['game_type'] = $request['game_type'];
+        }
+
+        if (!empty($request['game_id'])) {
+            $filters['game_id'] = (int)$request['game_id'];
+        }
+
         if (isset($request['highlight'])) {
             $filters['highlight'] = $request['highlight'];
         }
@@ -162,13 +197,26 @@ class Servers
         $categoryErrors = self::validateCategories($data['category_ids'] ?? [], $data['primary_category_id'] ?? null);
         $errors = array_merge($errors, $categoryErrors);
 
-        if (Server::exists($data['address'], $data['port'])) {
+        $protocol = $data['protocol'] ?? 'minecraft_java';
+        $protocolDefaults = self::getProtocolDefaults($protocol);
+        $port = $data['port'] ?? $protocolDefaults['port'];
+        $queryPort = $data['query_port'] ?? $port;
+
+        if (Server::exists($data['address'], $port, $protocol)) {
             $errors[] = 'Server already exists';
         }
 
-        $serverStatus = MinecraftPing::checkServer($data['address'], $data['port']);
-        if (!$serverStatus['online']) {
-            $errors[] = 'Server is offline or unreachable';
+        if ($protocol === 'minecraft_java') {
+            $serverStatus = MinecraftPing::checkServer($data['address'], $port);
+            if (!$serverStatus['online']) {
+                $errors[] = 'Server is offline or unreachable';
+            }
+        } elseif ($protocol === 'steam_a2s') {
+            $adapter = new \App\Core\Integrations\GameServers\SteamA2SAdapter();
+            $result = $adapter->query($data['address'], $port, $queryPort, 2);
+            if (!$result->online) {
+                $errors[] = 'Server is offline or unreachable';
+            }
         }
 
         if (!empty($errors)) {
@@ -184,15 +232,39 @@ class Servers
         }
 
         $categoryIds = array_filter(array_map('intval', $data['category_ids']));
-        // Use first selected category as primary if none specified
         $primaryCategoryId = (int) ($data['primary_category_id'] ?? 0) ?: $categoryIds[0];
-        $customData = self::prepareCustomData($data, $data['address']);
+        $customData = self::prepareCustomData($data, $data['address'], $protocol);
+
+        // Determine initial status values based on protocol
+        if ($protocol === 'minecraft_java') {
+            $players = $serverStatus['players'] ?? 0;
+            $maxPlayers = $serverStatus['max_players'] ?? 0;
+            $version = $serverStatus['version'] ?? '';
+        } else {
+            $players = $result->players ?? 0;
+            $maxPlayers = $result->maxPlayers ?? 0;
+            $version = $result->version ?? '';
+        }
+
+        $gameId = !empty($data['game_id']) ? (int)$data['game_id'] : null;
+        $gameName = null;
+        if ($gameId) {
+            $game = Game::find($gameId);
+            $gameName = $game ? $game->name : null;
+        } elseif ($protocol === 'minecraft_java') {
+            $gameName = 'Minecraft Java';
+        }
 
         $serverId = Server::create([
             'user_id' => $userId,
             'category_id' => $primaryCategoryId,
             'address' => $data['address'],
-            'port' => $data['port'],
+            'port' => $port,
+            'query_port' => $queryPort,
+            'game_type' => $protocolDefaults['game_type'],
+            'protocol' => $protocol,
+            'game_id' => $gameId,
+            'game_name' => $gameName,
             'name' => $data['name'],
             'description' => $data['description'] ?? '',
             'image' => $uploads['image'],
@@ -200,9 +272,9 @@ class Servers
             'website' => $data['website'] ?? '',
             'country' => $data['country'],
             'youtube_id' => $data['youtube_id'] ?? '',
-            'players' => $serverStatus['players'],
-            'max_players' => $serverStatus['max_players'],
-            'version' => $serverStatus['version'],
+            'players' => $players,
+            'max_players' => $maxPlayers,
+            'version' => $version,
             'custom_data' => json_encode($customData)
         ]);
 
@@ -236,11 +308,21 @@ class Servers
         }
 
         $categoryIds = array_filter(array_map('intval', $data['category_ids']));
-        $customData = self::prepareCustomData($data, $server->address);
+        $protocol = $data['protocol'] ?? $server->protocol ?? 'minecraft_java';
+        $customData = self::prepareCustomData($data, $server->address, $protocol);
+
+        $gameId = !empty($data['game_id']) ? (int)$data['game_id'] : null;
+        $gameName = $server->game_name;
+        if ($gameId) {
+            $game = Game::find($gameId);
+            $gameName = $game ? $game->name : $server->game_name;
+        }
 
         $updateData = [
             'name' => $data['name'],
             'category_id' => $categoryIds[0],
+            'game_id' => $gameId,
+            'game_name' => $gameName,
             'description' => $data['description'] ?? '',
             'website' => $data['website'] ?? '',
             'country' => $data['country'],
@@ -354,12 +436,26 @@ class Servers
             ];
         }
 
-        $customData = self::prepareCustomData($data, $server->address);
+        $protocol = $data['protocol'] ?? $server->protocol ?? 'minecraft_java';
+        $protocolDefaults = self::getProtocolDefaults($protocol);
+        $customData = self::prepareCustomData($data, $server->address, $protocol);
+
+        $gameId = !empty($data['game_id']) ? (int)$data['game_id'] : null;
+        $gameName = $server->game_name ?? null;
+        if ($gameId) {
+            $game = Game::find($gameId);
+            $gameName = $game ? $game->name : null;
+        }
 
         $updateData = [
             'name' => sanitize($data['name'] ?? ''),
             'address' => sanitize($data['address'] ?? ''),
-            'port' => (int)($data['port'] ?? 25565),
+            'port' => (int)($data['port'] ?? $protocolDefaults['port']),
+            'query_port' => (int)($data['query_port'] ?? $data['port'] ?? $protocolDefaults['query_port']),
+            'game_type' => $protocolDefaults['game_type'],
+            'protocol' => $protocol,
+            'game_id' => $gameId,
+            'game_name' => $gameName,
             'category_id' => $categoryIds[0],
             'description' => trim($data['description'] ?? ''),
             'website' => sanitize($data['website'] ?? ''),

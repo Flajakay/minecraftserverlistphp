@@ -178,6 +178,12 @@
                                             </span>
                                             <span><?= sanitize($server->port) ?></span>
                                         </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <span class="text-muted">
+                                                <i class="bi bi-controller me-2" aria-hidden="true"></i><?= lang('protocol_label') ?>
+                                            </span>
+                                            <span class="badge bg-info"><?= sanitize($protocolLabel) ?></span>
+                                        </div>
                                         <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('server_category') ?>: <?= sanitize(implode(', ', array_map(fn($c) => $c->category_name, $categories ?? [])), ENT_QUOTES) ?>">
                                             <span class="text-muted">
                                                 <i class="bi bi-folder me-2" aria-hidden="true"></i><?= lang('server_category') ?>
@@ -257,6 +263,20 @@
                                         <i class="bi bi-activity text-primary me-2"></i><?= lang('server_stats') ?>
                                     </div>
                                     <div class="list-group list-group-flush">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <span class="text-muted">
+                                                <i class="bi bi-controller me-2" aria-hidden="true"></i><?= lang('game') ?>
+                                            </span>
+                                            <span><?= sanitize($server->game_name ?? ($server->protocol === 'steam_a2s' ? 'Steam' : 'Minecraft')) ?></span>
+                                        </div>
+                                        <?php if ($server->map_name): ?>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                            <span class="text-muted">
+                                                <i class="bi bi-map me-2" aria-hidden="true"></i><?= lang('map') ?>
+                                            </span>
+                                            <span><?= sanitize($server->map_name) ?></span>
+                                        </div>
+                                        <?php endif; ?>
                                         <?php if ($server->status): ?>
                                             <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" tabindex="0" role="group" aria-label="<?= lang('players_online') ?>: <?= $server->players ?>/<?= $server->max_players ?>">
                                                 <span class="text-muted">
@@ -528,7 +548,7 @@
                             </button>
                         <?php endif; ?>
 
-                        <?php if (empty($is_verified)): ?>
+                        <?php if (empty($is_verified) && ($server->protocol ?? 'minecraft_java') === 'minecraft_java'): ?>
                             <a class="btn btn-outline-primary w-100 mb-3 py-2" href="<?= url('/server-claim/' . $server->id) ?>">
                                 <i class="bi bi-shield-lock me-2"></i><?= $is_owner ? lang('server_verify_cta') : lang('server_claim_cta') ?>
                             </a>
@@ -657,6 +677,7 @@
     "serverId": <?= (int)$server->id ?>,
     "serverAddress": <?= json_encode($server->address) ?>,
     "serverPort": <?= (int)$server->port ?>,
+    "serverProtocol": <?= json_encode($server->protocol ?? 'minecraft_java') ?>,
     "csrfToken": <?= json_encode(csrf()) ?>,
     "statistics": <?= json_encode($statistics) ?>,
     "lang": {
@@ -670,5 +691,5 @@
 <script src="<?= asset('js/server-show.js') ?>" defer></script>
 
 <?php $content = ob_get_clean(); ?>
-<?php $title = sanitize($server->name) . ' - ' . lang('minecraft_server') . ' - ' . setting('title'); ?>
+<?php $title = sanitize($server->name) . ' - ' . sanitize($server->game_name ?? $protocolLabel) . ' - ' . setting('title'); ?>
 <?php include __DIR__ . '/../layouts/app.php'; ?>

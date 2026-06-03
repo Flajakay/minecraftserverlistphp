@@ -29,7 +29,9 @@ class SiteSettings
             'payment_currency' => sanitize($data['payment_currency'] ?? 'USD'),
             'per_day_cost' => (float)($data['per_day_cost'] ?? 0.00),
             'minimum_days' => (int)($data['minimum_days'] ?? 1),
-            'maximum_days' => (int)($data['maximum_days'] ?? 30)
+            'maximum_days' => (int)($data['maximum_days'] ?? 30),
+            'minecraft_java_enabled' => isset($data['minecraft_java_enabled']) ? 1 : 0,
+            'steam_a2s_enabled' => isset($data['steam_a2s_enabled']) ? 1 : 0,
         ];
         $faviconError = null;
 

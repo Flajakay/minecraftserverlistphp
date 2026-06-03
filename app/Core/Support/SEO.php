@@ -49,14 +49,14 @@ class SEO
 
     public static function getTitle()
     {
-        $siteTitle = setting('title', 'Minecraft Server List');
+        $siteTitle = setting('title', 'Game Server List');
         // If a page title is set, append the site title for consistency.
         return self::$title ? self::$title . ' - ' . $siteTitle : $siteTitle;
     }
 
     public static function getDescription()
     {
-        return self::$description ?: setting('meta_description', 'Find the best Minecraft servers to play on');
+        return self::$description ?: setting('meta_description', 'Find the best game servers to play on');
     }
 
     public static function getKeywords(): string
@@ -99,7 +99,7 @@ class SEO
         $output .= '<meta property="og:image" content="' . sanitize(self::getOgImage()) . '">' . "\n";
         $output .= '<meta property="og:url" content="' . sanitize(self::getCanonical()) . '">' . "\n";
         $output .= '<meta property="og:type" content="website">' . "\n";
-        $output .= '<meta property="og:site_name" content="' . sanitize(setting('title', 'Minecraft Server List')) . '">' . "\n";
+        $output .= '<meta property="og:site_name" content="' . sanitize(setting('title', 'Game Server List')) . '">' . "\n";
         
         $output .= '<meta name="twitter:card" content="summary_large_image">' . "\n";
         $output .= '<meta name="twitter:title" content="' . sanitize(self::getTitle()) . '">' . "\n";
@@ -120,8 +120,8 @@ class SEO
 
     public static function configureCategoryPage($category): void
     {
-        self::setTitle($category->name . ' Minecraft Servers');
-        $description = $category->description ?: sprintf(lang('seo.category_description'), $category->name);
+        self::setTitle($category->name . ' Servers');
+        $description = $category->description ?: sprintf(lang('seo.category_description'), $category->name, $category->name);
         self::setDescription($description);
         self::setKeywords(sprintf(lang('seo.keywords_category'), $category->name, $category->name));
         self::setCanonical(url("/category/{$category->url}"));

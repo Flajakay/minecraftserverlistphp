@@ -22,6 +22,38 @@
                                 <i class="bi bi-server text-primary me-2"></i><?= lang('server_details') ?>
                             </h5>
 
+                            <!-- Protocol Selector -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <label for="protocol" class="form-label fw-semibold"><?= lang('protocol_label') ?> *</label>
+                                    <select class="form-select" id="protocol" name="protocol" required>
+                                        <option value="minecraft_java" <?= old('protocol', 'minecraft_java') === 'minecraft_java' ? 'selected' : '' ?>>
+                                            <?= lang('protocol_minecraft_java') ?>
+                                        </option>
+                                        <option value="steam_a2s" <?= old('protocol') === 'steam_a2s' ? 'selected' : '' ?>>
+                                            <?= lang('protocol_steam_a2s') ?>
+                                        </option>
+                                    </select>
+                                    <small class="text-muted"><?= lang('protocol_help') ?></small>
+                                </div>
+                            </div>
+
+                            <!-- Game Selector (visible for Steam) -->
+                            <div class="row g-3 mb-3" id="gameSelectorWrapper" style="<?= old('protocol') === 'steam_a2s' ? '' : 'display: none;' ?>">
+                                <div class="col-12">
+                                    <label for="game_id" class="form-label fw-semibold"><?= lang('game') ?> *</label>
+                                    <select class="form-select" id="game_id" name="game_id">
+                                        <option value=""><?= lang('select_game') ?></option>
+                                        <?php foreach ($games as $game): ?>
+                                            <option value="<?= $game->id ?>" <?= old('game_id') == $game->id ? 'selected' : '' ?>>
+                                                <?= sanitize($game->name) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <small class="text-muted"><?= lang('select_game_help') ?></small>
+                                </div>
+                            </div>
+
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label for="address" class="form-label fw-semibold"><?= lang('server_address') ?>
@@ -48,7 +80,7 @@
                                             name="port" value="<?= old('port', 25565) ?>" min="1" max="65535"
                                             placeholder="25565">
                                     </div>
-                                    <small class="text-muted"><?= lang('port_default') ?></small>
+                                    <small class="text-muted" id="portDefaultText"><?= lang('port_default') ?></small>
                                 </div>
                             </div>
 
@@ -69,7 +101,6 @@
 
                             <div class="row g-3 mt-2">
                                 <?php include __DIR__ . '/../partials/category-selection.php'; ?>
-
                                 <?php include __DIR__ . '/../partials/country-selector.php'; ?>
                             </div>
                         </div>
@@ -141,8 +172,8 @@
                             </div>
                         </div>
 
-                        <!-- Votifier Section -->
-                        <div class="mb-4">
+                        <!-- Votifier Section (Minecraft only) -->
+                        <div class="mb-4" id="votifierSection">
                             <div class="d-flex align-items-center mb-3">
                                 <h5 class="fw-semibold text-dark mb-0 me-2">
                                     <i class="bi bi-shield-check text-primary me-2"></i><?= lang('votifier_settings') ?>
@@ -205,6 +236,8 @@
         </div>
     </div>
 </div>
+
+<script src="<?= asset('js/submit-form.js') ?>" defer></script>
 
 <!-- Load Jodit Helper -->
 <?php joditAssets(); ?>

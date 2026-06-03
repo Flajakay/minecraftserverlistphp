@@ -146,6 +146,44 @@
             </div>
         </div>
 
+        <!-- Protocol Settings -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-transparent border-0 py-3">
+                <h5 class="fw-semibold mb-0">
+                    <i class="bi bi-controller text-primary me-2"></i>Protocol Settings
+                </h5>
+                <p class="text-muted mb-0 small">Enable or disable supported game server protocols</p>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="minecraft_java_enabled" 
+                               name="minecraft_java_enabled" 
+                               <?= ($settings->minecraft_java_enabled ?? 1) ? 'checked' : '' ?>>
+                        <label class="form-check-label fw-semibold" for="minecraft_java_enabled">
+                            <?= lang('protocol_minecraft_java') ?>
+                        </label>
+                    </div>
+                    <small class="text-muted ms-4">Default port: 25565</small>
+                </div>
+                <div class="mb-0">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               id="steam_a2s_enabled" 
+                               name="steam_a2s_enabled" 
+                               <?= ($settings->steam_a2s_enabled ?? 1) ? 'checked' : '' ?>>
+                        <label class="form-check-label fw-semibold" for="steam_a2s_enabled">
+                            <?= lang('protocol_steam_a2s') ?>
+                        </label>
+                    </div>
+                    <small class="text-muted ms-4">Default port: 27015</small>
+                </div>
+            </div>
+        </div>
+
         <!-- Favicon Settings -->
         <div class="card border-0 shadow-sm mt-4">
             <div class="card-header bg-transparent border-0 py-3">

@@ -67,6 +67,9 @@
                             </span>
                         <?php endforeach; ?>
                     <?php endif; ?>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary border-0 fw-normal">
+                        <?= sanitize($server->game_name ?? ($server->protocol === 'steam_a2s' ? 'Steam' : 'Minecraft')) ?>
+                    </span>
                 </div>
 
                 <!-- Description (CSS Clamped & Hidden on Mobile) -->

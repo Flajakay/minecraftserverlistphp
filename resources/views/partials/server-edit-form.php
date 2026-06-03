@@ -1,6 +1,9 @@
 <?php
 $config = $config ?? [];
 $isAdmin = $config['isAdmin'] ?? false;
+$serverProtocol = $server->protocol ?? 'minecraft_java';
+$isMinecraft = $serverProtocol === 'minecraft_java';
+$games = $games ?? [];
 ?>
 
 <form method="POST" <?= /** @noinspection PhpUndefinedVariableInspection */
@@ -11,6 +14,41 @@ $isAdmin = $config['isAdmin'] ?? false;
         <h5 class="fw-semibold text-dark mb-3">
             <i class="bi bi-server text-primary me-2" aria-hidden="true"></i><?= lang('server_details') ?>
         </h5>
+        
+        <!-- Protocol Selector (admin only) -->
+        <?php if ($isAdmin): ?>
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <label for="protocol" class="form-label fw-semibold"><?= lang('protocol_label') ?></label>
+                <select class="form-select" id="protocol" name="protocol">
+                    <option value="minecraft_java" <?= $serverProtocol === 'minecraft_java' ? 'selected' : '' ?>>
+                        <?= lang('protocol_minecraft_java') ?>
+                    </option>
+                    <option value="steam_a2s" <?= $serverProtocol === 'steam_a2s' ? 'selected' : '' ?>>
+                        <?= lang('protocol_steam_a2s') ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+        <?php else: ?>
+        <input type="hidden" name="protocol" value="<?= sanitize($serverProtocol) ?>">
+        <?php endif; ?>
+        
+        <!-- Game Selector (visible for Steam) -->
+        <div class="row g-3 mb-3" id="editGameSelectorWrapper" style="<?= $isMinecraft ? 'display: none;' : '' ?>">
+            <div class="col-12">
+                <label for="game_id" class="form-label fw-semibold"><?= lang('game') ?></label>
+                <select class="form-select" id="game_id" name="game_id">
+                    <option value=""><?= lang('select_game') ?></option>
+                    <?php foreach ($games as $game): ?>
+                        <option value="<?= $game->id ?>" <?= ($server->game_id ?? 0) == $game->id ? 'selected' : '' ?>>
+                            <?= sanitize($game->name) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <small class="text-muted"><?= lang('select_game_help') ?></small>
+            </div>
+        </div>
         
         <div class="row g-3">
             <div class="col-md-8">
@@ -23,8 +61,7 @@ $isAdmin = $config['isAdmin'] ?? false;
                            class="form-control border-start-0 ps-0 <?= $isAdmin ? '' : 'bg-light' ?>" 
                            id="address" 
                            <?= $isAdmin ? 'name="address"' : '' ?>
-                           value="<?= /** @noinspection PhpUndefinedVariableInspection */
-                           sanitize($server->address) ?>"
+                           value="<?= sanitize($server->address) ?>"
                            autocomplete="off"
                            <?= $isAdmin ? 'required' : 'readonly' ?>>
                 </div>
@@ -74,7 +111,6 @@ $isAdmin = $config['isAdmin'] ?? false;
         
         <div class="row g-3 mt-2">
             <?php include __DIR__ . '/category-selection.php'; ?>
-
             <div class="col-12">
                 <?php $selectedCountry = $server->country; ?>
                 <?php include __DIR__ . '/country-selector.php'; ?>
@@ -198,12 +234,13 @@ $isAdmin = $config['isAdmin'] ?? false;
                            aria-describedby="iconHelp"
                            onchange="previewImage(this, 'iconPreview', 'iconPreviewBox')">
                 </div>
-                <small class="text-muted d-block mt-2" id="iconHelp"><?= lang('server_icon_help') ?></small>
+                <small class="text-muted d-block mt-2" id="iconHelp"><?= lang('icon_help') ?></small>
             </div>
         </div>
     </div>
 
-    <div class="mb-4">
+    <!-- Votifier Section (Minecraft only) -->
+    <div class="mb-4" id="editVotifierSection" style="<?= $isMinecraft ? '' : 'display: none;' ?>">
         <div class="d-flex align-items-center mb-3">
             <h5 class="fw-semibold text-dark mb-0 me-2">
                 <i class="bi bi-shield-check text-primary me-2" aria-hidden="true"></i><?= lang('votifier_settings') ?>

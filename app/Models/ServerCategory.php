@@ -89,6 +89,7 @@ class ServerCategory
             return [];
         }
 
+        $serverIds = array_values($serverIds);
         $placeholders = str_repeat('?,', count($serverIds) - 1) . '?';
         $rows = Database::fetchAll(
             'SELECT sc.*, c.name as category_name, c.url as category_url
