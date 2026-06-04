@@ -82,6 +82,13 @@ class ThemeManager
             return $themeView;
         }
 
+        if ($active !== 'default') {
+            $defaultView = self::themesDir() . '/default/views/' . $path;
+            if (file_exists($defaultView)) {
+                return $defaultView;
+            }
+        }
+
         $fallback = self::viewsDir() . '/' . $path;
         if (file_exists($fallback)) {
             return $fallback;

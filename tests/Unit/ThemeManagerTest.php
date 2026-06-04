@@ -54,17 +54,17 @@ class ThemeManagerTest extends TestCase
         $this->assertFalse(ThemeManager::hasTheme('nonexistent'));
     }
 
-    public function testResolveViewFallsBackToResourcesViews()
+    public function testResolveViewResolvesFromDefaultTheme()
     {
         $resolved = ThemeManager::resolveView('home');
-        $this->assertStringContainsString('resources/views/home.php', $resolved);
+        $this->assertStringContainsString('resources/themes/default/views/home.php', $resolved);
         $this->assertFileExists($resolved);
     }
 
-    public function testResolveViewFallsBackForNestedViews()
+    public function testResolveViewResolvesNestedFromDefaultTheme()
     {
         $resolved = ThemeManager::resolveView('auth.login');
-        $this->assertStringContainsString('resources/views/auth/login.php', $resolved);
+        $this->assertStringContainsString('resources/themes/default/views/auth/login.php', $resolved);
         $this->assertFileExists($resolved);
     }
 

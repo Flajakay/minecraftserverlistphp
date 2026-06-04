@@ -1,0 +1,11 @@
+{
+    "slug": "default",
+    "name": "Default",
+    "version": "1.0.0",
+    "author": "Project",
+    "description": "Bundled default Bootstrap-based theme.",
+    "assets": {
+        "css": ["css/theme.css"],
+        "js": ["js/theme.js"]
+    }
+}

@@ -27,5 +27,5 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="<?= url('/assets/css/searchable-select.css') ?>">
+<link rel="stylesheet" href="<?= themeAsset('css/searchable-select.css', 'default') ?>">
 <script src="<?= url('/assets/js/searchable-select.js') ?>" defer></script>

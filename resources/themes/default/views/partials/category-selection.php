@@ -20,5 +20,5 @@
 }
 </script>
 
-<link rel="stylesheet" href="<?= url('/assets/css/category-cloud.css') ?>">
+<link rel="stylesheet" href="<?= themeAsset('css/category-cloud.css', 'default') ?>">
 <script src="<?= url('/assets/js/category-cloud.js') ?>" defer></script>

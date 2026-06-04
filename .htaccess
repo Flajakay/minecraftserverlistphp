@@ -13,6 +13,9 @@ RewriteRule ^site\.webmanifest$ public/assets/favicons/site.webmanifest [L]
 RewriteCond %{REQUEST_URI} ^/assets/
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
+RewriteCond %{REQUEST_URI} ^/themes/
+RewriteRule ^themes/(.*)$ public/themes/$1 [L]
+
 RewriteCond %{REQUEST_URI} ^/uploads/
 RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
 
