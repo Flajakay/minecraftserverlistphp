@@ -31,7 +31,9 @@ class SettingController
         $settings->paypal_client_secret = $paypalConfig['client_secret'] ?? '';
         $settings->paypal_sandbox = $paypalConfig['sandbox'] ?? true;
 
-        view('admin.settings', ['settings' => $settings]);
+        $rateLimit = Config::get('ratelimit', []);
+
+        view('admin.settings', ['settings' => $settings, 'rateLimit' => $rateLimit]);
     }
 
     /**

@@ -1,98 +1,80 @@
 <?php
 
+use App\Core\Support\Env;
+
 return [
-    // Global enable/disable switch
-    'enabled' => true,
-    
-    // Rate limit rules by route pattern
+    'enabled' => Env::get('RATE_LIMIT_ENABLED', true),
+
     'rules' => [
-        // Authentication routes - loose enough for typos, strict enough for brute force
         'auth' => [
             'routes' => ['/login', '/register', '/lost-password', '/reset-password'],
-            'limit' => 5,
-            'window' => 300, // 5 requests every 5 minutes
-            'key_type' => 'ip',
-        ],
-        
-        // Voting endpoints network shield - stops API spam (business rules are in database)
-        'voting' => [
-            'routes' => ['/vote', '/vote/*'],
-            'limit' => 10,
-            'window' => 60, // 10 requests per minute
-            'key_type' => 'ip',
-        ],
-        
-        // Server actions (creation, editing, claims)
-        'server_actions' => [
-            'routes' => ['/submit', '/edit-server/*', '/server-claim/*/start', '/server-claim/*/verify'],
-            'limit' => 5,
-            'window' => 60, // 5 requests per minute
-            'key_type' => 'user',
-        ],
-        
-        // Contact and reports - moderate
-        'contact' => [
-            'routes' => ['/contact', '/report'],
-            'limit' => 3,
-            'window' => 300, // 3 submissions every 5 minutes
+            'limit' => (int)Env::get('RATE_LIMIT_AUTH_LIMIT', 5),
+            'window' => (int)Env::get('RATE_LIMIT_AUTH_WINDOW', 300),
             'key_type' => 'ip',
         ],
 
-        // Payment endpoints - limit repeated create/capture attempts per user
+        'voting' => [
+            'routes' => ['/vote', '/vote/*'],
+            'limit' => (int)Env::get('RATE_LIMIT_VOTING_LIMIT', 10),
+            'window' => (int)Env::get('RATE_LIMIT_VOTING_WINDOW', 60),
+            'key_type' => 'ip',
+        ],
+
+        'server_actions' => [
+            'routes' => ['/submit', '/edit-server/*', '/server-claim/*/start', '/server-claim/*/verify'],
+            'limit' => (int)Env::get('RATE_LIMIT_SERVER_ACTIONS_LIMIT', 5),
+            'window' => (int)Env::get('RATE_LIMIT_SERVER_ACTIONS_WINDOW', 60),
+            'key_type' => 'user',
+        ],
+
+        'contact' => [
+            'routes' => ['/contact', '/report'],
+            'limit' => (int)Env::get('RATE_LIMIT_CONTACT_LIMIT', 3),
+            'window' => (int)Env::get('RATE_LIMIT_CONTACT_WINDOW', 300),
+            'key_type' => 'ip',
+        ],
+
         'payments' => [
             'routes' => ['/paypal/create-order', '/paypal/capture-payment'],
-            'limit' => 10,
-            'window' => 300, // 10 requests every 5 minutes
+            'limit' => (int)Env::get('RATE_LIMIT_PAYMENTS_LIMIT', 10),
+            'window' => (int)Env::get('RATE_LIMIT_PAYMENTS_WINDOW', 300),
             'key_type' => 'user',
         ],
-        
-        // API actions - generous
+
         'api' => [
             'routes' => ['/api/*', '/comment/load-more'],
-            'limit' => 60,
-            'window' => 60, // 60 requests per minute
+            'limit' => (int)Env::get('RATE_LIMIT_API_LIMIT', 60),
+            'window' => (int)Env::get('RATE_LIMIT_API_WINDOW', 60),
             'key_type' => 'ip',
         ],
-        
-        // Admin routes - higher limits
+
         'admin' => [
             'routes' => ['/admin/*'],
-            'limit' => 200,
-            'window' => 60, // 200 requests per minute
+            'limit' => (int)Env::get('RATE_LIMIT_ADMIN_LIMIT', 200),
+            'window' => (int)Env::get('RATE_LIMIT_ADMIN_WINDOW', 60),
             'key_type' => 'user',
         ],
-        
-        // General browsing - very high to prevent false-positives
+
         'general' => [
             'routes' => ['*'],
-            'limit' => 150,
-            'window' => 60, // 150 page views per minute
+            'limit' => (int)Env::get('RATE_LIMIT_GENERAL_LIMIT', 150),
+            'window' => (int)Env::get('RATE_LIMIT_GENERAL_WINDOW', 60),
             'key_type' => 'ip',
         ],
     ],
-    
-    // Bypass settings
+
     'bypass' => [
-        // IPs that bypass all rate limiting
-        'ips' => [
-            '127.0.0.1', // Whitelist localhost
-        ],
-        
-        // User roles that bypass rate limiting
-        'roles' => [
-            '2', // Admin role type 2 bypasses limits
-        ],
+        'ips' => array_map('trim', explode(',', Env::get('RATE_LIMIT_BYPASS_IPS', '127.0.0.1'))),
+        'roles' => ['2'],
     ],
-    
-    // Error responses
+
     'responses' => [
         'too_many_requests' => [
             'message' => 'Too many requests. Please try again later.',
-            'retry_after_header' => true, // Add Retry-After header
+            'retry_after_header' => true,
         ],
     ],
-    
-    // Logging
+
     'logging' => [
         'enabled' => true,
         'log_violations' => true,
