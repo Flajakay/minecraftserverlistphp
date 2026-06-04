@@ -45,4 +45,4 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

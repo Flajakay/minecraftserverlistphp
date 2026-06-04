@@ -7,19 +7,78 @@ use App\Core\Support\Config;
 use App\Core\Support\Env;
 use App\Core\Support\Language;
 use App\Core\Support\SEO;
+use App\Core\System\ThemeManager;
 use App\Models\Setting;
 
 function view($name, $data = []): void
 {
     extract($data);
-    
-    $viewFile = __DIR__ . '/../../../resources/views/' . str_replace('.', '/', $name) . '.php';
-    
+
+    $viewFile = ThemeManager::resolveView($name);
+
     if (file_exists($viewFile)) {
         require $viewFile;
     } else {
         throw new Exception("View $name not found");
     }
+}
+
+function viewPath($name): string
+{
+    return ThemeManager::resolveView($name);
+}
+
+function partial($name, array $data = []): void
+{
+    extract($data);
+
+    $viewFile = ThemeManager::resolveView('partials.' . $name);
+
+    if (file_exists($viewFile)) {
+        require $viewFile;
+    }
+}
+
+function layout($name = 'app')
+{
+    return ThemeManager::resolveView('layouts.' . $name);
+}
+
+function themeAsset($path, ?string $theme = null): string
+{
+    return ThemeManager::themeAssetUrl($path, $theme);
+}
+
+function renderThemeStyles(): string
+{
+    $assets = ThemeManager::activeCssAssets();
+    if (empty($assets)) {
+        return '';
+    }
+
+    $lines = [];
+    foreach ($assets as $url) {
+        $escapedUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        $lines[] = '<link href="' . $escapedUrl . '" rel="stylesheet">';
+    }
+
+    return implode("\n", $lines) . "\n";
+}
+
+function renderThemeScripts(): string
+{
+    $assets = ThemeManager::activeJsAssets();
+    if (empty($assets)) {
+        return '';
+    }
+
+    $lines = [];
+    foreach ($assets as $url) {
+        $escapedUrl = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        $lines[] = '<script src="' . $escapedUrl . '"></script>';
+    }
+
+    return implode("\n", $lines) . "\n";
 }
 
 function redirect($url = '/'): void

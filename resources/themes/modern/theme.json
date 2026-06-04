@@ -1,0 +1,11 @@
+{
+    "slug": "modern",
+    "name": "Modern",
+    "version": "1.0.0",
+    "author": "Project",
+    "description": "A modern alternative theme for smoke testing.",
+    "assets": {
+        "css": ["css/theme.css"],
+        "js": ["js/theme.js"]
+    }
+}

@@ -113,10 +113,9 @@ $games = $games ?? [];
         </div>
         
         <div class="row g-3 mt-2">
-            <?php include __DIR__ . '/category-selection.php'; ?>
+            <?php partial('category-selection'); ?>
             <div class="col-12">
-                <?php $selectedCountry = $server->country; ?>
-                <?php include __DIR__ . '/country-selector.php'; ?>
+                <?php partial('country-selector', ['selectedCountry' => $server->country]); ?>
             </div>
         </div>
     </div>

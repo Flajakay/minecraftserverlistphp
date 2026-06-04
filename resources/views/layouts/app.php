@@ -14,24 +14,26 @@
     <link href="<?= asset('css/server.css') ?>" rel="stylesheet">
     <link href="<?= asset('css/navbar-mobile.css') ?>" rel="stylesheet">
     <link href="<?= asset('css/toast.css') ?>" rel="stylesheet">
+    <?= renderThemeStyles() ?>
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <?php include __DIR__ . '/../partials/navbar.php'; ?>
+    <?php partial('navbar'); ?>
     
     <main class="flex-grow-1" id="main-content" tabindex="-1">
         <div class="container-fluid px-2 px-md-4 py-3">
             <div id="flash-messages" aria-live="polite" aria-atomic="true">
-                <?php include __DIR__ . '/../partials/alerts.php'; ?>
+                <?php partial('alerts'); ?>
             </div>
             <?= $content ?? '' ?>
         </div>
     </main>
 
-    <?php include __DIR__ . '/../partials/footer.php'; ?>
+    <?php partial('footer'); ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="<?= asset('js/app.js') ?>"></script>
     <script src="<?= asset('js/toast.js') ?>"></script>
+    <?= renderThemeScripts() ?>
 </body>
 </html>

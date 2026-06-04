@@ -6,10 +6,7 @@
         <div class="col-lg-3 mb-4 mb-lg-0">
             <!-- Desktop Sidebar (Always visible on lg, hidden on md/sm) -->
             <div class="d-none d-lg-block">
-                <?php
-                $searchIdPrefix = 'desktop_';
-                include __DIR__ . '/../partials/sidebar-filters.php';
-                ?>
+                <?php partial('sidebar-filters', ['searchIdPrefix' => 'desktop_']); ?>
             </div>
         </div>
 
@@ -46,7 +43,7 @@
             <?php if (!empty($servers)): ?>
                 <div class="servers-list">
                     <?php foreach ($servers as $server): ?>
-                        <?php include __DIR__ . '/../partials/server-row-item.php'; ?>
+                        <?php partial('server-row-item', ['server' => $server]); ?>
                     <?php endforeach; ?>
                 </div>
 
@@ -117,12 +114,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-2">
-                <?php
-                $searchIdPrefix = 'mobile_';
-                $wrapInCard = false;
-                $showHeader = false;
-                include __DIR__ . '/../partials/sidebar-filters.php';
-                ?>
+                <?php partial('sidebar-filters', ['searchIdPrefix' => 'mobile_', 'wrapInCard' => false, 'showHeader' => false]); ?>
             </div>
         </div>
     </div>
@@ -130,4 +122,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.servers'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

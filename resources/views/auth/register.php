@@ -110,4 +110,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.register'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

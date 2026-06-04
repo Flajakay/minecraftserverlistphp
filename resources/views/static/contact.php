@@ -120,4 +120,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.contact'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

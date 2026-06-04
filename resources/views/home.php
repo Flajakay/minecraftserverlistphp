@@ -32,7 +32,7 @@
             </div>
             <div class="featured-servers">
                 <?php foreach ($featured_servers as $server): ?>
-                    <?php include __DIR__ . '/partials/server-row-item.php'; ?>
+                    <?php partial('server-row-item', ['server' => $server]); ?>
                 <?php endforeach; ?>
             </div>
             
@@ -80,4 +80,4 @@
 </div>
 
 <?php $content = ob_get_clean(); ?>
-<?php include __DIR__ . '/layouts/app.php'; ?>
+<?php include layout('app'); ?>

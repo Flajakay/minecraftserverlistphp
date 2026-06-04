@@ -218,4 +218,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = 'Banner Generator - ' . setting('title'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

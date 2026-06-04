@@ -45,6 +45,11 @@ $rateLimitRules = [
                 </button>
             </li>
             <li class="nav-item" role="presentation">
+                <button class="nav-link" id="appearance-tab" data-bs-toggle="tab" data-bs-target="#appearance" type="button" role="tab" aria-controls="appearance" aria-selected="false">
+                    <i class="bi bi-palette me-1"></i><?= lang('tab_appearance') ?>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">
                     <i class="bi bi-shield-check me-1"></i><?= lang('tab_security') ?>
                 </button>
@@ -311,6 +316,65 @@ $rateLimitRules = [
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ==================== Appearance ==================== -->
+            <div class="tab-pane fade" id="appearance" role="tabpanel" aria-labelledby="appearance-tab">
+                <h5 class="fw-semibold mb-1">
+                    <i class="bi bi-palette text-primary me-2"></i><?= lang('theme_settings') ?>
+                </h5>
+                <p class="text-muted small mb-4"><?= lang('active_theme_help') ?></p>
+
+                <?php if (empty($themes)): ?>
+                    <div class="alert alert-warning"><?= lang('theme_not_available') ?></div>
+                <?php endif; ?>
+
+                <div class="mb-3">
+                    <label for="active_theme" class="form-label fw-semibold"><?= lang('active_theme') ?></label>
+                    <select class="form-select" id="active_theme" name="active_theme">
+                        <?php foreach ($themes as $slug => $meta): ?>
+                            <option value="<?= sanitize($slug) ?>" <?= ($settings->active_theme ?? 'default') === $slug ? 'selected' : '' ?>>
+                                <?= sanitize($meta['name'] ?? $slug) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <?php
+                $currentThemeSlug = $settings->active_theme ?? 'default';
+                $currentTheme = $themes[$currentThemeSlug] ?? null;
+                ?>
+
+                <?php if ($currentTheme): ?>
+                    <div class="card bg-light border-0 mt-3">
+                        <div class="card-body">
+                            <table class="table table-borderless mb-0 small">
+                                <tbody>
+                                    <tr>
+                                        <th class="ps-0" style="width: 120px;"><?= lang('theme_name') ?></th>
+                                        <td><?= sanitize($currentTheme['name'] ?? '') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-0"><?= lang('theme_slug') ?></th>
+                                        <td><code><?= sanitize($currentTheme['slug'] ?? '') ?></code></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-0"><?= lang('theme_version') ?></th>
+                                        <td><?= sanitize($currentTheme['version'] ?? '') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-0"><?= lang('theme_author') ?></th>
+                                        <td><?= sanitize($currentTheme['author'] ?? '') ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="ps-0"><?= lang('description') ?></th>
+                                        <td><?= sanitize($currentTheme['description'] ?? '') ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- ==================== Security ==================== -->

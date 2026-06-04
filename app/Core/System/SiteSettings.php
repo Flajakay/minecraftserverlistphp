@@ -3,6 +3,7 @@
 namespace App\Core\System;
 
 use App\Core\Support\Env;
+use App\Core\System\ThemeManager;
 use App\Models\Setting;
 use App\Models\Server;
 use App\Models\AuditLog;
@@ -12,7 +13,17 @@ class SiteSettings
     public static function update($data, array $files = []): array
     {
         $currentSettings = Setting::get();
+
+        $activeTheme = trim($data['active_theme'] ?? 'default');
+        if (!ThemeManager::isValidSlug($activeTheme) || !ThemeManager::hasTheme($activeTheme)) {
+            return [
+                'success' => false,
+                'message' => lang('theme_invalid')
+            ];
+        }
+
         $settingsData = [
+            'active_theme' => $activeTheme,
             'title' => sanitize($data['title'] ?? ''),
             'url' => sanitize($data['url'] ?? ''),
             'meta_description' => sanitize($data['meta_description'] ?? ''),
@@ -76,6 +87,7 @@ class SiteSettings
         ]);
 
         Setting::update($settingsData);
+        ThemeManager::clearCache();
 
         return [
             'success' => $faviconError === null,

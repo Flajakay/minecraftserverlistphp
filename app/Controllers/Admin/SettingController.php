@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Models\Setting;
 use App\Core\System\SiteSettings;
+use App\Core\System\ThemeManager;
 use App\Core\Support\Config;
 /**
  * Admin settings controller.
@@ -32,8 +33,9 @@ class SettingController
         $settings->paypal_sandbox = $paypalConfig['sandbox'] ?? true;
 
         $rateLimit = Config::get('ratelimit', []);
+        $themes = ThemeManager::availableThemes();
 
-        view('admin.settings', ['settings' => $settings, 'rateLimit' => $rateLimit]);
+        view('admin.settings', ['settings' => $settings, 'rateLimit' => $rateLimit, 'themes' => $themes]);
     }
 
     /**

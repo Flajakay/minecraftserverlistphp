@@ -71,4 +71,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('edit_blog_post') . ' - ' . sanitize($server->name); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

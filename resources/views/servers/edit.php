@@ -18,13 +18,13 @@
                         'isAdmin' => false
                     ];
                     ?>
-					<?php include __DIR__ . '/../partials/server-edit-form.php'; ?>
+					<?php partial('server-edit-form', ['config' => $config, 'server' => $server, 'games' => $games ?? []]); ?>
                 </div>
             </div>
         </div>
         
         <div class="col-lg-4">
-            <?php include __DIR__ . '/../partials/server-sidebar.php'; ?>
+            <?php partial('server-sidebar', ['server' => $server]); ?>
         </div>
     </div>
 </div>
@@ -43,4 +43,4 @@
 <?php $content = ob_get_clean(); ?>
 <?php /** @noinspection PhpUndefinedVariableInspection */
 $title = lang('titles.edit_server') . ': ' . sanitize($server->name); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

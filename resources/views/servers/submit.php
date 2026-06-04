@@ -103,8 +103,8 @@
                             </div>
 
                             <div class="row g-3 mt-2">
-                                <?php include __DIR__ . '/../partials/category-selection.php'; ?>
-                                <?php include __DIR__ . '/../partials/country-selector.php'; ?>
+                                <?php partial('category-selection'); ?>
+                                <?php partial('country-selector'); ?>
                             </div>
                         </div>
                         <!-- Description Section -->
@@ -255,4 +255,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = lang('titles.submit'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>

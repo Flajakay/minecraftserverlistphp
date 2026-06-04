@@ -690,4 +690,4 @@
 
 <?php $content = ob_get_clean(); ?>
 <?php $title = sanitize($server->name) . ' - ' . sanitize($server->game_name ?? $protocolLabel) . ' - ' . setting('title'); ?>
-<?php include __DIR__ . '/../layouts/app.php'; ?>
+<?php include layout('app'); ?>
