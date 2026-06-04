@@ -346,33 +346,23 @@ $rateLimitRules = [
                 ?>
 
                 <?php if ($currentTheme): ?>
-                    <div class="card bg-light border-0 mt-3">
-                        <div class="card-body">
-                            <table class="table table-borderless mb-0 small">
-                                <tbody>
-                                    <tr>
-                                        <th class="ps-0" style="width: 120px;"><?= lang('theme_name') ?></th>
-                                        <td><?= sanitize($currentTheme['name'] ?? '') ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-0"><?= lang('theme_slug') ?></th>
-                                        <td><code><?= sanitize($currentTheme['slug'] ?? '') ?></code></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-0"><?= lang('theme_version') ?></th>
-                                        <td><?= sanitize($currentTheme['version'] ?? '') ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-0"><?= lang('theme_author') ?></th>
-                                        <td><?= sanitize($currentTheme['author'] ?? '') ?></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="ps-0"><?= lang('description') ?></th>
-                                        <td><?= sanitize($currentTheme['description'] ?? '') ?></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="border rounded-2 p-3 mt-3">
+                        <dl class="row g-3 small mb-0">
+                            <dt class="col-sm-3 col-lg-2 fw-semibold text-dark"><?= lang('theme_name') ?></dt>
+                            <dd class="col-sm-9 col-lg-10 mb-0"><?= sanitize($currentTheme['name'] ?? '') ?></dd>
+
+                            <dt class="col-sm-3 col-lg-2 fw-semibold text-dark"><?= lang('theme_slug') ?></dt>
+                            <dd class="col-sm-9 col-lg-10 mb-0"><code><?= sanitize($currentTheme['slug'] ?? '') ?></code></dd>
+
+                            <dt class="col-sm-3 col-lg-2 fw-semibold text-dark"><?= lang('theme_version') ?></dt>
+                            <dd class="col-sm-9 col-lg-10 mb-0"><?= sanitize($currentTheme['version'] ?? '') ?></dd>
+
+                            <dt class="col-sm-3 col-lg-2 fw-semibold text-dark"><?= lang('theme_author') ?></dt>
+                            <dd class="col-sm-9 col-lg-10 mb-0"><?= sanitize($currentTheme['author'] ?? '') ?></dd>
+
+                            <dt class="col-sm-3 col-lg-2 fw-semibold text-dark"><?= lang('description') ?></dt>
+                            <dd class="col-sm-9 col-lg-10 mb-0"><?= sanitize($currentTheme['description'] ?? '') ?></dd>
+                        </dl>
                     </div>
                 <?php endif; ?>
             </div>
