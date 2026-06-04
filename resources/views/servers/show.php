@@ -666,8 +666,6 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="<?= asset('css/category-popover.css') ?>">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <?php joditAssets(); ?>

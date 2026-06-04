@@ -1,35 +1,10 @@
-/* Filter Modal Responsive */
-@media (max-width: 576px) {
-    #filterModal .modal-dialog {
-        margin: 0.5rem;
-    }
-
-    #filterModal .modal-lg {
-        max-width: none;
-    }
-
-    #filterModal .row {
-        --bs-gutter-x: 1rem;
-    }
-}
-
-/* Enhanced Filter Modal Styles */
+/* =========================================
+   Enhanced Filter Modal Styles
+   ========================================= */
 #filterModal .modal-content {
     border-radius: 1rem;
     overflow: hidden;
     animation: modalFadeIn 0.2s ease-out;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 #filterModal .modal-header {
@@ -45,6 +20,10 @@
     padding: 2rem;
 }
 
+#filterModal .modal-footer {
+    padding: 1.5rem 2rem;
+}
+
 #filterModal .card {
     border-radius: 0.75rem;
 }
@@ -54,50 +33,20 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-#filterModal .category-parent-group {
-    border-bottom: 1px solid #f1f3f4;
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-#filterModal .category-parent-group:last-child {
-    border-bottom: none;
-}
-
-#filterModal .category-item {
-    padding: 12px 16px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    position: relative;
-    border-left: 3px solid transparent;
-}
-
-#filterModal .category-item.parent-category {
-    padding: 14px 16px;
-}
-
-#filterModal .category-item:hover {
-    background: rgba(102, 126, 234, 0.04);
-}
-
-#filterModal .category-item.selected {
-    background: rgba(102, 126, 234, 0.08);
-    border-left-color: #667eea;
-}
-
-#filterModal .subcategory-group {
-    position: relative;
-    padding-left: 20px;
-    border-left: 2px solid #e9ecef;
-    margin-left: 16px;
-}
-
-#filterModal .category-item.subcategory {
-    padding: 10px 16px;
-}
-
-#filterModal .category-item.subcategory .form-check-label {
-    font-size: 0.9rem;
-}
-
+/* =========================================
+   Filter Modal - Form Elements
+   ========================================= */
 #filterModal .form-select {
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
@@ -128,30 +77,9 @@
     box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
 }
 
-#filterModal .badge {
-    font-weight: 600;
-    padding: 0.4em 0.8em;
-    animation: badgePulse 0.3s ease-out;
-}
-
-@keyframes badgePulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-#filterModal .modal-footer {
-    padding: 1.5rem 2rem;
-}
-
+/* =========================================
+   Filter Modal - Buttons
+   ========================================= */
 #filterModal .btn {
     border-radius: 0.5rem;
     font-weight: 600;
@@ -165,6 +93,30 @@
     transform: translateY(-1px);
 }
 
+/* =========================================
+   Filter Modal - Badge
+   ========================================= */
+#filterModal .badge {
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    animation: badgePulse 0.3s ease-out;
+}
+
+@keyframes badgePulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* =========================================
+   Filter Modal - Premium
+   ========================================= */
 #filterModal .premium-filter-box {
     background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
     border: 2px solid #ffc107;
@@ -186,10 +138,9 @@
     border-color: #ffc107;
 }
 
-#filterModal .hover-opacity-100:hover {
-    opacity: 1 !important;
-}
-
+/* =========================================
+   Filter Modal - Category Grid
+   ========================================= */
 #filterModal .category-grid {
     scrollbar-width: thin;
     scrollbar-color: rgba(102, 126, 234, 0.3) #f1f3f4;
@@ -213,7 +164,60 @@
     background: rgba(102, 126, 234, 0.5);
 }
 
-/* Active Filter Badges */
+/* =========================================
+   Filter Modal - Category Groups
+   ========================================= */
+#filterModal .category-parent-group {
+    border-bottom: 1px solid #f1f3f4;
+}
+
+#filterModal .category-parent-group:last-child {
+    border-bottom: none;
+}
+
+#filterModal .category-item {
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+#filterModal .category-item.parent-category {
+    padding: 14px 16px;
+}
+
+#filterModal .category-item:hover {
+    background: rgba(102, 126, 234, 0.04);
+}
+
+#filterModal .category-item.selected {
+    background: rgba(102, 126, 234, 0.08);
+    border-left-color: #667eea;
+}
+
+#filterModal .category-item.subcategory {
+    padding: 10px 16px;
+}
+
+#filterModal .category-item.subcategory .form-check-label {
+    font-size: 0.9rem;
+}
+
+#filterModal .subcategory-group {
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid #e9ecef;
+    margin-left: 16px;
+}
+
+#filterModal .hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+
+/* =========================================
+   Active Filter Badges
+   ========================================= */
 .badge .btn-close {
     padding: 0.1em 0.2em;
     font-size: inherit;
@@ -223,14 +227,15 @@
     opacity: 1;
 }
 
+/* =========================================
+   Category Items (unscoped)
+   ========================================= */
 .category-item {
     transition: border-color 0.2s ease;
 }
 
 .category-item:has(.category-checkbox:checked) {
     border-color: #007bff;
-    /*     background-color: rgba(0, 123, 255, 0.03);
- */
 }
 
 .form-check-sm .form-check-input {
@@ -240,4 +245,40 @@
 
 .form-check-sm .form-check-label {
     font-size: 0.875rem;
+}
+
+/* =========================================
+   Category Popover
+   ========================================= */
+.popover {
+    max-width: 300px;
+}
+
+.popover-body a {
+    display: inline;
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.popover-body a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+@media (max-width: 576px) {
+    #filterModal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    #filterModal .modal-lg {
+        max-width: none;
+    }
+
+    #filterModal .row {
+        --bs-gutter-x: 1rem;
+    }
 }

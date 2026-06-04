@@ -1,4 +1,6 @@
-/* Server Status */
+/* =========================================
+   Server Status
+   ========================================= */
 .server-status-online {
     color: #198754;
 }
@@ -7,7 +9,9 @@
     color: #dc3545;
 }
 
-/* Server list hover effects */
+/* =========================================
+   Server List
+   ========================================= */
 .server-list-item {
     transition: var(--transition);
     border-radius: var(--border-radius);
@@ -17,7 +21,9 @@
     background-color: rgba(13, 110, 253, 0.05);
 }
 
-/* Server Banner Styling - Optimized for 468x60px banners */
+/* =========================================
+   Server Card Banner
+   ========================================= */
 .banner-container {
     height: 120px;
     overflow: hidden;
@@ -26,6 +32,22 @@
     align-items: center;
     justify-content: center;
     position: relative;
+}
+
+.banner-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.05) 50%, transparent 51%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.banner-container .badge {
+    z-index: 2;
 }
 
 .server-banner {
@@ -39,9 +61,7 @@
     border-radius: 4px;
 }
 
-/* Ensure 468x60 banners are properly displayed */
 .server-card .server-banner {
-    /* Allow banners to show at their natural size within container */
     min-height: 60px;
     padding: 10px;
     box-sizing: border-box;
@@ -51,52 +71,15 @@
     transform: scale(1.05);
 }
 
-/* Banner container styling */
-.banner-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.05) 50%, transparent 51%);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Status badge positioning */
-.banner-container .badge {
-    z-index: 2;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .banner-container {
-        height: 100px;
-    }
-
-    .server-card .server-banner {
-        padding: 8px;
-    }
-}
-
-@media (max-width: 576px) {
-    .banner-container {
-        height: 90px;
-    }
-
-    .server-card .server-banner {
-        padding: 6px;
-    }
-}
-
-/* Server Row Layout Styles */
-
-/* Server Row Item */
+/* =========================================
+   Server Row Layout
+   ========================================= */
 .server-row-item {
-    transition: var(--transition, all 0.3s ease);
+    transition: var(--transition);
     border: 1px solid #e9ecef;
     background-color: #fff;
+    padding: 1rem !important;
+    animation: fadeInUp 0.3s ease-out;
 }
 
 .server-row-item:hover {
@@ -105,7 +88,28 @@
     border-color: #dee2e6;
 }
 
-/* Server Banner in Row Layout */
+.server-row-item.premium {
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+}
+
+.server-row-item.premium:hover {
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   Server Row Banner
+   ========================================= */
 .server-banner-container {
     height: 60px;
     overflow: hidden;
@@ -116,15 +120,17 @@
     justify-content: center;
 }
 
+.server-banner-container .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
 .server-banner-row {
     max-width: 468px;
-    /* Set to your banner width */
     max-height: 60px;
-    /* Set to your banner height */
     width: auto;
     height: auto;
     object-fit: none;
-    /* Don't scale - show at original size */
     transition: all 0.3s ease;
 }
 
@@ -135,7 +141,9 @@
     border: 2px dashed #dee2e6;
 }
 
-/* Server Row Info */
+/* =========================================
+   Server Row Info
+   ========================================= */
 .server-name a:hover {
     color: #0d6efd !important;
 }
@@ -144,153 +152,18 @@
     line-height: 1.4;
 }
 
-/* Server Row Stats */
 .server-stats .fw-semibold {
     font-size: 1.1em;
 }
 
-/* Server Row Actions */
 .server-actions .btn-sm {
     padding: 0.375rem 0.75rem;
     font-size: 0.875rem;
 }
 
-/* Premium Server Highlight */
-.server-row-item.premium {
-    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-}
-
-.server-row-item.premium:hover {
-    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
-}
-
-/* Status Badge in Row */
-.server-banner-container .badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-}
-
-/* Responsive Design for Server Rows */
-@media (max-width: 768px) {
-    .server-row-item {
-        padding: 1rem !important;
-    }
-
-    .server-banner-container {
-        height: 60px;
-        margin-bottom: 1rem;
-    }
-
-    .server-banner-placeholder {
-        height: 60px;
-        min-height: 60px;
-    }
-
-    .server-stats {
-        margin-bottom: 1rem !important;
-    }
-
-    .server-actions .d-flex {
-        flex-direction: row !important;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .server-actions .btn-sm {
-        flex: 1;
-        max-width: 120px;
-    }
-
-    .server-name {
-        flex: 1;
-        margin-right: 1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .server-banner-container {
-        height: 50px;
-    }
-
-    .server-banner-placeholder {
-        height: 50px;
-        min-height: 50px;
-    }
-
-    .server-name {
-        font-size: 1.1rem;
-    }
-
-    .server-description {
-        font-size: 0.85rem;
-    }
-
-    .server-stats .fw-semibold {
-        font-size: 1rem;
-    }
-}
-
-/* Animation for server rows */
-.server-row-item {
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Loading skeleton for server rows */
-.server-row-skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-/* --- Mobile Floating Filter Button (FAB) --- */
-.btn-fab-filter {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    z-index: 1050;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    transition: transform 0.2s;
-}
-
-.btn-fab-filter:active {
-    transform: scale(0.95);
-}
-
-/* --- Improved Server Row Layout --- */
-.server-row-item {
-    padding: 1rem !important;
-}
-
-/* Status Indicator (Dot on Icon) */
+/* =========================================
+   Status Indicator (Dot on Icon)
+   ========================================= */
 .server-icon-wrapper {
     position: relative;
     display: inline-block;
@@ -304,14 +177,14 @@
     height: 18px;
     border-radius: 50%;
     border: 3px solid #fff;
-    /* Creates a cut-out effect */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* CSS Line Clamping (Replaces PHP substr) */
+/* =========================================
+   Text Clamping
+   ========================================= */
 .text-clamp-1 {
     display: -webkit-box;
-    line-clamp: 1;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -320,45 +193,49 @@
 
 .text-clamp-2 {
     display: -webkit-box;
-    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Server description text limit */
 p.text-clamp-2 {
     max-height: 2.8em;
     word-wrap: break-word;
     word-break: break-word;
 }
 
-/* Mobile Tweaks */
-@media (max-width: 768px) {
-    .server-icon-responsive {
-        width: 60px !important;
-        height: 60px !important;
-    }
+/* =========================================
+   Loading Skeleton
+   ========================================= */
+.server-row-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
 
-    /* Hide description on very small screens to save space */
-    .server-description-mobile-hide {
-        display: none;
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
     }
 }
 
+/* =========================================
+   Preview
+   ========================================= */
 .preview-box {
     text-align: center;
 }
 
-/* Banner image preview */
 .preview-image-banner {
     max-width: 100%;
     max-height: 300px;
     border: 2px solid #e0e0e0;
 }
 
-/* Icon image preview */
 .preview-image-icon {
     width: 64px;
     height: 64px;
@@ -366,14 +243,12 @@ p.text-clamp-2 {
     object-fit: cover;
 }
 
-/* Close button for banner preview */
 .preview-close-btn-banner {
     width: 32px;
     height: 32px;
     padding: 0;
 }
 
-/* Close button for icon preview */
 .preview-close-btn-icon {
     width: 24px;
     height: 24px;
@@ -383,12 +258,13 @@ p.text-clamp-2 {
     font-size: 10px;
 }
 
-/* Input field spacing after icon */
 .input-group .form-control.border-start-0.ps-0 {
     padding-left: 0.3rem !important;
 }
 
-/* Jodit Content Display Styling */
+/* =========================================
+   Jodit Content Display
+   ========================================= */
 .jodit-content {
     font-size: 1rem;
     line-height: 1.6;
@@ -444,10 +320,100 @@ p.text-clamp-2 {
     font-style: italic;
 }
 
+/* =========================================
+   Focus States
+   ========================================= */
 .list-group-item[tabindex="0"]:focus-visible,
 .comment-item[tabindex="0"]:focus-visible,
 .blog-post-item[tabindex="0"]:focus-visible {
     outline: 3px solid rgba(13, 110, 253, 0.9);
     outline-offset: 3px;
     border-radius: 0.375rem;
+}
+
+/* =========================================
+   Responsive Design
+   ========================================= */
+@media (max-width: 768px) {
+    .server-row-item {
+        padding: 1rem !important;
+    }
+
+    .banner-container {
+        height: 100px;
+    }
+
+    .server-card .server-banner {
+        padding: 8px;
+    }
+
+    .server-banner-container {
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+
+    .server-banner-placeholder {
+        height: 60px;
+        min-height: 60px;
+    }
+
+    .server-stats {
+        margin-bottom: 1rem !important;
+    }
+
+    .server-actions .d-flex {
+        flex-direction: row !important;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .server-actions .btn-sm {
+        flex: 1;
+        max-width: 120px;
+    }
+
+    .server-name {
+        flex: 1;
+        margin-right: 1rem;
+    }
+
+    .server-icon-responsive {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .server-description-mobile-hide {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .banner-container {
+        height: 90px;
+    }
+
+    .server-card .server-banner {
+        padding: 6px;
+    }
+
+    .server-banner-container {
+        height: 50px;
+    }
+
+    .server-banner-placeholder {
+        height: 50px;
+        min-height: 50px;
+    }
+
+    .server-name {
+        font-size: 1.1rem;
+    }
+
+    .server-description {
+        font-size: 0.85rem;
+    }
+
+    .server-stats .fw-semibold {
+        font-size: 1rem;
+    }
 }
