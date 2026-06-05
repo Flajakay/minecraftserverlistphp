@@ -56,12 +56,17 @@ class ServerCategory
 
     public static function setServerCategories($serverId, $categoryIds, $primaryCategoryId = null): bool
     {
-        Database::pdo()->beginTransaction();
+        $ownsTransaction = !Database::pdo()->inTransaction();
+        if ($ownsTransaction) {
+            Database::pdo()->beginTransaction();
+        }
         try {
             Database::delete('server_categories', 'server_id = ?', [$serverId]);
 
             if (empty($categoryIds)) {
-                Database::pdo()->commit();
+                if ($ownsTransaction) {
+                    Database::pdo()->commit();
+                }
                 return false;
             }
 
@@ -74,10 +79,14 @@ class ServerCategory
                 ]);
             }
 
-            Database::pdo()->commit();
+            if ($ownsTransaction) {
+                Database::pdo()->commit();
+            }
             return true;
         } catch (\Exception $e) {
-            Database::pdo()->rollBack();
+            if ($ownsTransaction) {
+                Database::pdo()->rollBack();
+            }
             error_log('Failed to set server categories: ' . $e->getMessage());
             return false;
         }
